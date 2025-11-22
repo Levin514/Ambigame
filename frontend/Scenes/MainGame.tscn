@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=4 uid="uid://df17scc5wxpal"]
+[gd_scene load_steps=36 format=4 uid="uid://df17scc5wxpal"]
 
 [ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_0ynk6"]
 [ext_resource type="Script" uid="uid://bcb66jlp1gqdj" path="res://Models/Snake.cs" id="1_ylpyt"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://cfyiwwvuvvng0" path="res://Scenes/PlayerAnimation.cs" id="11_yr2pg"]
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="12_yr2pg"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="13_wyocf"]
+[ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="14_ylpyt"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3bmkb"]
 texture = ExtResource("4_kvfik")
@@ -164,10 +165,11 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("DualGrid", "_snakeBody")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("DualGrid", "_snakeBody", "gameMusic")]
 script = ExtResource("1_ylpyt")
 DualGrid = NodePath("TileMapLayers")
 _snakeBody = NodePath("Snake/SnakeBody")
+gameMusic = NodePath("AudioStreamPlayer")
 
 [node name="TileMapLayers" type="Node2D" parent="." node_paths=PackedStringArray("worldMapLayer", "displayMapLayer", "plantMapLayer")]
 script = ExtResource("2_13b5n")
@@ -289,6 +291,11 @@ script = ExtResource("11_yr2pg")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayerAnimation"]
 sprite_frames = SubResource("SpriteFrames_0wdc3")
 animation = &"walk_right"
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("14_ylpyt")
+volume_db = -5.0
+autoplay = true
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]
