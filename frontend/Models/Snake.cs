@@ -17,10 +17,12 @@ public partial class Snake : Node2D
 
 	// We could use a Godot Timer too.
 	private Timer timer;
+	private bool isGameOver = false;
 
 	public override void _Ready()
 	{
 		_gameSize = new Vector2I(33, 21);
+		isGameOver = false;
 		timer = new Timer(4000);
 		timer.Elapsed += NewApple;
 		timer.AutoReset = true;
@@ -38,11 +40,14 @@ public partial class Snake : Node2D
 	public void OnGameOver()
 	{
 		GD.Print("Game Over");
+		isGameOver = true;
 		timer.Stop();
+		timer.Dispose();
 	}
 
 	public void NewApple(object src, ElapsedEventArgs e)
 	{
+		if (isGameOver) return;
 		DualGrid.AddTrash(new Vector2I(rnd.Next(0, 32), rnd.Next(0, 21)));
 	}
 

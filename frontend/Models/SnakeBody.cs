@@ -27,6 +27,7 @@ public partial class SnakeBody : Sprite2D
 	private LinkedList<Vector2I> _body;
 	private bool _crash;
 	private Direction _direction;
+	private Direction _nextDirection;  // Buffer para la próxima dirección
 	private double _time;
 
 	private int reciclados = 0;
@@ -75,6 +76,7 @@ public partial class SnakeBody : Sprite2D
 	public override void _Ready()
 	{
 		_direction = Direction.RIGHT;
+		_nextDirection = Direction.RIGHT;  // Inicializar buffer
 		_body = new([new(1, 0), new(0, 0)]);
 		ZIndex = 1;
 		gameOverScreen.Visible = false;
@@ -125,6 +127,9 @@ public partial class SnakeBody : Sprite2D
 		}
 		if (_time > 0.2 && !_crash)
 		{
+			// Aplicar la dirección del buffer
+			_direction = _nextDirection;
+			
 			var translation = _direction switch
 			{
 				Direction.RIGHT => new Vector2I(1, 0),
@@ -169,8 +174,8 @@ public partial class SnakeBody : Sprite2D
 					_crash = true;
 					gameOverScreen.Visible = true;
 					statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
-					SendMatchToBackend();
 					EmitSignal(SignalName.GameOver);
+					SendMatchToBackend();
 				}
 			}
 			if (!_crash)
@@ -207,26 +212,27 @@ public partial class SnakeBody : Sprite2D
 
 	public override void _Input(InputEvent @event)
 	{
+		// Guardar en buffer la próxima dirección (validando que no sea opuesta a la ACTUAL)
 		if (@event.IsAction("ui_left") && _direction != Direction.RIGHT)
 		{
-			_direction = Direction.LEFT;
+			_nextDirection = Direction.LEFT;
 			return;
 		}
 
 		if (@event.IsAction("ui_right") && _direction != Direction.LEFT)
 		{
-			_direction = Direction.RIGHT;
+			_nextDirection = Direction.RIGHT;
 			return;
 		}
 
 		if (@event.IsAction("ui_up") && _direction != Direction.DOWN)
 		{
-			_direction = Direction.UP;
+			_nextDirection = Direction.UP;
 			return;
 		}
 
 		if (@event.IsAction("ui_down") && _direction != Direction.UP)
-			_direction = Direction.DOWN;
+			_nextDirection = Direction.DOWN;
 	}
 
 	private enum Direction
