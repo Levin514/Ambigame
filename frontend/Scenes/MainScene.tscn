@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://ceh52rhn778hx"]
+[gd_scene load_steps=5 format=3 uid="uid://ceh52rhn778hx"]
 
 [ext_resource type="Script" uid="uid://bxy2phsxfq24f" path="res://Scenes/MainScene.cs" id="1_nhkr4"]
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_7rqgy"]
 [ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="3_7rqgy"]
-[ext_resource type="Texture2D" uid="uid://cqk20arl22bsn" path="res://icon.png" id="3_qxria"]
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="4_qxria"]
 
 [node name="MarginContainer2" type="MarginContainer" node_paths=PackedStringArray("_userDataLabel")]
@@ -19,77 +18,62 @@ theme_override_constants/margin_top = 80
 theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 80
 script = ExtResource("1_nhkr4")
-_userDataLabel = NodePath("HBoxContainer/VBoxContainer/UserData")
+_userDataLabel = NodePath("VBoxContainer/UserData")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="ExitControl" type="Control" parent="."]
 layout_mode = 2
-theme_override_constants/separation = 100
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
+[node name="LogOutButton" type="Button" parent="ExitControl"]
+top_level = true
+layout_mode = 0
+offset_left = 120.0
+offset_top = 100.0
+offset_right = 270.0
+offset_bottom = 150.0
+theme = ExtResource("4_qxria")
+text = "Volver"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
-size_flags_horizontal = 4
 theme_override_constants/separation = 50
 alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="Header" type="VBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="HBoxContainer/VBoxContainer/VBoxContainer"]
+[node name="Title" type="Label" parent="VBoxContainer/Header"]
 layout_mode = 2
 text = "Ambigame"
 label_settings = ExtResource("2_7rqgy")
+horizontal_alignment = 1
 
-[node name="Title2" type="Label" parent="HBoxContainer/VBoxContainer/VBoxContainer"]
+[node name="SubTitle" type="Label" parent="VBoxContainer/Header"]
 layout_mode = 2
 text = "!Salva el planeta, gana puntos!"
 label_settings = ExtResource("3_7rqgy")
+horizontal_alignment = 1
 
-[node name="Fields" type="VBoxContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="MainButtons" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 3
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="HBoxContainer/VBoxContainer/Fields"]
+[node name="PlayButton" type="Button" parent="VBoxContainer/MainButtons"]
 layout_mode = 2
+size_flags_horizontal = 3
 theme = ExtResource("4_qxria")
 text = "Jugar"
 
-[node name="RankingButton" type="Button" parent="HBoxContainer/VBoxContainer/Fields"]
+[node name="TutorialButton" type="Button" parent="VBoxContainer/MainButtons"]
 layout_mode = 2
-theme = ExtResource("4_qxria")
-text = "Ranking"
-
-[node name="HistorialButton" type="Button" parent="HBoxContainer/VBoxContainer/Fields"]
-layout_mode = 2
-theme = ExtResource("4_qxria")
-text = "Historial"
-
-[node name="TutorialButton" type="Button" parent="HBoxContainer/VBoxContainer/Fields"]
-layout_mode = 2
+size_flags_horizontal = 3
 theme = ExtResource("4_qxria")
 text = "Tutorial"
 
-[node name="LogOutButton" type="Button" parent="HBoxContainer/VBoxContainer/Fields"]
-layout_mode = 2
-theme = ExtResource("4_qxria")
-text = "Cerrar Sesion"
-
-[node name="UserData" type="Label" parent="HBoxContainer/VBoxContainer"]
+[node name="UserData" type="Label" parent="VBoxContainer"]
 layout_mode = 2
 text = "User: <Placeholder>"
 label_settings = ExtResource("3_7rqgy")
 
-[node name="CenterContainer" type="CenterContainer" parent="HBoxContainer"]
-layout_mode = 2
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/CenterContainer"]
-layout_mode = 2
-texture = ExtResource("3_qxria")
-
-[node name="HTTPRequest" type="HTTPRequest" parent="."]
-
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/PlayButton" to="." method="Play"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/RankingButton" to="." method="GoToRanking"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/HistorialButton" to="." method="GoToHistorial"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/TutorialButton" to="." method="GoToTutorial"]
-[connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/LogOutButton" to="." method="LogOut"]
+[connection signal="pressed" from="ExitControl/LogOutButton" to="." method="LogOut"]
+[connection signal="pressed" from="VBoxContainer/MainButtons/PlayButton" to="." method="Play"]
+[connection signal="pressed" from="VBoxContainer/MainButtons/TutorialButton" to="." method="GoToTutorial"]

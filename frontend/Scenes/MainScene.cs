@@ -17,16 +17,6 @@ public partial class MainScene : MarginContainer
 		GetTree().ChangeSceneToFile("res://Scenes/MainGame.tscn");
 	}
 
-	public void GoToRanking()
-	{
-		GetTree().ChangeSceneToFile("res://Scenes/RankingScene.tscn");
-	}
-	
-	public void GoToHistorial()
-	{
-		GetTree().ChangeSceneToFile("res://Scenes/HistorialScene.tscn");
-	}
-
 	public void GoToTutorial()
 	{
 		GetTree().ChangeSceneToFile("res://Scenes/TutorialScene.tscn");
@@ -35,6 +25,6 @@ public partial class MainScene : MarginContainer
 	public void LogOut()
 	{
 		Player.SetInstance(null);
-		GetTree().ChangeSceneToFile("res://Scenes/LoginScene.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/GameMode.tscn");
 	}
 }
