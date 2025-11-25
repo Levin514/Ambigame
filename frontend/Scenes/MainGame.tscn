@@ -165,6 +165,7 @@ animations = [{
 }]
 
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("DualGrid", "_snakeBody")]
+position = Vector2(0, 1)
 script = ExtResource("1_ylpyt")
 DualGrid = NodePath("TileMapLayers")
 _snakeBody = NodePath("Snake/SnakeBody")
@@ -204,7 +205,7 @@ texture = ExtResource("6_e78ew")
 
 [node name="Snake" type="Node2D" parent="."]
 
-[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "puntiacionLabel", "recicladosLabel", "timerLabel", "statsLabel", "gameOverScreen", "httpRequest", "player_ani")]
+[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "puntiacionLabel", "recicladosLabel", "timerLabel", "statsLabel", "gameOverScreen", "player_ani")]
 position = Vector2(0, 2)
 script = ExtResource("13_wyocf")
 DualGrid = NodePath("../../TileMapLayers")
@@ -213,7 +214,6 @@ recicladosLabel = NodePath("../../CanvasLayer/VBoxContainer/Reciclados")
 timerLabel = NodePath("../../CanvasLayer/VBoxContainer/Tiempo")
 statsLabel = NodePath("../../GameOverScreen/VBoxContainer/Stats")
 gameOverScreen = NodePath("../../GameOverScreen")
-httpRequest = NodePath("../../HTTPRequest")
 player_ani = NodePath("../../PlayerAnimation")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]

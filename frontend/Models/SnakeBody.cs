@@ -19,10 +19,10 @@ public partial class SnakeBody : Sprite2D
 
 	[Export] Label statsLabel;
 	[Export] CanvasLayer gameOverScreen;
-	[Export] HttpRequest httpRequest;
+
 	[Export] PlayerAnimation player_ani;
 
-	private string url = "http://localhost:3000/";
+
 
 	private LinkedList<Vector2I> _body;
 	private bool _crash;
@@ -169,7 +169,6 @@ public partial class SnakeBody : Sprite2D
 					_crash = true;
 					gameOverScreen.Visible = true;
 					statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
-					SendMatchToBackend();
 					EmitSignal(SignalName.GameOver);
 				}
 			}
@@ -179,31 +178,7 @@ public partial class SnakeBody : Sprite2D
 		}
 	}
 
-	private void SendMatchToBackend()
-	{
-		string[] headers = ["Content-Type: application/json"];
-		httpRequest.RequestCompleted += OnRequestCompleted;
-		Match match = new ()
-		{
-			score = Puntuacion,
-			player_id = Convert.ToInt32(double.Parse(Player.GetInstance().id, System.Globalization.CultureInfo.InvariantCulture)),
-			date = DateTime.Now.ToString("yyyy-MM-dd"),
-			level = 1,
-			time = (int)juegoTime,
-			recolected = reciclados,
-		};
-		string body = JsonConvert.SerializeObject(match);
-		GD.Print(body);
-		httpRequest.Request($"{url}matches", headers, HttpClient.Method.Post, body);
-	}
-
-	private void OnRequestCompleted(long result, long responseCode, string[] headers, byte[] body)
-	{
-		if (responseCode == 201)
-			GD.Print($"Success, the request returned {responseCode}");
-		else
-			GD.Print($"Error, the request returned {responseCode}");
-	}
+	
 
 	public override void _Input(InputEvent @event)
 	{
