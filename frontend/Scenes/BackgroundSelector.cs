@@ -17,4 +17,9 @@ public partial class BackgroundSelector : MarginContainer
     {
         GetTree().ChangeSceneToFile("res://Scenes/MainScene.tscn");
     }
+
+	public void Forest_level_button_pressed()
+    {
+        GetTree().ChangeSceneToFile("res://Scenes/MainGame.tscn");
+    }
 }

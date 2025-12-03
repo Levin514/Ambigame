@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ceh52rhn778hx"]
+[gd_scene load_steps=6 format=3 uid="uid://ceh52rhn778hx"]
 
 [ext_resource type="Script" uid="uid://bxy2phsxfq24f" path="res://Scenes/MainScene.cs" id="1_nhkr4"]
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_7rqgy"]
 [ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="3_7rqgy"]
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="4_qxria"]
+[ext_resource type="Texture2D" uid="uid://cqk20arl22bsn" path="res://icon.png" id="5_qxria"]
 
 [node name="MarginContainer2" type="MarginContainer" node_paths=PackedStringArray("_userDataLabel")]
 anchors_preset = 15
@@ -55,19 +56,67 @@ horizontal_alignment = 1
 
 [node name="MainButtons" type="HBoxContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 50
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="VBoxContainer/MainButtons"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme = ExtResource("4_qxria")
-text = "Jugar"
-
 [node name="TutorialButton" type="Button" parent="VBoxContainer/MainButtons"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_qxria")
 text = "Tutorial"
+
+[node name="Level1Container" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="Level1TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/Level1Container"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("5_qxria")
+stretch_mode = 5
+
+[node name="Level1Button" type="Button" parent="VBoxContainer/MainButtons/Level1Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_qxria")
+text = "Limpieza comienza"
+
+[node name="Level2Container" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="Level2TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/Level2Container"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("5_qxria")
+stretch_mode = 5
+
+[node name="Level2Button" type="Button" parent="VBoxContainer/MainButtons/Level2Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_qxria")
+text = "Guardianes del agua"
+
+[node name="Level3Container" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="Level3TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/Level3Container"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("5_qxria")
+stretch_mode = 5
+
+[node name="Level3Button" type="Button" parent="VBoxContainer/MainButtons/Level3Container"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("4_qxria")
+text = "Sembrando vida"
 
 [node name="UserData" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -75,5 +124,6 @@ text = "User: <Placeholder>"
 label_settings = ExtResource("3_7rqgy")
 
 [connection signal="pressed" from="ExitControl/LogOutButton" to="." method="LogOut"]
-[connection signal="pressed" from="VBoxContainer/MainButtons/PlayButton" to="." method="Play"]
 [connection signal="pressed" from="VBoxContainer/MainButtons/TutorialButton" to="." method="GoToTutorial"]
+[connection signal="pressed" from="VBoxContainer/MainButtons/Level1Container/Level1TextureButton" to="." method="Level_1_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainButtons/Level1Container/Level1Button" to="." method="Level_1_button_pressed"]

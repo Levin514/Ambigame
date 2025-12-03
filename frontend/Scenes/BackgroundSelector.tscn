@@ -70,7 +70,7 @@ size_flags_vertical = 3
 texture_normal = ExtResource("5_qxh2t")
 stretch_mode = 5
 
-[node name="Forest LevelButton" type="Button" parent="VBoxContainer/MainButtons/ForestBackgroundContainer"]
+[node name="ForestLevelButton" type="Button" parent="VBoxContainer/MainButtons/ForestBackgroundContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_p0tgr")
@@ -108,7 +108,26 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_p0tgr")
-text = "Escuela"
+text = "Río
+"
+
+[node name="RandomBackgroundContainer3" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/RandomBackgroundContainer3"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("5_qxh2t")
+stretch_mode = 5
+
+[node name="RandomLevelButton" type="Button" parent="VBoxContainer/MainButtons/RandomBackgroundContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("2_p0tgr")
+text = "Aleatorio
+"
 
 [node name="UserData" type="Label" parent="VBoxContainer"]
 layout_mode = 2
@@ -116,3 +135,5 @@ text = "User: <Placeholder>"
 label_settings = ExtResource("4_wkiiu")
 
 [connection signal="pressed" from="ExitControl/BackButton" to="." method="_on_back_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainButtons/ForestBackgroundContainer/TextureButton" to="." method="Forest_level_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/MainButtons/ForestBackgroundContainer/ForestLevelButton" to="." method="Forest_level_button_pressed"]

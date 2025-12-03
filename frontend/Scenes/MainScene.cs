@@ -12,9 +12,9 @@ public partial class MainScene : MarginContainer
 		else
 			_userDataLabel.Text = Player.GetInstance().ToString();
 	}
-	public void Play()
+	public void Level_1_button_pressed()
 	{
-		GetTree().ChangeSceneToFile("res://Scenes/MainGame.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/BackgroundSelector.tscn");
 	}
 
 	public void GoToTutorial()
