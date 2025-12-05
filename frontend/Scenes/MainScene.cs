@@ -14,7 +14,12 @@ public partial class MainScene : MarginContainer
 	}
 	public void Play()
 	{
-		GetTree().ChangeSceneToFile("res://Scenes/MainGame.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/GameModeSelectionScene.tscn");
+	}
+
+	public void GoToCustomization()
+	{
+		GetTree().ChangeSceneToFile("res://Scenes/CustomizationScene.tscn");
 	}
 
 	public void GoToRanking()

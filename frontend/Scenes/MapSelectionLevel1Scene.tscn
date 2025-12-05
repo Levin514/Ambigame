@@ -1,0 +1,122 @@
+[gd_scene load_steps=6 format=3 uid="uid://bn8iy7h7almuy"]
+
+[ext_resource type="Script" uid="uid://i4wfjpb6ana5" path="res://Scenes/MapSelectionLevel1Scene.cs" id="1_map"]
+[ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_map"]
+[ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="3_map"]
+[ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="4_map"]
+[ext_resource type="StyleBox" uid="uid://bygoakemeebpi" path="res://SelectionPanelStyle.tres" id="5_panel"]
+
+[node name="MapSelectionLevel1Scene" type="MarginContainer" node_paths=PackedStringArray("_coinsLabel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 60
+theme_override_constants/margin_bottom = 40
+script = ExtResource("1_map")
+_coinsLabel = NodePath("VBoxContainer/Header/CoinsContainer/CoinsLabel")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="VBoxContainer/Header"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+theme = ExtResource("4_map")
+text = "Volver"
+
+[node name="Title" type="Label" parent="VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "La limpieza es contigo"
+label_settings = ExtResource("2_map")
+horizontal_alignment = 1
+
+[node name="CoinsContainer" type="HBoxContainer" parent="VBoxContainer/Header"]
+layout_mode = 2
+alignment = 2
+
+[node name="CoinIcon" type="Panel" parent="VBoxContainer/Header/CoinsContainer"]
+custom_minimum_size = Vector2(40, 40)
+layout_mode = 2
+size_flags_vertical = 4
+
+[node name="CoinsLabel" type="Label" parent="VBoxContainer/Header/CoinsContainer"]
+layout_mode = 2
+text = "300"
+label_settings = ExtResource("3_map")
+
+[node name="Subtitle" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Selecciona un mapa"
+label_settings = ExtResource("3_map")
+horizontal_alignment = 1
+
+[node name="MapsContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Map1Button" type="Button" parent="VBoxContainer/MapsContainer"]
+custom_minimum_size = Vector2(180, 180)
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("4_map")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0.6509804, 0.24313726, 1)
+theme_override_styles/normal = ExtResource("5_panel")
+theme_override_styles/pressed = ExtResource("5_panel")
+theme_override_styles/hover = ExtResource("5_panel")
+text = "Playa"
+vertical_icon_alignment = 0
+
+[node name="Map2Button" type="Button" parent="VBoxContainer/MapsContainer"]
+custom_minimum_size = Vector2(180, 180)
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("4_map")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0.6509804, 0.24313726, 1)
+theme_override_styles/normal = ExtResource("5_panel")
+theme_override_styles/pressed = ExtResource("5_panel")
+theme_override_styles/hover = ExtResource("5_panel")
+text = "Bosque"
+vertical_icon_alignment = 0
+
+[node name="Map3Button" type="Button" parent="VBoxContainer/MapsContainer"]
+custom_minimum_size = Vector2(180, 180)
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("4_map")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0.6509804, 0.24313726, 1)
+theme_override_styles/normal = ExtResource("5_panel")
+theme_override_styles/pressed = ExtResource("5_panel")
+theme_override_styles/hover = ExtResource("5_panel")
+text = "Río"
+vertical_icon_alignment = 0
+
+[node name="RandomButton" type="Button" parent="VBoxContainer/MapsContainer"]
+custom_minimum_size = Vector2(180, 180)
+layout_mode = 2
+size_flags_vertical = 4
+theme = ExtResource("4_map")
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0.6509804, 0.24313726, 1)
+theme_override_styles/normal = ExtResource("5_panel")
+theme_override_styles/pressed = ExtResource("5_panel")
+theme_override_styles/hover = ExtResource("5_panel")
+text = "Aleatorio
+?"
+vertical_icon_alignment = 0
+
+[connection signal="pressed" from="VBoxContainer/Header/BackButton" to="." method="GoBack"]
+[connection signal="pressed" from="VBoxContainer/MapsContainer/RandomButton" to="." method="SelectRandomMap"]

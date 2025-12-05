@@ -1,0 +1,174 @@
+[gd_scene load_steps=5 format=3 uid="uid://b0q748q3foxoq"]
+
+[ext_resource type="Script" uid="uid://b3l6td6o2d8w0" path="res://Scenes/CustomizationScene.cs" id="1_custom"]
+[ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_custom"]
+[ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="3_custom"]
+[ext_resource type="StyleBox" path="res://GlassyPanel.tres" id="4_glassy"]
+
+[node name="CustomizationScene" type="MarginContainer" node_paths=PackedStringArray("_hatsContainer", "_outfitsContainer", "_hatsTabButton", "_outfitsTabButton", "_hatsPanel", "_outfitsPanel")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+script = ExtResource("1_custom")
+_hatsContainer = NodePath("VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer")
+_outfitsContainer = NodePath("VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer")
+_hatsTabButton = NodePath("VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons/HatsButton")
+_outfitsTabButton = NodePath("VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons/OutfitsButton")
+_hatsPanel = NodePath("VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer")
+_outfitsPanel = NodePath("VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Header" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="VBoxContainer/Header"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Personalización"
+label_settings = ExtResource("2_custom")
+horizontal_alignment = 1
+
+[node name="ContentContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 20
+
+[node name="CatalogPanel" type="PanelContainer" parent="VBoxContainer/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 1.5
+theme_override_styles/panel = ExtResource("4_glassy")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentContainer/CatalogPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="TabButtons" type="HBoxContainer" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="HatsButton" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_custom")
+text = "Sombreros"
+
+[node name="OutfitsButton" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_custom")
+text = "Trajes"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HatsContainer" type="GridContainer" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 3
+
+[node name="Hat1Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Sombrero 1"
+
+[node name="Hat2Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Sombrero 2"
+
+[node name="Hat3Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Sombrero 3"
+
+[node name="OutfitsContainer" type="GridContainer" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/h_separation = 15
+theme_override_constants/v_separation = 15
+columns = 3
+
+[node name="Outfit1Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Traje 1"
+
+[node name="Outfit2Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Traje 2"
+
+[node name="Outfit3Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer"]
+custom_minimum_size = Vector2(120, 120)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Traje 3"
+
+[node name="PreviewPanel" type="PanelContainer" parent="VBoxContainer/ContentContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = ExtResource("4_glassy")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/ContentContainer/PreviewPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 40
+theme_override_constants/margin_top = 40
+theme_override_constants/margin_right = 40
+theme_override_constants/margin_bottom = 40
+
+[node name="CenterContainer" type="CenterContainer" parent="VBoxContainer/ContentContainer/PreviewPanel/MarginContainer"]
+layout_mode = 2
+
+[node name="ButtonsContainer" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="BackButton" type="Button" parent="VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Volver"
+
+[node name="SaveButton" type="Button" parent="VBoxContainer/ButtonsContainer"]
+custom_minimum_size = Vector2(200, 40)
+layout_mode = 2
+theme = ExtResource("3_custom")
+text = "Guardar"
+
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons/HatsButton" to="." method="ShowHatsPanel"]
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons/OutfitsButton" to="." method="ShowOutfitsPanel"]
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer/Hat1Button" to="." method="SelectHat" binds= [0]]
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer/Hat2Button" to="." method="SelectHat" binds= [1]]
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer/Hat3Button" to="." method="SelectHat" binds= [2]]
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer/Outfit1Button" to="." method="SelectOutfit" binds= [0]]
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer/Outfit2Button" to="." method="SelectOutfit" binds= [1]]
+[connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer/Outfit3Button" to="." method="SelectOutfit" binds= [2]]
+[connection signal="pressed" from="VBoxContainer/ButtonsContainer/BackButton" to="." method="GoBack"]
+[connection signal="pressed" from="VBoxContainer/ButtonsContainer/SaveButton" to="." method="SaveCustomization"]

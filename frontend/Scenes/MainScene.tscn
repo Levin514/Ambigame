@@ -54,6 +54,11 @@ layout_mode = 2
 theme = ExtResource("4_qxria")
 text = "Jugar"
 
+[node name="CustomizationButton" type="Button" parent="HBoxContainer/VBoxContainer/Fields"]
+layout_mode = 2
+theme = ExtResource("4_qxria")
+text = "Personalización"
+
 [node name="RankingButton" type="Button" parent="HBoxContainer/VBoxContainer/Fields"]
 layout_mode = 2
 theme = ExtResource("4_qxria")
@@ -89,6 +94,7 @@ texture = ExtResource("3_qxria")
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/PlayButton" to="." method="Play"]
+[connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/CustomizationButton" to="." method="GoToCustomization"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/RankingButton" to="." method="GoToRanking"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/HistorialButton" to="." method="GoToHistorial"]
 [connection signal="pressed" from="HBoxContainer/VBoxContainer/Fields/TutorialButton" to="." method="GoToTutorial"]
