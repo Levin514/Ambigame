@@ -1,6 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://v5r2pt4klutk"]
+[gd_scene load_steps=7 format=3 uid="uid://v5r2pt4klutk"]
 
 [ext_resource type="Script" uid="uid://by4yjea73um5h" path="res://LifeSystem.cs" id="1_a1dbf"]
+[ext_resource type="Texture2D" uid="uid://jcl2igldmk5p" path="res://Assets/Boton 2.1.png" id="2_bu5bv"]
+[ext_resource type="Texture2D" uid="uid://bcce0klsx7iv4" path="res://Assets/Boton_Madera_3.png" id="3_7r0ph"]
+[ext_resource type="Texture2D" uid="uid://d0n2culeejc1j" path="res://Assets/heart_16x16.png" id="4_7r0ph"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_7r0ph"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_a1dbf"]
+font_color = Color(0, 0.73337764, 0.19966345, 1)
 
 [node name="LifeSystem" type="Control" node_paths=PackedStringArray("healthLabel")]
 layout_mode = 3
@@ -16,8 +24,25 @@ healthLabel = NodePath("HealthContainer/HealthLabel")
 layout_mode = 0
 offset_right = 150.0
 offset_bottom = 45.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_7r0ph")
+
+[node name="LabelSprite2D" type="Sprite2D" parent="HealthContainer"]
+position = Vector2(74, 22)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_bu5bv")
 
 [node name="HealthLabel" type="Label" parent="HealthContainer"]
 layout_mode = 2
 text = "%/%"
+label_settings = SubResource("LabelSettings_a1dbf")
 horizontal_alignment = 1
+
+[node name="PlaceHolderSprite2D" type="Sprite2D" parent="HealthContainer"]
+position = Vector2(14, 20)
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("3_7r0ph")
+
+[node name="ToolSprite2D" type="Sprite2D" parent="HealthContainer/PlaceHolderSprite2D"]
+position = Vector2(0, 8)
+scale = Vector2(12, 12)
+texture = ExtResource("4_7r0ph")

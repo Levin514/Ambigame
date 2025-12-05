@@ -1,11 +1,24 @@
-[gd_scene load_steps=5 format=3 uid="uid://db6cpih6erwgv"]
+[gd_scene load_steps=6 format=3 uid="uid://db6cpih6erwgv"]
 
+[ext_resource type="PackedScene" uid="uid://c11lqpfr40b2x" path="res://Scenes/Background.tscn" id="1_7bcn3"]
 [ext_resource type="Script" uid="uid://perhjm5p80fp" path="res://Scenes/LoginScene.cs" id="1_p25gn"]
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_76d8l"]
 [ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="3_76d8l"]
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="4_7bcn3"]
 
-[node name="MarginContainer3" type="MarginContainer"]
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" parent="." instance=ExtResource("1_7bcn3")]
+layout_mode = 1
+
+[node name="MarginContainer3" type="MarginContainer" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -17,54 +30,56 @@ theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 80
 script = ExtResource("1_p25gn")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer3"]
 layout_mode = 2
 theme_override_constants/separation = 50
 alignment = 1
 
-[node name="Header" type="VBoxContainer" parent="VBoxContainer"]
+[node name="Header" type="VBoxContainer" parent="MarginContainer3/VBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="Title" type="Label" parent="VBoxContainer/Header"]
+[node name="Title" type="Label" parent="MarginContainer3/VBoxContainer/Header"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Ambigame"
 label_settings = ExtResource("2_76d8l")
 horizontal_alignment = 1
 
-[node name="SubTitle" type="Label" parent="VBoxContainer/Header"]
+[node name="SubTitle" type="Label" parent="MarginContainer3/VBoxContainer/Header"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "!Salva el planeta, gana puntos!"
 label_settings = ExtResource("3_76d8l")
 horizontal_alignment = 1
 
-[node name="MainButtons" type="VBoxContainer" parent="VBoxContainer"]
+[node name="MainButtons" type="VBoxContainer" parent="MarginContainer3/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 alignment = 1
 
-[node name="PlayButton" type="Button" parent="VBoxContainer/MainButtons"]
+[node name="PlayButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
 text = "Jugar"
 
-[node name="ProgressButton" type="Button" parent="VBoxContainer/MainButtons"]
+[node name="ProgressButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
+visible = false
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
 text = "Progreso"
 
-[node name="ConfigButton" type="Button" parent="VBoxContainer/MainButtons"]
+[node name="ConfigButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
+visible = false
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
 text = "Ajustes"
 
-[node name="CreditsLabel" type="Label" parent="VBoxContainer"]
+[node name="CreditsLabel" type="Label" parent="MarginContainer3/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
 text = "Creado por: 
 Kevin Mejia y Levin Moran"
 label_settings = ExtResource("3_76d8l")
 
-[connection signal="pressed" from="VBoxContainer/MainButtons/PlayButton" to="." method="GoToMain"]
+[connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/PlayButton" to="MarginContainer3" method="GoToMain"]

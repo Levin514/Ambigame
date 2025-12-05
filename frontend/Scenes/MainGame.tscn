@@ -244,6 +244,30 @@ layout_mode = 2
 text = "Tiempo: 0"
 label_settings = SubResource("LabelSettings_kvfik")
 
+[node name="PlayerAnimation" type="Node2D" parent="."]
+script = ExtResource("11_yr2pg")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayerAnimation"]
+sprite_frames = SubResource("SpriteFrames_0wdc3")
+animation = &"walk_right"
+
+[node name="LifeSystemScreen" type="CanvasLayer" parent="."]
+
+[node name="LifeSystem" parent="LifeSystemScreen" node_paths=PackedStringArray("_snakeBody") instance=ExtResource("15_wyocf")]
+anchors_preset = -1
+offset_left = 940.0
+offset_top = 659.0
+offset_right = -140.0
+offset_bottom = -61.0
+grow_horizontal = 1
+grow_vertical = 1
+_snakeBody = NodePath("../../Snake/SnakeBody")
+
+[node name="PauseMenuScreen" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer" parent="PauseMenuScreen" instance=ExtResource("14_ylpyt")]
+visible = false
+
 [node name="GameOverScreen" type="CanvasLayer" parent="."]
 visible = false
 scale = Vector2(0.5, 0.5)
@@ -281,37 +305,6 @@ text = "Volver a jugar"
 layout_mode = 2
 theme = ExtResource("8_48eim")
 text = "Salir"
-
-[node name="PlayerAnimation" type="Node2D" parent="."]
-script = ExtResource("11_yr2pg")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="PlayerAnimation"]
-sprite_frames = SubResource("SpriteFrames_0wdc3")
-animation = &"walk_right"
-
-[node name="PauseMenuScreen" type="CanvasLayer" parent="."]
-
-[node name="MarginContainer" parent="PauseMenuScreen" instance=ExtResource("14_ylpyt")]
-visible = false
-offset_left = -1.0
-offset_top = 2.0
-offset_right = -1.0
-offset_bottom = 2.0
-
-[node name="LifeSystemScreen" type="CanvasLayer" parent="."]
-
-[node name="Control" type="Control" parent="LifeSystemScreen"]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="LifeSystem" parent="." node_paths=PackedStringArray("_snakeBody") instance=ExtResource("15_wyocf")]
-offset_left = 1.0
-offset_top = 2.0
-offset_right = 1.0
-offset_bottom = 2.0
-_snakeBody = NodePath("../Snake/SnakeBody")
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]

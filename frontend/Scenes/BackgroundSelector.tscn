@@ -1,12 +1,25 @@
-[gd_scene load_steps=6 format=3 uid="uid://konwcjphckjl"]
+[gd_scene load_steps=7 format=3 uid="uid://konwcjphckjl"]
 
 [ext_resource type="Script" uid="uid://bejdnx6u62nvr" path="res://Scenes/BackgroundSelector.cs" id="1_esf64"]
+[ext_resource type="PackedScene" uid="uid://c11lqpfr40b2x" path="res://Scenes/Background.tscn" id="1_p0tgr"]
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="2_p0tgr"]
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="3_d1r8k"]
 [ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="4_wkiiu"]
 [ext_resource type="Texture2D" uid="uid://cqk20arl22bsn" path="res://icon.png" id="5_qxh2t"]
 
-[node name="MarginContainer" type="MarginContainer"]
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" parent="." instance=ExtResource("1_p0tgr")]
+layout_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,10 +33,10 @@ theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 80
 script = ExtResource("1_esf64")
 
-[node name="ExitControl" type="Control" parent="."]
+[node name="ExitControl" type="Control" parent="MarginContainer"]
 layout_mode = 2
 
-[node name="BackButton" type="Button" parent="ExitControl"]
+[node name="BackButton" type="Button" parent="MarginContainer/ExitControl"]
 top_level = true
 layout_mode = 0
 offset_left = 120.0
@@ -33,107 +46,107 @@ offset_bottom = 150.0
 theme = ExtResource("2_p0tgr")
 text = "Volver"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 50
 alignment = 1
 
-[node name="Header" type="VBoxContainer" parent="VBoxContainer"]
+[node name="Header" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Title" type="Label" parent="VBoxContainer/Header"]
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
 text = "Ambigame"
 label_settings = ExtResource("3_d1r8k")
 horizontal_alignment = 1
 
-[node name="SubTitle" type="Label" parent="VBoxContainer/Header"]
+[node name="SubTitle" type="Label" parent="MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
 text = "!Salva el planeta, gana puntos!"
 label_settings = ExtResource("4_wkiiu")
 horizontal_alignment = 1
 
-[node name="MainButtons" type="HBoxContainer" parent="VBoxContainer"]
+[node name="MainButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/separation = 100
 alignment = 1
 
-[node name="ForestBackgroundContainer" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+[node name="ForestBackgroundContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 25
 
-[node name="TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/ForestBackgroundContainer"]
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/ForestBackgroundContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 texture_normal = ExtResource("5_qxh2t")
 stretch_mode = 5
 
-[node name="ForestLevelButton" type="Button" parent="VBoxContainer/MainButtons/ForestBackgroundContainer"]
+[node name="ForestLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/ForestBackgroundContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_p0tgr")
 text = "Bosque"
 
-[node name="BeachBackgroundContainer" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+[node name="BeachBackgroundContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 25
 
-[node name="TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/BeachBackgroundContainer"]
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/BeachBackgroundContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 texture_normal = ExtResource("5_qxh2t")
 stretch_mode = 5
 
-[node name="BeachLevelButton" type="Button" parent="VBoxContainer/MainButtons/BeachBackgroundContainer"]
+[node name="BeachLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/BeachBackgroundContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_p0tgr")
 text = "Playa"
 
-[node name="SchoolBackgroundContainer2" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+[node name="SchoolBackgroundContainer2" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 25
 
-[node name="TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/SchoolBackgroundContainer2"]
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/SchoolBackgroundContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
 texture_normal = ExtResource("5_qxh2t")
 stretch_mode = 5
 
-[node name="SchoolLevelButton" type="Button" parent="VBoxContainer/MainButtons/SchoolBackgroundContainer2"]
+[node name="SchoolLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/SchoolBackgroundContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_p0tgr")
 text = "Río
 "
 
-[node name="RandomBackgroundContainer3" type="VBoxContainer" parent="VBoxContainer/MainButtons"]
+[node name="RandomBackgroundContainer3" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 25
 
-[node name="TextureButton" type="TextureButton" parent="VBoxContainer/MainButtons/RandomBackgroundContainer3"]
+[node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/RandomBackgroundContainer3"]
 layout_mode = 2
 size_flags_vertical = 3
 texture_normal = ExtResource("5_qxh2t")
 stretch_mode = 5
 
-[node name="RandomLevelButton" type="Button" parent="VBoxContainer/MainButtons/RandomBackgroundContainer3"]
+[node name="RandomLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/RandomBackgroundContainer3"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("2_p0tgr")
 text = "Aleatorio
 "
 
-[node name="UserData" type="Label" parent="VBoxContainer"]
+[node name="UserData" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "User: <Placeholder>"
 label_settings = ExtResource("4_wkiiu")
 
-[connection signal="pressed" from="ExitControl/BackButton" to="." method="_on_back_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/MainButtons/ForestBackgroundContainer/TextureButton" to="." method="Forest_level_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/MainButtons/ForestBackgroundContainer/ForestLevelButton" to="." method="Forest_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/ExitControl/BackButton" to="MarginContainer" method="_on_back_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/ForestBackgroundContainer/TextureButton" to="MarginContainer" method="Forest_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/ForestBackgroundContainer/ForestLevelButton" to="MarginContainer" method="Forest_level_button_pressed"]
