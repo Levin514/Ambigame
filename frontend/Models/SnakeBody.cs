@@ -12,6 +12,7 @@ namespace Snake;
 public partial class SnakeBody : Sprite2D
 {
 	[Signal] public delegate void GameOverEventHandler();
+	[Signal] public delegate void UpdateHealthEventHandler();
 	[Export] DualGridTilemap DualGrid;
 	[Export] Label puntiacionLabel;
 	[Export] Label recicladosLabel;
@@ -202,6 +203,12 @@ public partial class SnakeBody : Sprite2D
 
 		if (@event.IsAction("ui_down") && _direction != Direction.UP)
 			_direction = Direction.DOWN;
+
+        if (@event.IsActionPressed("ui_accept"))
+		{
+            EmitSignal(SignalName.UpdateHealth);
+			GD.Print("SPACE");
+        }
 	}
 
 	private enum Direction

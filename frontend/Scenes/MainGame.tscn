@@ -1,4 +1,4 @@
-[gd_scene load_steps=36 format=4 uid="uid://df17scc5wxpal"]
+[gd_scene load_steps=37 format=4 uid="uid://df17scc5wxpal"]
 
 [ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_0ynk6"]
 [ext_resource type="Script" uid="uid://bcb66jlp1gqdj" path="res://Models/Snake.cs" id="1_ylpyt"]
@@ -14,6 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="12_yr2pg"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="13_wyocf"]
 [ext_resource type="PackedScene" uid="uid://b03cybjuholn8" path="res://Scenes/PauseMenu.tscn" id="14_ylpyt"]
+[ext_resource type="PackedScene" uid="uid://v5r2pt4klutk" path="res://Scenes/LifeSystem.tscn" id="15_wyocf"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3bmkb"]
 texture = ExtResource("4_kvfik")
@@ -304,6 +305,13 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+
+[node name="LifeSystem" parent="." node_paths=PackedStringArray("_snakeBody") instance=ExtResource("15_wyocf")]
+offset_left = 1.0
+offset_top = 2.0
+offset_right = 1.0
+offset_bottom = 2.0
+_snakeBody = NodePath("../Snake/SnakeBody")
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]

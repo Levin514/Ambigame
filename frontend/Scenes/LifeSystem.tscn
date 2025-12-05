@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://by4yjea73um5h" path="res://LifeSystem.cs" id="1_a1dbf"]
 
-[node name="Control" type="Control"]
+[node name="LifeSystem" type="Control" node_paths=PackedStringArray("healthLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,13 +10,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_a1dbf")
+healthLabel = NodePath("HealthContainer/HealthLabel")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="HealthContainer" type="PanelContainer" parent="."]
 layout_mode = 0
 offset_right = 150.0
 offset_bottom = 45.0
 
-[node name="Label" type="Label" parent="PanelContainer"]
+[node name="HealthLabel" type="Label" parent="HealthContainer"]
 layout_mode = 2
 text = "%/%"
 horizontal_alignment = 1
