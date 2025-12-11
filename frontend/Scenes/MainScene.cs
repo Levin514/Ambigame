@@ -12,24 +12,9 @@ public partial class MainScene : MarginContainer
 		else
 			_userDataLabel.Text = Player.GetInstance().ToString();
 	}
-	public void Play()
+	public void Level_1_button_pressed()
 	{
-		GetTree().ChangeSceneToFile("res://Scenes/GameModeSelectionScene.tscn");
-	}
-
-	public void GoToCustomization()
-	{
-		GetTree().ChangeSceneToFile("res://Scenes/CustomizationScene.tscn");
-	}
-
-	public void GoToRanking()
-	{
-		GetTree().ChangeSceneToFile("res://Scenes/RankingScene.tscn");
-	}
-	
-	public void GoToHistorial()
-	{
-		GetTree().ChangeSceneToFile("res://Scenes/HistorialScene.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/BackgroundSelector.tscn");
 	}
 
 	public void GoToTutorial()
@@ -40,6 +25,6 @@ public partial class MainScene : MarginContainer
 	public void LogOut()
 	{
 		Player.SetInstance(null);
-		GetTree().ChangeSceneToFile("res://Scenes/LoginScene.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/GameMode.tscn");
 	}
 }

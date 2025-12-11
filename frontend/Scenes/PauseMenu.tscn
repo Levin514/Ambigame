@@ -1,0 +1,55 @@
+[gd_scene load_steps=4 format=3 uid="uid://b03cybjuholn8"]
+
+[ext_resource type="Script" uid="uid://bkc80k3p02oi8" path="res://Scenes/PauseMenu.cs" id="1_lj4oq"]
+[ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="2_qwhev"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_5w4ur"]
+
+[node name="MarginContainer" type="MarginContainer"]
+process_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 80
+script = ExtResource("1_lj4oq")
+
+[node name="PauseMenu" type="Control" parent="."]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PauseMenu"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -160.0
+offset_top = -100.0
+offset_right = 160.0
+offset_bottom = 100.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_5w4ur")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PauseMenu/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="PauseMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_qwhev")
+text = "Continuar"
+
+[node name="MainMenuButton" type="Button" parent="PauseMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_qwhev")
+text = "Menú principal"
+
+[connection signal="pressed" from="PauseMenu/PanelContainer/VBoxContainer/ContinueButton" to="." method="Continue_button_pressed"]
+[connection signal="pressed" from="PauseMenu/PanelContainer/VBoxContainer/MainMenuButton" to="." method="Main_menu_button_pressed"]
