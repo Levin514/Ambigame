@@ -21,7 +21,7 @@ script = ExtResource("1_a1dbf")
 healthLabel = NodePath("HealthContainer/HealthLabel")
 
 [node name="HealthContainer" type="PanelContainer" parent="."]
-layout_mode = 0
+layout_mode = 1
 offset_right = 150.0
 offset_bottom = 45.0
 theme_override_styles/panel = SubResource("StyleBoxEmpty_7r0ph")

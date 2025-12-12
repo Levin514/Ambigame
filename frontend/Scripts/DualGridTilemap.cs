@@ -34,11 +34,14 @@ public partial class DualGridTilemap : Node2D {
 		{new (Dirt, Dirt, Dirt, Dirt), new Vector2I(0, 3)}, // No corners
 	};
 
+	Random rnd = new();
+
 	public override void _Ready() {
 		// Refresh all display tiles
 		foreach (Vector2I coord in worldMapLayer.GetUsedCells()) {
 			SetDisplayTile(coord);
 		}
+		GenerateObstacles(rnd.Next(0,10000), scale: 0.12f, threshold: 0.2f, octaves: 4, clearExisting: true);
 	}
 
 	/// <summary>
@@ -108,6 +111,50 @@ public partial class DualGridTilemap : Node2D {
 			sprite.QueueFree(); // elimina el nodo de la escena
 			trashes.Remove(coords); // elimina la referencia del diccionario
 		}
+	}
+
+	public int GenerateObstacles(int seed = 0, float scale = 0.1f, float threshold = 0.6f, int octaves = 4, bool clearExisting = true)
+	{
+		GD.Print("Generating obstacles...");
+		// Limpiar obstáculos actuales si se solicita
+		if (clearExisting)
+		{
+			var keys = new List<Vector2I>(trashes.Keys);
+			foreach (var k in keys)
+				RemoveTrashAt(k);
+		}
+	
+		// Configurar FastNoiseLite
+		var noise = new FastNoiseLite();
+		noise.Seed = seed;
+		noise.Frequency = scale; // escala de muestreo (input * Frequency)
+		noise.FractalOctaves = Math.Max(1, octaves);
+		noise.FractalGain = 0.5f;
+		noise.FractalLacunarity = 2f;
+		noise.NoiseType = FastNoiseLite.NoiseTypeEnum.Perlin; // opcional: tipo de ruido
+	
+		int added = 0;
+	
+		// Iterar por las celdas usadas del mapa mundial
+		foreach (Vector2I coord in worldMapLayer.GetUsedCells())
+		{
+			// Muestreo del ruido: FastNoiseLite devuelve en [-1, 1]
+			float raw = noise.GetNoise2D(coord.X, coord.Y);
+			float t = (raw + 1f) * 0.5f; // normalizar a [0,1]
+			float biased = Mathf.Pow(t, 4); // elevar a la 4ª potencia
+			GD.Print(biased);
+			if (biased > threshold)
+			{
+				if (!HasTrashAt(coord))
+				{
+					AddTrash(coord);
+					added++;
+				}
+			}
+		}
+	
+		GD.Print($"GenerateObstacles: added {added} obstacles (seed={seed}, scale={scale}, threshold={threshold}, octaves={octaves})");
+		return added;
 	}
 }
 
