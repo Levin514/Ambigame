@@ -1,0 +1,40 @@
+[gd_scene load_steps=4 format=3 uid="uid://daoltbuu4b7ke"]
+
+[ext_resource type="Script" path="res://WaterSystem.cs" id="1_watersys"]
+[ext_resource type="Texture2D" uid="uid://jcl2igldmk5p" path="res://Assets/Boton 2.1.png" id="2_bg"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_water"]
+
+[node name="WaterSystem" type="Control" node_paths=PackedStringArray("waterBar", "waterLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_watersys")
+waterBar = NodePath("WaterContainer/WaterProgressBar")
+waterLabel = NodePath("WaterContainer/WaterLabel")
+
+[node name="WaterContainer" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 50.0
+theme_override_styles/panel = SubResource("StyleBoxEmpty_water")
+
+[node name="BgSprite" type="Sprite2D" parent="WaterContainer"]
+position = Vector2(100, 25)
+scale = Vector2(0.35, 0.3)
+texture = ExtResource("2_bg")
+
+[node name="WaterProgressBar" type="ProgressBar" parent="WaterContainer"]
+layout_mode = 2
+max_value = 100.0
+value = 50.0
+show_percentage = false
+
+[node name="WaterLabel" type="Label" parent="WaterContainer"]
+layout_mode = 2
+text = "Agua: 50%"
+horizontal_alignment = 1
+vertical_alignment = 1

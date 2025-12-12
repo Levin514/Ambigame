@@ -1,0 +1,156 @@
+[gd_scene load_steps=7 format=3 uid="uid://c5vn8w7yapqrs"]
+
+[ext_resource type="Script" path="res://Scenes/WaterSavingMapSelector.cs" id="1_water_selector"]
+[ext_resource type="PackedScene" uid="uid://c11lqpfr40b2x" path="res://Scenes/Background.tscn" id="2_background"]
+[ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="3_theme"]
+[ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="4_titles"]
+[ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="5_text"]
+[ext_resource type="Texture2D" uid="uid://cqk20arl22bsn" path="res://icon.png" id="6_icon"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Background" parent="." instance=ExtResource("2_background")]
+layout_mode = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_left = 120
+theme_override_constants/margin_top = 80
+theme_override_constants/margin_right = 120
+theme_override_constants/margin_bottom = 80
+script = ExtResource("1_water_selector")
+
+[node name="ExitControl" type="Control" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="BackButton" type="Button" parent="MarginContainer/ExitControl"]
+top_level = true
+layout_mode = 0
+offset_left = 120.0
+offset_top = 100.0
+offset_right = 270.0
+offset_bottom = 150.0
+theme = ExtResource("3_theme")
+text = "Volver"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="Header" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+text = "Ahorrando Agua"
+label_settings = ExtResource("4_titles")
+horizontal_alignment = 1
+
+[node name="SubTitle" type="Label" parent="MarginContainer/VBoxContainer/Header"]
+layout_mode = 2
+text = "Repara las tuberías y salva el agua"
+label_settings = ExtResource("5_text")
+horizontal_alignment = 1
+
+[node name="MainButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="CasaMapContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="CasaTextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/CasaMapContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("6_icon")
+stretch_mode = 5
+
+[node name="CasaLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/CasaMapContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_theme")
+text = "Casa"
+
+[node name="EscuelaMapContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="EscuelaTextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/EscuelaMapContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("6_icon")
+stretch_mode = 5
+
+[node name="EscuelaLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/EscuelaMapContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_theme")
+text = "Escuela"
+
+[node name="ParqueMapContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="ParqueTextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/ParqueMapContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("6_icon")
+stretch_mode = 5
+
+[node name="ParqueLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/ParqueMapContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_theme")
+text = "Parque"
+
+[node name="RandomMapContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 25
+
+[node name="RandomTextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/RandomMapContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture_normal = ExtResource("6_icon")
+stretch_mode = 5
+
+[node name="RandomLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/RandomMapContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme = ExtResource("3_theme")
+text = "Aleatorio"
+
+[node name="UserData" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "User: <Placeholder>"
+label_settings = ExtResource("5_text")
+
+[connection signal="pressed" from="MarginContainer/ExitControl/BackButton" to="MarginContainer" method="_on_back_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/CasaMapContainer/CasaTextureButton" to="MarginContainer" method="Casa_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/CasaMapContainer/CasaLevelButton" to="MarginContainer" method="Casa_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/EscuelaMapContainer/EscuelaTextureButton" to="MarginContainer" method="Escuela_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/EscuelaMapContainer/EscuelaLevelButton" to="MarginContainer" method="Escuela_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/ParqueMapContainer/ParqueTextureButton" to="MarginContainer" method="Parque_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/ParqueMapContainer/ParqueLevelButton" to="MarginContainer" method="Parque_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/RandomMapContainer/RandomTextureButton" to="MarginContainer" method="Random_level_button_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/RandomMapContainer/RandomLevelButton" to="MarginContainer" method="Random_level_button_pressed"]

@@ -46,10 +46,16 @@ layout_mode = 2
 theme = ExtResource("2_qwhev")
 text = "Continuar"
 
+[node name="SoundCheckBox" type="CheckBox" parent="PauseMenu/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_qwhev")
+text = "Música"
+
 [node name="MainMenuButton" type="Button" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_qwhev")
 text = "Menú principal"
 
 [connection signal="pressed" from="PauseMenu/PanelContainer/VBoxContainer/ContinueButton" to="." method="Continue_button_pressed"]
+[connection signal="toggled" from="PauseMenu/PanelContainer/VBoxContainer/SoundCheckBox" to="." method="Sound_toggled"]
 [connection signal="pressed" from="PauseMenu/PanelContainer/VBoxContainer/MainMenuButton" to="." method="Main_menu_button_pressed"]

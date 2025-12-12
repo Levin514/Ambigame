@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0oc7tjfhc2p5"]
+
+[ext_resource type="AudioStream" uid="uid://c6hk2qgplrffp" path="res://Assets/Mushroom Theme.mp3" id="1_iysw5"]
+
+[node name="AutoLoad" type="Node"]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("1_iysw5")
+volume_db = -10.0
+autoplay = true
