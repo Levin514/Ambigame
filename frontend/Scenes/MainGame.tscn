@@ -1,9 +1,9 @@
-[gd_scene load_steps=37 format=4 uid="uid://df17scc5wxpal"]
+[gd_scene load_steps=35 format=4 uid="uid://df17scc5wxpal"]
 
 [ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_0ynk6"]
 [ext_resource type="Script" uid="uid://bcb66jlp1gqdj" path="res://Models/Snake.cs" id="1_ylpyt"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="2_13b5n"]
-[ext_resource type="Texture2D" uid="uid://83u81ntvymi0" path="res://Assets/Plant.png" id="4_kvfik"]
+[ext_resource type="TileSet" uid="uid://dv4vqecv3pkh8" path="res://Assets/RocksTileset1.tres" id="4_wyocf"]
 [ext_resource type="Shader" uid="uid://dmw8ht36lmm8h" path="res://Shaders/GridShader.tres" id="6_atlul"]
 [ext_resource type="Texture2D" uid="uid://d00ou7t5q3kk1" path="res://Assets/Blank.png" id="6_e78ew"]
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="8_48eim"]
@@ -15,13 +15,6 @@
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="13_wyocf"]
 [ext_resource type="PackedScene" uid="uid://b03cybjuholn8" path="res://Scenes/PauseMenu.tscn" id="14_ylpyt"]
 [ext_resource type="PackedScene" uid="uid://v5r2pt4klutk" path="res://Scenes/LifeSystem.tscn" id="15_wyocf"]
-
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3bmkb"]
-texture = ExtResource("4_kvfik")
-0:0/0 = 0
-
-[sub_resource type="TileSet" id="TileSet_iuea6"]
-sources/0 = SubResource("TileSetAtlasSource_3bmkb")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qlr4v"]
 shader = ExtResource("6_atlul")
@@ -191,7 +184,11 @@ tile_set = ExtResource("1_0ynk6")
 
 [node name="PlantLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true
-tile_set = SubResource("TileSet_iuea6")
+tile_set = ExtResource("4_wyocf")
+
+[node name="PlantLayer2" type="TileMapLayer" parent="TileMapLayers"]
+use_parent_material = true
+tile_set = ExtResource("4_wyocf")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
@@ -206,7 +203,7 @@ texture = ExtResource("6_e78ew")
 
 [node name="Snake" type="Node2D" parent="."]
 
-[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "puntiacionLabel", "recicladosLabel", "timerLabel", "statsLabel", "gameOverScreen", "player_ani")]
+[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "puntiacionLabel", "recicladosLabel", "timerLabel", "statsLabel", "gameOverScreen", "player_ani", "life_system")]
 position = Vector2(0, 2)
 script = ExtResource("13_wyocf")
 DualGrid = NodePath("../../TileMapLayers")
@@ -216,6 +213,7 @@ timerLabel = NodePath("../../CanvasLayer/VBoxContainer/Tiempo")
 statsLabel = NodePath("../../GameOverScreen/VBoxContainer/Stats")
 gameOverScreen = NodePath("../../GameOverScreen")
 player_ani = NodePath("../../PlayerAnimation")
+life_system = NodePath("../../LifeSystemScreen/LifeSystem")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 scale = Vector2(0.5, 0.5)

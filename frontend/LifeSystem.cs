@@ -33,9 +33,11 @@ public partial class LifeSystem : Control
             actualHealth -= 1;
 			SetHealth();
         }
-		else
+		
+		if(actualHealth == 0)
         {
-            EmitSignal(SignalName.GameOver); 
+            EmitSignal(SignalName.GameOver);
+			GD.Print("Sin vida");
         }
 		
     }

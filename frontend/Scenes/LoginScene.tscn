@@ -64,13 +64,11 @@ theme = ExtResource("4_7bcn3")
 text = "Jugar"
 
 [node name="ProgressButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
-visible = false
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
 text = "Progreso"
 
 [node name="ConfigButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
-visible = false
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
 text = "Ajustes"

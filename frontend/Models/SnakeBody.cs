@@ -23,6 +23,8 @@ public partial class SnakeBody : Sprite2D
 
 	[Export] PlayerAnimation player_ani;
 
+	[Export] LifeSystem life_system;
+
 
 
 	private LinkedList<Vector2I> _body;
@@ -79,6 +81,8 @@ public partial class SnakeBody : Sprite2D
 		_body = new([new(1, 0), new(0, 0)]);
 		ZIndex = 1;
 		gameOverScreen.Visible = false;
+		
+		life_system.GameOver += ShowGameOverScreen;
 	}
 
 	public override void _Draw()
@@ -102,6 +106,17 @@ public partial class SnakeBody : Sprite2D
 			return true;
 		}
 		return false;
+	}
+
+	public void TryObstacle()
+	{
+		Debug.Assert(_body != null, nameof(_body) + " != null");
+		var headPosition = _body.First.Value;
+		if (DualGrid.HasRockAt(headPosition))
+		{
+			EmitSignal(SignalName.UpdateHealth);
+			DualGrid.RemoveRockAt(headPosition);
+		}
 	}
 
 	public bool Crash()
@@ -165,12 +180,12 @@ public partial class SnakeBody : Sprite2D
 					DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
 				}
 
+				TryObstacle();
+
 				if (Crash())
 				{
-					_crash = true;
-					gameOverScreen.Visible = true;
-					statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
-					EmitSignal(SignalName.GameOver);
+					
+					ShowGameOverScreen();
 				}
 			}
 			if (!_crash)
@@ -179,7 +194,13 @@ public partial class SnakeBody : Sprite2D
 		}
 	}
 
-	
+	public void ShowGameOverScreen()
+	{
+		_crash = true;
+		gameOverScreen.Visible = true;
+		statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
+		EmitSignal(SignalName.GameOver);
+	}
 
 	public override void _Input(InputEvent @event)
 	{
