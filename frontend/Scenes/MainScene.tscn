@@ -49,6 +49,16 @@ offset_bottom = 150.0
 theme = ExtResource("4_qxria")
 text = "Volver"
 
+[node name="SoundButton" type="Button" parent="MarginContainer2/ExitControl"]
+top_level = true
+layout_mode = 0
+offset_left = 820.0
+offset_top = 100.0
+offset_right = 970.0
+offset_bottom = 150.0
+theme = ExtResource("4_qxria")
+text = "🔊 Sonido"
+
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
 layout_mode = 2
 theme_override_constants/separation = 50
@@ -142,6 +152,9 @@ text = "User: <Placeholder>"
 label_settings = ExtResource("3_7rqgy")
 
 [connection signal="pressed" from="MarginContainer2/ExitControl/LogOutButton" to="MarginContainer2" method="LogOut"]
+[connection signal="pressed" from="MarginContainer2/ExitControl/SoundButton" to="MarginContainer2" method="ToggleSound"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/TutorialButton" to="MarginContainer2" method="GoToTutorial"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level1Container/Level1TextureButton" to="MarginContainer2" method="Level_1_button_pressed"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level1Container/Level1Button" to="MarginContainer2" method="Level_1_button_pressed"]
+[connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level2Container/Level2TextureButton" to="MarginContainer2" method="Level_2_button_pressed"]
+[connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level2Container/Level2Button" to="MarginContainer2" method="Level_2_button_pressed"]

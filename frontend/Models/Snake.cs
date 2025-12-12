@@ -63,6 +63,8 @@ public partial class Snake : Node2D
 	public void NewApple(object src, ElapsedEventArgs e)
 	{
 		if (isGameOver) return;
+		// No generar basura si el juego está pausado
+		if (GetTree().Paused) return;
 		DualGrid.AddTrash(new Vector2I(rnd.Next(0, 32), rnd.Next(0, 21)));
 	}
 
@@ -73,6 +75,12 @@ public partial class Snake : Node2D
 
 	public void OnSalirPressed()
 	{
+		// Detener la música del juego
+		if (gameMusic != null && gameMusic.Playing)
+		{
+			gameMusic.Stop();
+		}
+		
 		// Al salir, reanudamos la música como que no ha pasado nada
 		var musicManager = GetNode<Node>("/root/MusicManager");
 		if (musicManager != null)

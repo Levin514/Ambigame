@@ -23,6 +23,9 @@ public partial class SnakeBody : Sprite2D
 
 	[Export] PlayerAnimation player_ani;
 
+	// Para detectar si estamos en modo agua
+	private WaterSystem _waterSystem;
+
 
 
 	private LinkedList<Vector2I> _body;
@@ -67,7 +70,7 @@ public partial class SnakeBody : Sprite2D
 	}
 
 	private double elapsedTime = 0;
-	private double juegoTime = 0;
+	public double juegoTime = 0;
 	private void UpdateTimerLabel()
 	{
 		if (timerLabel != null)
@@ -81,6 +84,25 @@ public partial class SnakeBody : Sprite2D
 		_body = new([new(1, 0), new(0, 0)]);
 		ZIndex = 1;
 		gameOverScreen.Visible = false;
+		
+		// Intentar obtener el WaterSystem si existe
+		_waterSystem = GetNodeOrNull<WaterSystem>("../../WaterSystemScreen/WaterSystem");
+		if (_waterSystem != null)
+		{
+			// Conectar al GameOver del WaterSystem para detener el movimiento
+			_waterSystem.GameOver += OnWaterSystemGameOver;
+			_waterSystem.Victory += OnWaterSystemVictory;
+		}
+	}
+	
+	private void OnWaterSystemGameOver()
+	{
+		_crash = true;
+	}
+	
+	private void OnWaterSystemVictory()
+	{
+		_crash = true;
 	}
 
 	public override void _Draw()
@@ -98,6 +120,13 @@ public partial class SnakeBody : Sprite2D
 		var headPosition = _body.First.Value;
 		if (DualGrid.HasTrashAt(headPosition))
 		{
+			
+			// Si estamos en modo agua, reparar tubería (aumentar barra de agua)
+			if (_waterSystem != null)
+			{
+				_waterSystem.OnPipeRepaired();
+			}
+			
 			Reciclados++;
 			Puntuacion += (int)(puntuacionBase * (_body.Count / 10.0));
 			DualGrid.RemoveTrashAt(headPosition);
@@ -176,7 +205,6 @@ public partial class SnakeBody : Sprite2D
 					gameOverScreen.Visible = true;
 					statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
 					EmitSignal(SignalName.GameOver);
-					SendMatchToBackend();
 				}
 			}
 			if (!_crash)
@@ -209,13 +237,16 @@ public partial class SnakeBody : Sprite2D
 		}
 
 		if (@event.IsAction("ui_down") && _direction != Direction.UP)
-			_direction = Direction.DOWN;
-
-        if (@event.IsActionPressed("ui_accept"))
 		{
-            EmitSignal(SignalName.UpdateHealth);
+			_nextDirection = Direction.DOWN;
+			return;
+		}
+
+		if (@event.IsActionPressed("ui_accept"))
+		{
+			EmitSignal(SignalName.UpdateHealth);
 			GD.Print("SPACE");
-        }
+		}
 	}
 
 	private enum Direction
