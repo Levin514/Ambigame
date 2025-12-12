@@ -23,6 +23,8 @@ public partial class SnakeBody : Sprite2D
 
 	[Export] PlayerAnimation player_ani;
 
+	[Export] LifeSystem life_system;
+
 	// Para detectar si estamos en modo agua
 	private WaterSystem _waterSystem;
 
@@ -85,10 +87,17 @@ public partial class SnakeBody : Sprite2D
 		ZIndex = 1;
 		gameOverScreen.Visible = false;
 		
-		// Intentar obtener el WaterSystem si existe
+		// Conectar al LifeSystem solo si existe (nivel de limpieza)
+		if (life_system != null)
+		{
+			life_system.GameOver += ShowGameOverScreen;
+		}
+		
+		// Intentar obtener el WaterSystem si existe (nivel de agua)
 		_waterSystem = GetNodeOrNull<WaterSystem>("../../WaterSystemScreen/WaterSystem");
 		if (_waterSystem != null)
 		{
+			GD.Print("SnakeBody: WaterSystem encontrado, conectando señales");
 			// Conectar al GameOver del WaterSystem para detener el movimiento
 			_waterSystem.GameOver += OnWaterSystemGameOver;
 			_waterSystem.Victory += OnWaterSystemVictory;
@@ -97,11 +106,13 @@ public partial class SnakeBody : Sprite2D
 	
 	private void OnWaterSystemGameOver()
 	{
+		GD.Print("SnakeBody: OnWaterSystemGameOver - deteniendo movimiento");
 		_crash = true;
 	}
 	
 	private void OnWaterSystemVictory()
 	{
+		GD.Print("SnakeBody: OnWaterSystemVictory - deteniendo movimiento");
 		_crash = true;
 	}
 
@@ -133,6 +144,17 @@ public partial class SnakeBody : Sprite2D
 			return true;
 		}
 		return false;
+	}
+
+	public void TryObstacle()
+	{
+		Debug.Assert(_body != null, nameof(_body) + " != null");
+		var headPosition = _body.First.Value;
+		if (DualGrid.HasRockAt(headPosition))
+		{
+			EmitSignal(SignalName.UpdateHealth);
+			DualGrid.RemoveRockAt(headPosition);
+		}
 	}
 
 	public bool Crash()
@@ -199,12 +221,12 @@ public partial class SnakeBody : Sprite2D
 					DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
 				}
 
+				TryObstacle();
+
 				if (Crash())
 				{
-					_crash = true;
-					gameOverScreen.Visible = true;
-					statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
-					EmitSignal(SignalName.GameOver);
+					
+					ShowGameOverScreen();
 				}
 			}
 			if (!_crash)
@@ -213,7 +235,13 @@ public partial class SnakeBody : Sprite2D
 		}
 	}
 
-	
+	public void ShowGameOverScreen()
+	{
+		_crash = true;
+		gameOverScreen.Visible = true;
+		statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
+		EmitSignal(SignalName.GameOver);
+	}
 
 	public override void _Input(InputEvent @event)
 	{
