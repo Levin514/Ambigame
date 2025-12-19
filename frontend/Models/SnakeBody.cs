@@ -28,6 +28,7 @@ public partial class SnakeBody : Sprite2D
 
 
 	private LinkedList<Vector2I> _body;
+	private LinkedList<Trash> trashList;
 	private bool _crash;
 	private Direction _direction;
 	private double _time;
@@ -77,6 +78,8 @@ public partial class SnakeBody : Sprite2D
 
 	public override void _Ready()
 	{
+		trashList = new();
+		DualGrid.TrashCollector += AddToTrashList;
 		_direction = Direction.RIGHT;
 		_body = new([new(1, 0), new(0, 0)]);
 		ZIndex = 1;
@@ -127,6 +130,12 @@ public partial class SnakeBody : Sprite2D
 			{
 				return t.X == _body.First.Value.X && t.Y == _body.First.Value.Y;
 			});
+	}
+
+	public void AddToTrashList(Trash trash)
+	{
+		trashList.AddLast(trash);
+		GD.Print(trashList.Count);
 	}
 
 	public override void _Process(double delta)
