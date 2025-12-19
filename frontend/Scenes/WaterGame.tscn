@@ -1,10 +1,10 @@
-[gd_scene load_steps=38 format=4 uid="uid://df17scc5wxpal"]
+[gd_scene load_steps=38 format=4 uid="uid://rfkswm82jhhr"]
 
 [ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_0ynk6"]
-[ext_resource type="Script" uid="uid://bcb66jlp1gqdj" path="res://Models/Snake.cs" id="1_ylpyt"]
+[ext_resource type="Script" path="res://Models/WaterSnake.cs" id="1_ylpyt"]
 [ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="1_music"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="2_13b5n"]
-[ext_resource type="TileSet" uid="uid://dv4vqecv3pkh8" path="res://Assets/RocksTileset1.tres" id="4_wyocf"]
+[ext_resource type="Texture2D" uid="uid://83u81ntvymi0" path="res://Assets/Plant.png" id="4_kvfik"]
 [ext_resource type="Shader" uid="uid://dmw8ht36lmm8h" path="res://Shaders/GridShader.tres" id="6_atlul"]
 [ext_resource type="Texture2D" uid="uid://d00ou7t5q3kk1" path="res://Assets/Blank.png" id="6_e78ew"]
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="8_48eim"]
@@ -15,7 +15,14 @@
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="12_yr2pg"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="13_wyocf"]
 [ext_resource type="PackedScene" uid="uid://b03cybjuholn8" path="res://Scenes/PauseMenu.tscn" id="14_ylpyt"]
-[ext_resource type="PackedScene" uid="uid://v5r2pt4klutk" path="res://Scenes/LifeSystem.tscn" id="15_wyocf"]
+[ext_resource type="PackedScene" uid="uid://bwater123system" path="res://Scenes/WaterSystem.tscn" id="15_water"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3bmkb"]
+texture = ExtResource("4_kvfik")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_iuea6"]
+sources/0 = SubResource("TileSetAtlasSource_3bmkb")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_qlr4v"]
 shader = ExtResource("6_atlul")
@@ -160,11 +167,15 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("DualGrid", "_snakeBody", "gameMusic")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("DualGrid", "_snakeBody", "gameMusic", "gameOverScreen", "victoryScreen", "gameOverStatsLabel", "victoryStatsLabel")]
 script = ExtResource("1_ylpyt")
 DualGrid = NodePath("TileMapLayers")
 _snakeBody = NodePath("Snake/SnakeBody")
 gameMusic = NodePath("AudioStreamPlayer")
+gameOverScreen = NodePath("GameOverScreen")
+victoryScreen = NodePath("VictoryScreen")
+gameOverStatsLabel = NodePath("GameOverScreen/VBoxContainer/Stats")
+victoryStatsLabel = NodePath("VictoryScreen/VBoxContainer/Stats")
 
 [node name="TileMapLayers" type="Node2D" parent="." node_paths=PackedStringArray("worldMapLayer", "displayMapLayer", "plantMapLayer")]
 script = ExtResource("2_13b5n")
@@ -186,11 +197,7 @@ tile_set = ExtResource("1_0ynk6")
 
 [node name="PlantLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true
-tile_set = ExtResource("4_wyocf")
-
-[node name="PlantLayer2" type="TileMapLayer" parent="TileMapLayers"]
-use_parent_material = true
-tile_set = ExtResource("4_wyocf")
+tile_set = SubResource("TileSet_iuea6")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 anchor_mode = 0
@@ -205,7 +212,7 @@ texture = ExtResource("6_e78ew")
 
 [node name="Snake" type="Node2D" parent="."]
 
-[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "puntiacionLabel", "recicladosLabel", "timerLabel", "statsLabel", "gameOverScreen", "player_ani", "life_system")]
+[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "puntiacionLabel", "recicladosLabel", "timerLabel", "statsLabel", "gameOverScreen", "player_ani")]
 position = Vector2(0, 2)
 script = ExtResource("13_wyocf")
 DualGrid = NodePath("../../TileMapLayers")
@@ -215,7 +222,6 @@ timerLabel = NodePath("../../CanvasLayer/VBoxContainer/Tiempo")
 statsLabel = NodePath("../../GameOverScreen/VBoxContainer/Stats")
 gameOverScreen = NodePath("../../GameOverScreen")
 player_ani = NodePath("../../PlayerAnimation")
-life_system = NodePath("../../LifeSystemScreen/LifeSystem")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 scale = Vector2(0.5, 0.5)
@@ -234,6 +240,7 @@ text = "Puntos: 0"
 label_settings = SubResource("LabelSettings_kvfik")
 
 [node name="Reciclados" type="Label" parent="CanvasLayer/VBoxContainer"]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 6
 text = "Reciclados: 0"
@@ -251,9 +258,9 @@ script = ExtResource("11_yr2pg")
 sprite_frames = SubResource("SpriteFrames_0wdc3")
 animation = &"walk_right"
 
-[node name="LifeSystemScreen" type="CanvasLayer" parent="."]
+[node name="WaterSystemScreen" type="CanvasLayer" parent="."]
 
-[node name="LifeSystem" parent="LifeSystemScreen" node_paths=PackedStringArray("_snakeBody") instance=ExtResource("15_wyocf")]
+[node name="WaterSystem" parent="WaterSystemScreen" instance=ExtResource("15_water")]
 anchors_preset = -1
 offset_left = 940.0
 offset_top = 659.0
@@ -261,7 +268,6 @@ offset_right = -140.0
 offset_bottom = -61.0
 grow_horizontal = 1
 grow_vertical = 1
-_snakeBody = NodePath("../../Snake/SnakeBody")
 
 [node name="PauseMenuScreen" type="CanvasLayer" parent="."]
 
@@ -306,6 +312,44 @@ layout_mode = 2
 theme = ExtResource("8_48eim")
 text = "Salir"
 
+[node name="VictoryScreen" type="CanvasLayer" parent="."]
+visible = false
+scale = Vector2(0.5, 0.5)
+transform = Transform2D(0.5, 0, 0, 0.5, 0, 0)
+follow_viewport_enabled = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VictoryScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_48eim")
+alignment = 1
+
+[node name="VictoryLabel" type="Label" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+text = "¡Victoria!"
+label_settings = ExtResource("9_73a8k")
+
+[node name="Stats" type="Label" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Placeholder for stats"
+label_settings = ExtResource("10_q8sds")
+
+[node name="Continuar" type="Button" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_48eim")
+text = "Continuar"
+
+[node name="Salir" type="Button" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_48eim")
+text = "Salir"
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_music")
 volume_db = -10.0
@@ -313,3 +357,5 @@ autoplay = true
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]
+[connection signal="pressed" from="VictoryScreen/VBoxContainer/Continuar" to="." method="OnContinuarPressed"]
+[connection signal="pressed" from="VictoryScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]
