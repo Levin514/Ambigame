@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public partial class WaterCatchLevel : Node2D
 {
+	[Signal] public delegate void GameOverEventHandler(int score, int recycled, int time);
+	[Signal] public delegate void VictoryEventHandler(int score, int recycled, int time);
+	
 	// Configuración de pantalla
 	[Export] public float ScreenWidth = 800f;
 	[Export] public float ScreenHeight = 600f;
@@ -31,6 +34,8 @@ public partial class WaterCatchLevel : Node2D
 	private float spawnTimer = 0f;
 	private int score = 0;
 	private int lives = 3;
+	private int elapsedTime = 0;
+	private float timeAccumulator = 0f;
 	private List<Node2D> fallingObjects = new List<Node2D>();
 	private Vector2 basketPosition;
 	
@@ -64,6 +69,14 @@ public partial class WaterCatchLevel : Node2D
 
 	public override void _Process(double delta)
 	{
+		// Actualizar tiempo
+		timeAccumulator += (float)delta;
+		if (timeAccumulator >= 1f)
+		{
+			elapsedTime++;
+			timeAccumulator = 0f;
+		}
+		
 		float deltaF = (float)delta;
 		
 		// Lógica de spawn
@@ -190,7 +203,7 @@ public partial class WaterCatchLevel : Node2D
 		// Verificar Game Over
 		if (lives <= 0)
 		{
-			GameOver();
+			TriggerGameOver();
 		}
 	}
 
@@ -216,9 +229,9 @@ public partial class WaterCatchLevel : Node2D
 		GD.Print($"Puntuación: {score} | Vidas: {lives}");
 	}
 
-	private void GameOver()
+	private void TriggerGameOver()
 	{
 		GD.Print($"¡JUEGO TERMINADO! Puntuación final: {score}");
-		GetTree().Paused = true;
+		EmitSignal(SignalName.GameOver, score, 0, elapsedTime);
 	}
 }

@@ -158,3 +158,5 @@ label_settings = ExtResource("3_7rqgy")
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level1Container/Level1Button" to="MarginContainer2" method="Level_1_button_pressed"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level2Container/Level2TextureButton" to="MarginContainer2" method="Level_2_button_pressed"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level2Container/Level2Button" to="MarginContainer2" method="Level_2_button_pressed"]
+[connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level3Container/Level3TextureButton" to="MarginContainer2" method="Level_3_button_pressed"]
+[connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level3Container/Level3Button" to="MarginContainer2" method="Level_3_button_pressed"]

@@ -57,7 +57,7 @@ public partial class WaterSystem : Control
 		
 		if (waterLabel != null)
 		{
-			waterLabel.Text = $"Agua: {Mathf.RoundToInt(currentWater)}%";
+			waterLabel.Text = $"{Mathf.RoundToInt(currentWater)}%";
 		}
 	}
 

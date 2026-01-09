@@ -8,7 +8,6 @@ public partial class LifeSystem : Control
 {
 	[Export] private Label healthLabel;
 	[Signal] public delegate void GameOverEventHandler();
-	[Export] private SnakeBody _snakeBody;
 	private int actualHealth;
 	private int maxHealth;
 
@@ -18,7 +17,7 @@ public partial class LifeSystem : Control
         actualHealth = 5;
 		maxHealth = 5;
 		SetHealth();
-		_snakeBody.UpdateHealth += OnUpdateHealth;
+		// La conexión a UpdateHealth se hace desde GameLayoutManager
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.

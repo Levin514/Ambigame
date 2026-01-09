@@ -20,25 +20,29 @@ public partial class WaterSavingMapSelector : MarginContainer
 
 	public void Casa_level_button_pressed()
 	{
-		// Aquí se cargará el nivel de Casa
-		GetTree().ChangeSceneToFile("res://Scenes/WaterGame.tscn");
+		// Cargar nivel de Casa (Map1)
+		var levelManager = GetNode<LevelManager>("/root/LevelManager");
+		levelManager.LoadLevel("res://Scenes/Levels/Water/WaterLevel_Map1.tscn", "water", "Casa", 1);
 	}
 
 	public void Escuela_level_button_pressed()
 	{
-		// Aquí se cargará el nivel de Escuela
-		GetTree().ChangeSceneToFile("res://Scenes/WaterGame.tscn");
+		// Cargar nivel de Escuela (Map2)
+		var levelManager = GetNode<LevelManager>("/root/LevelManager");
+		levelManager.LoadLevel("res://Scenes/Levels/Water/WaterLevel_Map2.tscn", "water", "Escuela", 2);
 	}
 
 	public void Parque_level_button_pressed()
 	{
-		// Aquí se cargará el nivel de Parque
-		GetTree().ChangeSceneToFile("res://Scenes/WaterGame.tscn");
+		// Cargar nivel de Parque (Map3)
+		var levelManager = GetNode<LevelManager>("/root/LevelManager");
+		levelManager.LoadLevel("res://Scenes/Levels/Water/WaterLevel_Map3.tscn", "water", "Parque", 3);
 	}
 
 	public void Random_level_button_pressed()
 	{
-		// Aquí se cargará el nivel Aleatorio
-		GetTree().ChangeSceneToFile("res://Scenes/WaterGame.tscn");
+		// Cargar nivel Bonus/Aleatorio
+		var levelManager = GetNode<LevelManager>("/root/LevelManager");
+		levelManager.LoadLevel("res://Scenes/Levels/Water/WaterLevel_Bonus.tscn", "water", "Bonus", 4);
 	}
 }

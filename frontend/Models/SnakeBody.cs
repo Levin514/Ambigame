@@ -13,22 +13,18 @@ public partial class SnakeBody : Sprite2D
 {
 	[Signal] public delegate void GameOverEventHandler();
 	[Signal] public delegate void UpdateHealthEventHandler();
+	[Signal] public delegate void PipeRepairedEventHandler();
+	[Signal] public delegate void ScoreUpdatedEventHandler(int score);
+	[Signal] public delegate void RecycledUpdatedEventHandler(int recycled);
+	[Signal] public delegate void TimeUpdatedEventHandler(int time);
+	
 	[Export] DualGridTilemap DualGrid;
-	[Export] Label puntiacionLabel;
-	[Export] Label recicladosLabel;
-	[Export] Label timerLabel;
 
-	[Export] Label statsLabel;
-	[Export] CanvasLayer gameOverScreen;
-
+	//[Export] CanvasLayer gameOverScreen;
 	[Export] PlayerAnimation player_ani;
-
 	[Export] LifeSystem life_system;
-
-	// Para detectar si estamos en modo agua
-	private WaterSystem _waterSystem;
-
-
+	[Export] public bool HasWalls = false; // Si true, chocar con bordes causa Game Over
+	[Export] public bool HideBody = false; // Si true, no dibuja cuerpo ni crece (solo cabeza)
 
 	private LinkedList<Vector2I> _body;
 	private LinkedList<Trash> trashList;
@@ -44,14 +40,8 @@ public partial class SnakeBody : Sprite2D
 		set
 		{
 			reciclados = value;
-			UpdateRecicladosLabel();
+			EmitSignal(SignalName.RecycledUpdated, reciclados);
 		}
-	}
-
-	private void UpdateRecicladosLabel()
-	{
-		if (recicladosLabel != null)
-			recicladosLabel.Text = $"Reciclados: {Reciclados}";
 	}
 
 	private double puntuacionBase = 100.0;
@@ -62,22 +52,15 @@ public partial class SnakeBody : Sprite2D
 		set
 		{
 			puntuacion = value;
-			UpdatePuntuacionLabel();
+			EmitSignal(SignalName.ScoreUpdated, puntuacion);
 		}
-	}
-
-	private void UpdatePuntuacionLabel()
-	{
-		if (puntiacionLabel != null)
-			puntiacionLabel.Text = $"Puntos: {Puntuacion}";
 	}
 
 	private double elapsedTime = 0;
 	public double juegoTime = 0;
 	private void UpdateTimerLabel()
 	{
-		if (timerLabel != null)
-			timerLabel.Text = $"Tiempo: {juegoTime}";
+		EmitSignal(SignalName.TimeUpdated, (int)juegoTime);
 	}
 
 	public override void _Ready()
@@ -88,39 +71,25 @@ public partial class SnakeBody : Sprite2D
 		_nextDirection = Direction.RIGHT;  // Inicializar buffer
 		_body = new([new(1, 0), new(0, 0)]);
 		ZIndex = 1;
-		gameOverScreen.Visible = false;
 		
 		// Conectar al LifeSystem solo si existe (nivel de limpieza)
 		if (life_system != null)
 		{
-			life_system.GameOver += ShowGameOverScreen;
-		}
-		
-		// Intentar obtener el WaterSystem si existe (nivel de agua)
-		_waterSystem = GetNodeOrNull<WaterSystem>("../../WaterSystemScreen/WaterSystem");
-		if (_waterSystem != null)
-		{
-			GD.Print("SnakeBody: WaterSystem encontrado, conectando señales");
-			// Conectar al GameOver del WaterSystem para detener el movimiento
-			_waterSystem.GameOver += OnWaterSystemGameOver;
-			_waterSystem.Victory += OnWaterSystemVictory;
+			life_system.GameOver += OnLifeSystemGameOver;
 		}
 	}
 	
-	private void OnWaterSystemGameOver()
+	private void OnLifeSystemGameOver()
 	{
-		GD.Print("SnakeBody: OnWaterSystemGameOver - deteniendo movimiento");
+		GD.Print("SnakeBody: OnLifeSystemGameOver - deteniendo movimiento");
 		_crash = true;
-	}
-	
-	private void OnWaterSystemVictory()
-	{
-		GD.Print("SnakeBody: OnWaterSystemVictory - deteniendo movimiento");
-		_crash = true;
+		EmitSignal(SignalName.GameOver);
 	}
 
 	public override void _Draw()
 	{
+		if (HideBody) return; // No dibujar cuerpo si está oculto
+		
 		foreach (var pos in _body.Skip(1))
 		{
 			Vector2I coords = new() { X = pos.X, Y = pos.Y };
@@ -134,12 +103,8 @@ public partial class SnakeBody : Sprite2D
 		var headPosition = _body.First.Value;
 		if (DualGrid.HasTrashAt(headPosition))
 		{
-			
-			// Si estamos en modo agua, reparar tubería (aumentar barra de agua)
-			if (_waterSystem != null)
-			{
-				_waterSystem.OnPipeRepaired();
-			}
+			// Emitir señal de tubería reparada (el GameLayout/WaterSystem lo manejará)
+			EmitSignal(SignalName.PipeRepaired);
 			
 			Reciclados++;
 			Puntuacion += (int)(puntuacionBase * (_body.Count / 10.0));
@@ -201,56 +166,80 @@ public partial class SnakeBody : Sprite2D
 			};
 			if (_body.Count > 0)
 			{
+				var mapBounds = DualGrid.GetMapBounds();
 				var newVect = new Vector2I(_body.First.Value.X, _body.First.Value.Y);
 				newVect += translation;
-				if (newVect.X < 0)
-					newVect = new Vector2I(33, newVect.Y);
-				if (newVect.X > 33)
-					newVect = new Vector2I(0, newVect.Y);
-				if (newVect.Y < 0)
-					newVect = new Vector2I(newVect.X, 21);
-				if (newVect.Y > 21)
-					newVect = new Vector2I(newVect.X, 0);
-
-				if (_direction == Direction.RIGHT)
-					player_ani.ChangeAnimation("walk_right");
-				if (_direction == Direction.LEFT)
-					player_ani.ChangeAnimation("walk_left");
-				if (_direction == Direction.UP)
-					player_ani.ChangeAnimation("walk_up");
-				if (_direction == Direction.DOWN)
-					player_ani.ChangeAnimation("walk_down");
-
-				_body.AddFirst(newVect);
-				if (!TryEat())
+			
+			// Si tiene paredes, detectar colisión con bordes
+			if (HasWalls)
+			{
+				if (newVect.X < 0 || newVect.X > mapBounds.X || newVect.Y < 0 || newVect.Y > mapBounds.Y)
 				{
-					var last = _body.Last.Value;
-					_body.RemoveLast();
-					player_ani.MoveSprite(_body.First.Value, delta);
-					DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
-				}
-
-				TryObstacle();
-
-				if (Crash())
-				{
-					
 					ShowGameOverScreen();
+					return;
 				}
 			}
-			if (!_crash)
-				QueueRedraw();
-			_time = 0;
-		}
-	}
+			else // Teletransporte (comportamiento original)
+			{
+				if (newVect.X < 0)
+					newVect = new Vector2I(mapBounds.X, newVect.Y);
+				if (newVect.X > mapBounds.X)
+					newVect = new Vector2I(0, newVect.Y);
+				if (newVect.Y < 0)
+					newVect = new Vector2I(newVect.X, mapBounds.Y);
+				if (newVect.Y > mapBounds.Y)
+					newVect = new Vector2I(newVect.X, 0);
+			}
 
-	public void ShowGameOverScreen()
+			if (_direction == Direction.RIGHT)
+				player_ani.ChangeAnimation("walk_right");
+			if (_direction == Direction.LEFT)
+				player_ani.ChangeAnimation("walk_left");
+			if (_direction == Direction.UP)
+				player_ani.ChangeAnimation("walk_up");
+			if (_direction == Direction.DOWN)
+				player_ani.ChangeAnimation("walk_down");
+
+			_body.AddFirst(newVect);
+			
+			// Si HideBody está activo, siempre eliminar el último segmento (no crecer)
+			if (HideBody)
+			{
+				TryEat(); // Procesar colección pero sin crecer
+				var last = _body.Last.Value;
+				_body.RemoveLast();
+				player_ani.MoveSprite(_body.First.Value, delta);
+				DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
+			}
+			else if (!TryEat())
+			{
+				var last = _body.Last.Value;
+				_body.RemoveLast();
+				player_ani.MoveSprite(_body.First.Value, delta);
+				DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
+			}
+
+			TryObstacle();
+
+			if (Crash())
+			{
+				
+				ShowGameOverScreen();
+			}
+		}
+		if (!_crash)
+			QueueRedraw();
+		_time = 0;
+	}
+}
+
+public void ShowGameOverScreen()
 	{
 		_crash = true;
-		gameOverScreen.Visible = true;
-		statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
+		//gameOverScreen.Visible = true;
 		GameData.Instance.globalTrashList = trashList;
 		
+		EmitSignal(SignalName.GameOver);
 	}
 
 	public override void _Input(InputEvent @event)

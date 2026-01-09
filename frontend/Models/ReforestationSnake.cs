@@ -5,19 +5,17 @@ using Timer = System.Timers.Timer;
 
 namespace Snake;
 
-public partial class WaterSnake : Node2D
+public partial class ReforestationSnake : Node2D
 {
 	// Señales para comunicarse con el GameLayout
-	[Signal] public delegate void GameOverEventHandler(int score, int recycled, int time);
-	[Signal] public delegate void VictoryEventHandler(int score, int recycled, int time);
-	[Signal] public delegate void PipeRepairedEventHandler();
+	[Signal] public delegate void GameOverEventHandler(int score, int time);
+	[Signal] public delegate void VictoryEventHandler(int score, int time);
+	[Signal] public delegate void PlantAttemptEventHandler();
 	
 	// To generate random numbers.
 	private static readonly Random rnd = new();
 
 	[Export] DualGridTilemap DualGrid;
-	// Scenes
-	private Vector2I _gameSize;
 	[Export] private SnakeBody _snakeBody;
 	[Export] private AudioStreamPlayer gameMusic;
 
@@ -29,15 +27,15 @@ public partial class WaterSnake : Node2D
 	{
 		isGameOver = false;
 		timer = new Timer(4000);
-		timer.Elapsed += NewApple;
+		timer.Elapsed += NewHole;
 		timer.AutoReset = true;
 		timer.Start();
 
-		// Conectamos a las señales de GameOver del SnakeBody
+		// Conectamos a las señales del SnakeBody
 		_snakeBody.GameOver += OnGameOver;
-		_snakeBody.PipeRepaired += OnPipeRepaired;
+		_snakeBody.PipeRepaired += OnPlantAttempt; // Reutilizamos la señal para intentos de plantación
 		
-		// Detenemos la música sólo al momento de jugar
+		// Detenemos la música del menú
 		var musicManager = GetNode<Node>("/root/MusicManager");
 		if (musicManager != null)
 		{
@@ -55,8 +53,8 @@ public partial class WaterSnake : Node2D
 
 	public void OnGameOver()
 	{
-		GD.Print("WaterSnake: OnGameOver llamado");
-		if (isGameOver) return; // Evitar ejecutar múltiples veces
+		GD.Print("ReforestationSnake: OnGameOver llamado");
+		if (isGameOver) return;
 		
 		isGameOver = true;
 		timer.Stop();
@@ -68,14 +66,14 @@ public partial class WaterSnake : Node2D
 		// Emitir señal de Game Over con estadísticas
 		if (_snakeBody != null)
 		{
-			EmitSignal(SignalName.GameOver, _snakeBody.Puntuacion, _snakeBody.Reciclados, (int)_snakeBody.juegoTime);
+			EmitSignal(SignalName.GameOver, _snakeBody.Puntuacion, (int)_snakeBody.juegoTime);
 		}
 	}
 
 	public void OnVictory()
 	{
-		GD.Print("WaterSnake: OnVictory llamado");
-		if (isGameOver) return; // Evitar ejecutar múltiples veces
+		GD.Print("ReforestationSnake: OnVictory llamado");
+		if (isGameOver) return;
 		
 		isGameOver = true;
 		timer.Stop();
@@ -87,30 +85,31 @@ public partial class WaterSnake : Node2D
 		// Emitir señal de Victoria con estadísticas
 		if (_snakeBody != null)
 		{
-			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, _snakeBody.Reciclados, (int)_snakeBody.juegoTime);
+			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, (int)_snakeBody.juegoTime);
 		}
 	}
 
-	public void NewApple(object src, ElapsedEventArgs e)
+	public void NewHole(object src, ElapsedEventArgs e)
 	{
 		if (isGameOver) return;
-		// No generar basura si el juego está pausado
+		// No generar huecos si el juego está pausado
 		if (GetTree().Paused) return;
 		var bounds = DualGrid.GetMapBounds();
 		DualGrid.AddTrash(new Vector2I(rnd.Next(0, bounds.X + 1), rnd.Next(0, bounds.Y + 1)));
 	}
 	
-	private void OnPipeRepaired()
+	private void OnPlantAttempt()
 	{
-		GD.Print("WaterSnake: Tubería reparada, emitiendo señal");
-		EmitSignal(SignalName.PipeRepaired);
+		GD.Print("ReforestationSnake: Intento de plantar, emitiendo señal");
+		EmitSignal(SignalName.PlantAttempt);
 	}
 
 	public void OnContinuarPressed()
 	{
-		// Por ahora regresa al menú principal, después irá al minijuego
+		// Regresar al menú principal
 		GetTree().ChangeSceneToFile("res://Scenes/MainScene.tscn");
 	}
+	
 	public void OnAgainPressed()
 	{
 		GetTree().ReloadCurrentScene();
@@ -124,7 +123,7 @@ public partial class WaterSnake : Node2D
 			gameMusic.Stop();
 		}
 		
-		// Al salir, reanudamos la música como que no ha pasado nada
+		// Reanudar música del menú
 		var musicManager = GetNode<Node>("/root/MusicManager");
 		if (musicManager != null)
 		{
