@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GameData;
+namespace Snake;
+
 public partial class GameData : Node
 {
 	public readonly Dictionary<String, String> recycleObjects = new Dictionary<string, string>()
@@ -13,9 +14,9 @@ public partial class GameData : Node
 		{"glass", "glassJar"}
 	};
 
-	public static GameData Instance { get; private set; }
+	public LinkedList<Trash> globalTrashList;
 
-	public int Health { get; set; }
+	public static GameData Instance { get; private set; }
 
     public override void _Ready()
     {

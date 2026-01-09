@@ -29,12 +29,17 @@ position = Vector2(540, 180)
 scale = Vector2(0.2, 0.2)
 texture = ExtResource("3_o56kt")
 
-[node name="Node2D" type="Node2D" parent="." node_paths=PackedStringArray("puntuacionLabel", "recicladosLabel", "timerLabel", "recycleSprite")]
+[node name="Container4" type="Sprite2D" parent="."]
+position = Vector2(540, 360)
+scale = Vector2(0.2, 0.2)
+
+[node name="Node2D" type="Node2D" parent="." node_paths=PackedStringArray("puntuacionLabel", "recicladosLabel", "timerLabel", "recycleSprite", "sprite")]
 script = ExtResource("2_6jw16")
 puntuacionLabel = NodePath("../CanvasLayer/VBoxContainer/Puntuacion")
 recicladosLabel = NodePath("../CanvasLayer/VBoxContainer/Reciclados")
 timerLabel = NodePath("../CanvasLayer/VBoxContainer/Tiempo")
 recycleSprite = NodePath("Trash")
+sprite = NodePath("../Container4")
 
 [node name="Trash" type="Sprite2D" parent="Node2D"]
 position = Vector2(540, 540)

@@ -1,8 +1,8 @@
-[gd_scene load_steps=38 format=4 uid="uid://df17scc5wxpal"]
+[gd_scene load_steps=36 format=4 uid="uid://df17scc5wxpal"]
 
 [ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_0ynk6"]
-[ext_resource type="Script" uid="uid://bcb66jlp1gqdj" path="res://Models/Snake.cs" id="1_ylpyt"]
 [ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="1_music"]
+[ext_resource type="Script" uid="uid://bcb66jlp1gqdj" path="res://Models/Snake.cs" id="1_ylpyt"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="2_13b5n"]
 [ext_resource type="TileSet" uid="uid://dv4vqecv3pkh8" path="res://Assets/RocksTileset1.tres" id="4_wyocf"]
 [ext_resource type="Shader" uid="uid://dmw8ht36lmm8h" path="res://Shaders/GridShader.tres" id="6_atlul"]
@@ -306,6 +306,11 @@ layout_mode = 2
 theme = ExtResource("8_48eim")
 text = "Salir"
 
+[node name="Test" type="Button" parent="GameOverScreen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_48eim")
+text = "Minigame"
+
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_music")
 volume_db = -10.0
@@ -313,3 +318,4 @@ autoplay = true
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]
+[connection signal="pressed" from="GameOverScreen/VBoxContainer/Test" to="Snake/SnakeBody" method="on_test_pressed"]

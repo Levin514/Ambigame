@@ -249,7 +249,8 @@ public partial class SnakeBody : Sprite2D
 		_crash = true;
 		gameOverScreen.Visible = true;
 		statsLabel.Text = $"Puntuacion: {Puntuacion}\nReciclados: {Reciclados}\nTiempo: {juegoTime} segundos";
-		EmitSignal(SignalName.GameOver);
+		GameData.Instance.globalTrashList = trashList;
+		
 	}
 
 	public override void _Input(InputEvent @event)
@@ -284,6 +285,12 @@ public partial class SnakeBody : Sprite2D
 			EmitSignal(SignalName.UpdateHealth);
 			GD.Print("SPACE");
 		}
+	}
+
+	public void on_test_pressed()
+	{
+		GetTree().ChangeSceneToFile("res://Scenes/ClassifyLevel.tscn");
+		GD.Print(GameData.Instance.globalTrashList);
 	}
 
 	private enum Direction
