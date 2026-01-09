@@ -199,6 +199,7 @@ position = Vector2(0, 8)
 script = ExtResource("11_snakebody")
 DualGrid = NodePath("../../TileMapLayers")
 player_ani = NodePath("../../PlayerAnimation")
+HideBody = true
 
 [node name="PlayerAnimation" type="Node2D" parent="."]
 script = ExtResource("9_playeranimscript")

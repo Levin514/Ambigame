@@ -22,6 +22,7 @@ public partial class SnakeBody : Sprite2D
 	[Export] PlayerAnimation player_ani;
 	[Export] LifeSystem life_system;
 	[Export] public bool HasWalls = false; // Si true, chocar con bordes causa Game Over
+	[Export] public bool HideBody = false; // Si true, no dibuja cuerpo ni crece (solo cabeza)
 
 	private LinkedList<Vector2I> _body;
 	private LinkedList<Trash> trashList;
@@ -85,6 +86,8 @@ public partial class SnakeBody : Sprite2D
 
 	public override void _Draw()
 	{
+		if (HideBody) return; // No dibujar cuerpo si está oculto
+		
 		foreach (var pos in _body.Skip(1))
 		{
 			Vector2I coords = new() { X = pos.X, Y = pos.Y };
@@ -196,7 +199,17 @@ public partial class SnakeBody : Sprite2D
 				player_ani.ChangeAnimation("walk_down");
 
 			_body.AddFirst(newVect);
-			if (!TryEat())
+			
+			// Si HideBody está activo, siempre eliminar el último segmento (no crecer)
+			if (HideBody)
+			{
+				TryEat(); // Procesar colección pero sin crecer
+				var last = _body.Last.Value;
+				_body.RemoveLast();
+				player_ani.MoveSprite(_body.First.Value, delta);
+				DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
+			}
+			else if (!TryEat())
 			{
 				var last = _body.Last.Value;
 				_body.RemoveLast();
