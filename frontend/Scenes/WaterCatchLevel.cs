@@ -8,8 +8,8 @@ public partial class WaterCatchLevel : Node2D
 	[Signal] public delegate void VictoryEventHandler(int score, int recycled, int time);
 	
 	// Configuración de pantalla
-	[Export] public float ScreenWidth = 800f;
-	[Export] public float ScreenHeight = 600f;
+	private float ScreenWidth;
+	private float ScreenHeight;
 	
 	// Configuración de spawn de objetos
 	[Export] public float SpawnRate = 1.5f;
@@ -27,6 +27,7 @@ public partial class WaterCatchLevel : Node2D
 	// Nodos
 	private Node2D waterDropletContainer;
 	private Node2D basketNode;
+	private Node2D playerAnimationNode;
 	private Sprite2D basketSprite;
 	private CollisionShape2D basketCollision;
 	
@@ -38,12 +39,29 @@ public partial class WaterCatchLevel : Node2D
 	private float timeAccumulator = 0f;
 	private List<Node2D> fallingObjects = new List<Node2D>();
 	private Vector2 basketPosition;
+	private AnimatedSprite2D playerSprite;
+	private float lastBasketX = 0f;
+
+	private Camera2D _camera;
 	
 	public override void _Ready()
 	{
+		Vector2 screenSize = GetViewport().GetVisibleRect().Size;
+		ScreenHeight = screenSize.Y;
+		ScreenWidth = screenSize.X;
+
+		//Temporal solution
+		_camera = GetNode<Camera2D>("/root/GameLayout/VBoxContainer/GameContainer/SubViewportContainer/SubViewport/Camera2D");
+		_camera.Zoom = new Vector2I(1,1);
+		
+
 		// Obtener referencias a los contenedores
 		waterDropletContainer = GetNode<Node2D>("WaterDroplet");
 		basketNode = GetNode<Node2D>("Basket");
+		playerAnimationNode = GetNode<Node2D>("PlayerAnimation");
+		
+		// Obtener referencia al AnimatedSprite2D del jugador
+		playerSprite = playerAnimationNode.GetNode<AnimatedSprite2D>("AnimatedSprite2D");
 		
 		// Crear sprite y colisión para la canasta
 		basketSprite = new Sprite2D();
@@ -58,8 +76,12 @@ public partial class WaterCatchLevel : Node2D
 		basketNode.AddChild(basketCollision);
 		
 		// Posición inicial de la canasta (centro inferior)
-		basketPosition = new Vector2(ScreenWidth / 2f, ScreenHeight - 50f);
+		basketPosition = new Vector2(ScreenWidth / 2f, ScreenHeight - ScreenHeight * 0.15f);
 		basketNode.Position = basketPosition;
+		lastBasketX = basketPosition.X;
+		
+		// Posición inicial del jugador (debajo de la canasta)
+		playerAnimationNode.Position = new Vector2(basketPosition.X, basketPosition.Y + 25f);
 		
 		// Inicializar timer
 		spawnTimer = SpawnRate;
@@ -92,6 +114,26 @@ public partial class WaterCatchLevel : Node2D
 		
 		// Actualizar posición visual de la canasta
 		basketNode.Position = basketPosition;
+		
+		// Actualizar posición del jugador (debajo de la canasta)
+		playerAnimationNode.Position = new Vector2(basketPosition.X, basketPosition.Y + 50f);
+		
+		// Voltear sprite según la dirección de movimiento
+		if (basketPosition.X < lastBasketX)
+		{
+			// Movimiento a la izquierda
+			playerSprite.Play("walk_left");
+		}
+		else if (basketPosition.X > lastBasketX)
+		{
+			// Movimiento a la derecha
+			playerSprite.Play("walk_right");
+		}
+		else
+		{
+			playerSprite.Stop();
+		}
+		lastBasketX = basketPosition.X;
 		
 		// Verificar colisiones con objetos cayendo
 		CheckCollisions(deltaF);

@@ -205,15 +205,10 @@ texture = ExtResource("6_e78ew")
 
 [node name="Snake" type="Node2D" parent="."]
 
-[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "puntiacionLabel", "recicladosLabel", "timerLabel", "statsLabel", "gameOverScreen", "player_ani", "life_system")]
+[node name="SnakeBody" type="Sprite2D" parent="Snake" node_paths=PackedStringArray("DualGrid", "player_ani", "life_system")]
 position = Vector2(0, 2)
 script = ExtResource("13_wyocf")
 DualGrid = NodePath("../../TileMapLayers")
-puntiacionLabel = NodePath("../../CanvasLayer/VBoxContainer/Puntuacion")
-recicladosLabel = NodePath("../../CanvasLayer/VBoxContainer/Reciclados")
-timerLabel = NodePath("../../CanvasLayer/VBoxContainer/Tiempo")
-statsLabel = NodePath("../../GameOverScreen/VBoxContainer/Stats")
-gameOverScreen = NodePath("../../GameOverScreen")
 player_ani = NodePath("../../PlayerAnimation")
 life_system = NodePath("../../LifeSystemScreen/LifeSystem")
 
@@ -253,7 +248,7 @@ animation = &"walk_right"
 
 [node name="LifeSystemScreen" type="CanvasLayer" parent="."]
 
-[node name="LifeSystem" parent="LifeSystemScreen" node_paths=PackedStringArray("_snakeBody") instance=ExtResource("15_wyocf")]
+[node name="LifeSystem" parent="LifeSystemScreen" instance=ExtResource("15_wyocf")]
 anchors_preset = -1
 offset_left = 940.0
 offset_top = 659.0
@@ -261,7 +256,6 @@ offset_right = -140.0
 offset_bottom = -61.0
 grow_horizontal = 1
 grow_vertical = 1
-_snakeBody = NodePath("../../Snake/SnakeBody")
 
 [node name="PauseMenuScreen" type="CanvasLayer" parent="."]
 
