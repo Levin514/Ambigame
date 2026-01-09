@@ -26,6 +26,7 @@ public partial class GameLayoutManager : Control
 	[Export] private Label victoryStatsLabel;
 	
 	private Node currentLevel;
+	private string currentLevelType = ""; // Guardar el tipo de nivel actual
 
 	public override void _Ready()
 	{
@@ -83,6 +84,9 @@ public partial class GameLayoutManager : Control
 	public void CargarNivel(string rutaNivel, string tipoNivel)
 	{
 		GD.Print($"GameLayoutManager: Cargando nivel {rutaNivel} de tipo {tipoNivel}");
+		
+		// Guardar el tipo de nivel actual
+		currentLevelType = tipoNivel;
 		
 		// Limpiar nivel anterior si existe
 		if (currentLevel != null)
@@ -153,6 +157,11 @@ public partial class GameLayoutManager : Control
 				seedsSystemNode.Visible = true;
 				waterDropsSystemNode.Visible = true;
 				GD.Print("GameLayoutManager: Mostrando sistemas de reforestación (plantados, semillas, agua)");
+				break;
+				
+			case "minigame":
+				// Solo mostrar indicadores comunes (score, time)
+				GD.Print("GameLayoutManager: Minijuego - solo indicadores comunes");
 				break;
 				
 			default:
@@ -368,6 +377,21 @@ public partial class GameLayoutManager : Control
 			{
 				waterDropsSystemNode.Connect("NoWater", new Callable(currentLevel, "OnGameOver"));
 				GD.Print("GameLayoutManager: WaterDropsSystem.NoWater conectado a nivel");
+			}
+		}
+		else if (tipoNivel.ToLower() == "minigame")
+		{
+			// Conectar señales del minijuego (WaterCatchLevel)
+			if (currentLevel.HasSignal("GameOver"))
+			{
+				currentLevel.Connect("GameOver", new Callable(this, nameof(OnLevelGameOver)));
+				GD.Print("GameLayoutManager: Señal GameOver (minijuego) conectada");
+			}
+			
+			if (currentLevel.HasSignal("Victory"))
+			{
+				currentLevel.Connect("Victory", new Callable(this, nameof(OnLevelVictory)));
+				GD.Print("GameLayoutManager: Señal Victory (minijuego) conectada");
 			}
 		}
 	}
@@ -588,7 +612,16 @@ public partial class GameLayoutManager : Control
 		// Despausar
 		GetTree().Paused = false;
 		
-		// TODO: Cargar siguiente nivel (por ahora vuelve al menú)
-		GetTree().ChangeSceneToFile("res://Scenes/MainScene.tscn");
+		// Si es nivel de agua, cargar el minijuego en el contenedor actual
+		if (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
+		{
+			GD.Print("GameLayoutManager: Cargando minijuego de agua en el layout");
+			CargarNivel("res://Scenes/WaterCatchLevel.tscn", "minigame");
+		}
+		else
+		{
+			// Para otros niveles, volver al menú principal
+			GetTree().ChangeSceneToFile("res://Scenes/MainScene.tscn");
+		}
 	}
 }
