@@ -7,12 +7,15 @@ namespace Snake;
 using static TileType;
 
 public partial class DualGridTilemap : Node2D {
+
+	[Signal] public delegate void TrashCollectorEventHandler(Trash trash);
 	[Export] TileMapLayer worldMapLayer;
 	[Export] TileMapLayer displayMapLayer;
 	[Export] TileMapLayer plantMapLayer;
 	[Export] public Vector2I grassPlaceholderAtlasCoord;
 	[Export] public Vector2I dirtPlaceholderAtlasCoord;
 	private Dictionary<Vector2I, Sprite2D> trashes = new();
+	private Dictionary<Vector2I, Trash> trashItems = new();
 	private Dictionary<Vector2I, Sprite2D> obstacles = new();
 	private readonly Vector2I[] NEIGHBOURS = [new(0, 0), new(1, 0), new(0, 1), new(1, 1)];
 
@@ -117,13 +120,16 @@ public partial class DualGridTilemap : Node2D {
 
 	public void AddTrash(Vector2I coords)
 	{
+		Trash trash = new Trash();
 		var sprite = new Sprite2D();
-		sprite.Texture = GD.Load<Texture2D>("res://Assets/Plant.png");
+		sprite.Texture = GD.Load<Texture2D>("res://Assets/" + trash.trashName +".png");
 		sprite.Position = plantMapLayer.MapToLocal(coords);
+		sprite.Scale = new Vector2(0.5f,0.5f);
 		sprite.ZIndex = 2;
 		CallDeferred("add_child", sprite);
 		GD.Print($"Added trash at {coords}");
 		trashes[coords] = sprite;
+		trashItems[coords] = trash;
 	}
 
 	public bool HasTrashAt(Vector2I coords)
@@ -141,6 +147,8 @@ public partial class DualGridTilemap : Node2D {
 		{
 			sprite.QueueFree(); // elimina el nodo de la escena
 			trashes.Remove(coords); // elimina la referencia del diccionario
+			EmitSignal(SignalName.TrashCollector,trashItems[coords]);
+			trashItems.Remove(coords);
 		}
 	}
 
