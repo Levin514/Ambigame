@@ -1,0 +1,279 @@
+[gd_scene load_steps=14 format=3 uid="uid://c8jyak2n3qp1m"]
+
+[ext_resource type="Script" uid="uid://cp87smwx3b5ky" path="res://Scenes/Layouts/GameLayoutManager.cs" id="1_layout"]
+[ext_resource type="PackedScene" uid="uid://daoltbuu4b7ke" path="res://Scenes/WaterSystem.tscn" id="2_water"]
+[ext_resource type="PackedScene" uid="uid://v5r2pt4klutk" path="res://Scenes/LifeSystem.tscn" id="3_life"]
+[ext_resource type="PackedScene" uid="uid://bv1c3vhhpp75u" path="res://Scenes/PlantedSystem.tscn" id="4_planted"]
+[ext_resource type="PackedScene" uid="uid://cnolne52v87br" path="res://Scenes/SeedsSystem.tscn" id="5_seeds"]
+[ext_resource type="PackedScene" uid="uid://d38q8lfnigm8n" path="res://Scenes/WaterDropsSystem.tscn" id="6_waterdrops"]
+[ext_resource type="PackedScene" uid="uid://b03cybjuholn8" path="res://Scenes/PauseMenu.tscn" id="7_pause"]
+[ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="8_theme"]
+[ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="9_titles"]
+[ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="10_text"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+bg_color = Color(0.15, 0.15, 0.2, 0.95)
+border_width_bottom = 3
+border_color = Color(0.3, 0.3, 0.35, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_pauseButton"]
+bg_color = Color(0.25, 0.25, 0.3, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.4, 0.4, 0.45, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="LabelSettings" id="LabelSettings_indicators"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
+[node name="GameLayout" type="Control" node_paths=PackedStringArray("indicatorsPanel", "waterSystemNode", "lifeSystemNode", "plantedSystemNode", "seedsSystemNode", "waterDropsSystemNode", "scoreLabel", "timeLabel", "recycledLabel", "pauseButton", "pauseMenu", "gameContainer", "gameOverScreen", "gameOverStatsLabel", "victoryScreen", "victoryStatsLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_layout")
+indicatorsPanel = NodePath("VBoxContainer/IndicatorsPanel")
+waterSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/WaterSystem")
+lifeSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/LifeSystem")
+plantedSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/PlantedSystem")
+seedsSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/SeedsSystem")
+waterDropsSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/WaterDropsSystem")
+scoreLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/ScoreLabel")
+timeLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/TimeLabel")
+recycledLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/RecycledLabel")
+pauseButton = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/PauseButton")
+pauseMenu = NodePath("PauseMenuLayer/PauseMenu")
+gameContainer = NodePath("VBoxContainer/GameContainer/SubViewportContainer/SubViewport")
+gameOverScreen = NodePath("GameOverScreen")
+gameOverStatsLabel = NodePath("GameOverScreen/VBoxContainer/Stats")
+victoryScreen = NodePath("VictoryScreen")
+victoryStatsLabel = NodePath("VictoryScreen/VBoxContainer/Stats")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="IndicatorsPanel" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 80)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/IndicatorsPanel"]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/IndicatorsPanel/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 30
+
+[node name="LeftSpacer" type="Control" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(40, 0)
+layout_mode = 2
+
+[node name="PauseButton" type="Button" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(80, 40)
+layout_mode = 2
+theme_override_styles/normal = SubResource("StyleBoxFlat_pauseButton")
+text = "Pausa"
+
+[node name="CenterContainer" type="HBoxContainer" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 20
+
+[node name="ScoreLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+layout_mode = 2
+text = "Puntos: 0"
+label_settings = SubResource("LabelSettings_indicators")
+
+[node name="TimeLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+layout_mode = 2
+text = "Tiempo: 0"
+label_settings = SubResource("LabelSettings_indicators")
+
+[node name="RecycledLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+layout_mode = 2
+text = "Reciclados: 0"
+label_settings = SubResource("LabelSettings_indicators")
+
+[node name="WaterSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("2_water")]
+layout_mode = 2
+
+[node name="LifeSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("3_life")]
+layout_mode = 2
+
+[node name="PlantedSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("4_planted")]
+layout_mode = 2
+
+[node name="MiddleSpacer" type="Control" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SeedsSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("5_seeds")]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="WaterDropsSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("6_waterdrops")]
+custom_minimum_size = Vector2(0, 0)
+
+[node name="RightSpacer" type="Control" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+
+[node name="GameContainer" type="MarginContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_bottom = 0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="VBoxContainer/GameContainer"]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="VBoxContainer/GameContainer/SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1080, 640)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="VBoxContainer/GameContainer/SubViewportContainer/SubViewport"]
+anchor_mode = 0
+zoom = Vector2(2, 2)
+
+[node name="PauseMenuLayer" type="CanvasLayer" parent="."]
+
+[node name="PauseMenu" parent="PauseMenuLayer" instance=ExtResource("7_pause")]
+visible = false
+
+[node name="GameOverScreen" type="CanvasLayer" parent="."]
+process_mode = 3
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="GameOverScreen"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GameOverScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_theme")
+alignment = 1
+
+[node name="GameoverLabel" type="Label" parent="GameOverScreen/VBoxContainer"]
+layout_mode = 2
+text = "Game Over"
+label_settings = ExtResource("9_titles")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stats" type="Label" parent="GameOverScreen/VBoxContainer"]
+layout_mode = 2
+text = "Puntos: 0
+Reciclados: 0
+Tiempo: 0"
+label_settings = ExtResource("10_text")
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="GameOverScreen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Again" type="Button" parent="GameOverScreen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_theme")
+text = "Volver a jugar"
+
+[node name="Salir" type="Button" parent="GameOverScreen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_theme")
+text = "Menú Principal"
+
+[node name="VictoryScreen" type="CanvasLayer" parent="."]
+process_mode = 3
+visible = false
+
+[node name="ColorRect" type="ColorRect" parent="VictoryScreen"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VictoryScreen"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -150.0
+offset_right = 200.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("8_theme")
+alignment = 1
+
+[node name="VictoryLabel" type="Label" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+text = "¡Victoria!"
+label_settings = ExtResource("9_titles")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Stats" type="Label" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+text = "Puntos: 0
+Reciclados: 0
+Tiempo: 0"
+label_settings = ExtResource("10_text")
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="VictoryScreen/VBoxContainer"]
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="Continuar" type="Button" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_theme")
+text = "Siguiente Nivel"
+
+[node name="Salir" type="Button" parent="VictoryScreen/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("8_theme")
+text = "Menú Principal"
+
+[connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
+[connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]
+[connection signal="pressed" from="VictoryScreen/VBoxContainer/Continuar" to="." method="OnContinuarPressed"]
+[connection signal="pressed" from="VictoryScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]

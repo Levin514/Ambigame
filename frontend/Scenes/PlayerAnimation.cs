@@ -28,6 +28,17 @@ public partial class PlayerAnimation : Node2D
 
 	public void MoveSprite(Vector2I newPosition, double delta)
 	{
-		Position = Position.MoveToward(newPosition * TileSize, 100);
+		Vector2 targetPos = newPosition * TileSize;
+		float distance = Position.DistanceTo(targetPos);
+		
+		// Si la distancia es muy grande (teletransporte/wrap-around), mover instantáneamente
+		if (distance > TileSize * 5) // umbral para detectar teletransporte
+		{
+			Position = targetPos;
+		}
+		else
+		{
+			Position = Position.MoveToward(targetPos, 100);
+		}
 	}
 }

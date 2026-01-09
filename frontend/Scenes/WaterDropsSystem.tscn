@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://d38q8lfnigm8n"]
+
+[ext_resource type="Script" uid="uid://x6ai1ra1kg81" path="res://WaterDropsSystem.cs" id="1_water"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_water"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_water"]
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[node name="WaterDropsSystem" type="PanelContainer" node_paths=PackedStringArray("waterLabel")]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_water")
+script = ExtResource("1_water")
+waterLabel = NodePath("WaterLabel")
+
+[node name="WaterLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Agua: 30"
+label_settings = SubResource("LabelSettings_water")
+horizontal_alignment = 1
+vertical_alignment = 1

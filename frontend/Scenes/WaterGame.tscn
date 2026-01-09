@@ -1,8 +1,8 @@
 [gd_scene load_steps=38 format=4 uid="uid://rfkswm82jhhr"]
 
 [ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_0ynk6"]
-[ext_resource type="Script" path="res://Models/WaterSnake.cs" id="1_ylpyt"]
 [ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="1_music"]
+[ext_resource type="Script" uid="uid://b6yxjkpyu7akh" path="res://Models/WaterSnake.cs" id="1_ylpyt"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="2_13b5n"]
 [ext_resource type="Texture2D" uid="uid://83u81ntvymi0" path="res://Assets/Plant.png" id="4_kvfik"]
 [ext_resource type="Shader" uid="uid://dmw8ht36lmm8h" path="res://Shaders/GridShader.tres" id="6_atlul"]
@@ -15,7 +15,7 @@
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="12_yr2pg"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="13_wyocf"]
 [ext_resource type="PackedScene" uid="uid://b03cybjuholn8" path="res://Scenes/PauseMenu.tscn" id="14_ylpyt"]
-[ext_resource type="PackedScene" uid="uid://bwater123system" path="res://Scenes/WaterSystem.tscn" id="15_water"]
+[ext_resource type="PackedScene" uid="uid://daoltbuu4b7ke" path="res://Scenes/WaterSystem.tscn" id="15_water"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_3bmkb"]
 texture = ExtResource("4_kvfik")
@@ -262,12 +262,10 @@ animation = &"walk_right"
 
 [node name="WaterSystem" parent="WaterSystemScreen" instance=ExtResource("15_water")]
 anchors_preset = -1
-offset_left = 940.0
-offset_top = 659.0
-offset_right = -140.0
-offset_bottom = -61.0
-grow_horizontal = 1
+anchor_left = 0.7509259
+anchor_bottom = 0.06666667
 grow_vertical = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="PauseMenuScreen" type="CanvasLayer" parent="."]
 

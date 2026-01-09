@@ -49,6 +49,13 @@ public partial class MainScene : MarginContainer
 		GetTree().ChangeSceneToFile("res://Scenes/WaterSavingMapSelector.tscn");
 	}
 
+	public void Level_3_button_pressed()
+	{
+		// Cargar nivel de reforestación directamente
+		var levelManager = GetNode<LevelManager>("/root/LevelManager");
+		levelManager.LoadLevel("res://Scenes/Levels/Reforestation/ReforestationLevel_Map1.tscn", "reforestation", "Reforestación", 1);
+	}
+
 	public void GoToTutorial()
 	{
 		GetTree().ChangeSceneToFile("res://Scenes/TutorialScene.tscn");

@@ -38,6 +38,23 @@ public partial class DualGridTilemap : Node2D {
 	private Random rnd = new();
 	private int obstacleAmount = 0;
 
+	// Obtener límites reales del mapa basado en las celdas usadas
+	public Vector2I GetMapBounds()
+	{
+		var usedCells = worldMapLayer.GetUsedCells();
+		if (usedCells.Count == 0)
+			return new Vector2I(32, 21); // Valores por defecto si no hay celdas
+		
+		int maxX = 0;
+		int maxY = 0;
+		foreach (var cell in usedCells)
+		{
+			if (cell.X > maxX) maxX = cell.X;
+			if (cell.Y > maxY) maxY = cell.Y;
+		}
+		return new Vector2I(maxX, maxY);
+	}
+
 	public override void _Ready() {
 		// Refresh all display tiles
 		foreach (Vector2I coord in worldMapLayer.GetUsedCells()) {
@@ -48,7 +65,7 @@ public partial class DualGridTilemap : Node2D {
 
 		while(obstacleAmount < 5)
 		{
-			Vector2I randomCoord = new Vector2I(rnd.Next(0,32), rnd.Next(0,21));
+			Vector2I randomCoord = new Vector2I(rnd.Next(0, GetMapBounds().X + 1), rnd.Next(0, GetMapBounds().Y + 1));
 			if(CellIsEmpty(randomCoord))
 			{
 				PlaceTetrisPiece(randomCoord, 6);

@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cnolne52v87br"]
+
+[ext_resource type="Script" uid="uid://cm8ci6wt8arla" path="res://SeedsSystem.cs" id="1_seeds"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_seeds"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_seeds"]
+outline_size = 5
+outline_color = Color(0, 0, 0, 1)
+
+[node name="SeedsSystem" type="PanelContainer" node_paths=PackedStringArray("seedsLabel")]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_seeds")
+script = ExtResource("1_seeds")
+seedsLabel = NodePath("SeedsLabel")
+
+[node name="SeedsLabel" type="Label" parent="."]
+layout_mode = 2
+text = "Semillas: 5"
+label_settings = SubResource("LabelSettings_seeds")
+horizontal_alignment = 1
+vertical_alignment = 1
