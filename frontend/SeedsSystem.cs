@@ -7,8 +7,8 @@ public partial class SeedsSystem : PanelContainer
 	
 	[Signal] public delegate void NoSeedsEventHandler();
 	
-	private int currentSeeds = 5;
-	private int initialSeeds = 5;
+	private int currentSeeds = 10;
+	private int initialSeeds = 10;
 
 	public override void _Ready()
 	{

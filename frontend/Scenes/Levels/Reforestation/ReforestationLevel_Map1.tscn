@@ -198,6 +198,7 @@ texture = ExtResource("7_blank")
 position = Vector2(0, 8)
 script = ExtResource("11_snakebody")
 DualGrid = NodePath("../../TileMapLayers")
+FreeMovement = true
 player_ani = NodePath("../../PlayerAnimation")
 HideBody = true
 

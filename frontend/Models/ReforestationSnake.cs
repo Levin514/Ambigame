@@ -10,7 +10,8 @@ public partial class ReforestationSnake : Node2D
 	// Señales para comunicarse con el GameLayout
 	[Signal] public delegate void GameOverEventHandler(int score, int time);
 	[Signal] public delegate void VictoryEventHandler(int score, int time);
-	[Signal] public delegate void PlantAttemptEventHandler();
+	[Signal] public delegate void PlantAttemptEventHandler(string action); // "seed" o "water"
+	[Signal] public delegate void PlantGrownEventHandler();
 	
 	// To generate random numbers.
 	private static readonly Random rnd = new();
@@ -26,14 +27,35 @@ public partial class ReforestationSnake : Node2D
 	public override void _Ready()
 	{
 		isGameOver = false;
-		timer = new Timer(4000);
-		timer.Elapsed += NewHole;
-		timer.AutoReset = true;
-		timer.Start();
+		
+		// Generar 10 lugares de plantación separados
+		DualGrid.GeneratePlantSpots(10);
+		
+		// Conectar señal de crecimiento de plantas
+		DualGrid.PlantGrown += OnPlantGrown;
+		
+		// Conectar señales del ReforestationSystem
+		var reforestationSystem = GetNodeOrNull("../GameLayout/ReforestationSystem");
+		if (reforestationSystem != null)
+		{
+			reforestationSystem.Connect("Victory", new Callable(this, nameof(OnVictory)));
+			reforestationSystem.Connect("GameOver", new Callable(this, nameof(OnGameOver)));
+			GD.Print("ReforestationSnake: Señales de ReforestationSystem conectadas");
+		}
+		else
+		{
+			GD.PrintErr("ReforestationSnake: No se encontró ReforestationSystem");
+		}
+		
+		// NO generar huecos aleatorios en reforestación
+		// timer = new Timer(4000);
+		// timer.Elapsed += NewHole;
+		// timer.AutoReset = true;
+		// timer.Start();
 
 		// Conectamos a las señales del SnakeBody
 		_snakeBody.GameOver += OnGameOver;
-		_snakeBody.PipeRepaired += OnPlantAttempt; // Reutilizamos la señal para intentos de plantación
+		_snakeBody.PipeRepaired += OnPlantAction;
 		
 		// Detenemos la música del menú
 		var musicManager = GetNode<Node>("/root/MusicManager");
@@ -57,7 +79,10 @@ public partial class ReforestationSnake : Node2D
 		if (isGameOver) return;
 		
 		isGameOver = true;
-		timer.Stop();
+		if (timer != null)
+		{
+			timer.Stop();
+		}
 		if (gameMusic != null && gameMusic.Playing)
 		{
 			gameMusic.Stop();
@@ -76,7 +101,10 @@ public partial class ReforestationSnake : Node2D
 		if (isGameOver) return;
 		
 		isGameOver = true;
-		timer.Stop();
+		if (timer != null)
+		{
+			timer.Stop();
+		}
 		if (gameMusic != null && gameMusic.Playing)
 		{
 			gameMusic.Stop();
@@ -98,10 +126,16 @@ public partial class ReforestationSnake : Node2D
 		DualGrid.AddTrash(new Vector2I(rnd.Next(0, bounds.X + 1), rnd.Next(0, bounds.Y + 1)));
 	}
 	
-	private void OnPlantAttempt()
+	private void OnPlantAction(string action)
 	{
-		GD.Print("ReforestationSnake: Intento de plantar, emitiendo señal");
-		EmitSignal(SignalName.PlantAttempt);
+		GD.Print($"ReforestationSnake: Acción de plantación detectada - {action}");
+		EmitSignal(SignalName.PlantAttempt, action);
+	}
+	
+	private void OnPlantGrown()
+	{
+		GD.Print("ReforestationSnake: Planta creció completamente");
+		EmitSignal(SignalName.PlantGrown);
 	}
 
 	public void OnContinuarPressed()

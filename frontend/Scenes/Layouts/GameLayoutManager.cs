@@ -326,6 +326,9 @@ public partial class GameLayoutManager : Control
 		}
 		else if (tipoNivel.ToLower() == "reforestation" || tipoNivel.ToLower() == "reforestationlevel")
 		{
+			// Inicializar sistemas para reforestación
+			InitializeReforestationSystems();
+			
 			// Conectar señales del ReforestationSnake (nodo raíz del nivel)
 			if (currentLevel.HasSignal("GameOver"))
 			{
@@ -343,6 +346,12 @@ public partial class GameLayoutManager : Control
 			{
 				currentLevel.Connect("PlantAttempt", new Callable(this, nameof(OnPlantAttempt)));
 				GD.Print("GameLayoutManager: Señal PlantAttempt conectada");
+			}
+			
+			if (currentLevel.HasSignal("PlantGrown"))
+			{
+				currentLevel.Connect("PlantGrown", new Callable(this, nameof(OnPlantGrown)));
+				GD.Print("GameLayoutManager: Señal PlantGrown conectada");
 			}
 			
 			// Buscar el SnakeBody dentro del nivel
@@ -364,26 +373,6 @@ public partial class GameLayoutManager : Control
 			else
 			{
 				GD.PrintErr("GameLayoutManager: No se encontró SnakeBody en el nivel de reforestación");
-			}
-			
-			// Conectar señales del PlantedSystem
-			if (plantedSystemNode != null && plantedSystemNode.HasSignal("Victory"))
-			{
-				plantedSystemNode.Connect("Victory", new Callable(currentLevel, "OnVictory"));
-				GD.Print("GameLayoutManager: PlantedSystem.Victory conectado a nivel");
-			}
-			
-			// Conectar señales de los sistemas de recursos (para Game Over)
-			if (seedsSystemNode != null && seedsSystemNode.HasSignal("NoSeeds"))
-			{
-				seedsSystemNode.Connect("NoSeeds", new Callable(currentLevel, "OnGameOver"));
-				GD.Print("GameLayoutManager: SeedsSystem.NoSeeds conectado a nivel");
-			}
-			
-			if (waterDropsSystemNode != null && waterDropsSystemNode.HasSignal("NoWater"))
-			{
-				waterDropsSystemNode.Connect("NoWater", new Callable(currentLevel, "OnGameOver"));
-				GD.Print("GameLayoutManager: WaterDropsSystem.NoWater conectado a nivel");
 			}
 		}
 		else if (tipoNivel.ToLower() == "minigame")
@@ -514,40 +503,109 @@ public partial class GameLayoutManager : Control
 		}
 	}
 	
-	private void OnPlantAttempt()
+	private void InitializeReforestationSystems()
 	{
-		GD.Print("GameLayoutManager: Intento de plantar");
+		GD.Print("GameLayoutManager: Inicializando sistemas de reforestación");
 		
-		// Verificar y consumir recursos
-		bool hasSeeds = seedsSystemNode != null && (bool)seedsSystemNode.Call("HasSeeds", 1);
-		int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 5;
-		bool hasWater = waterDropsSystemNode != null && (bool)waterDropsSystemNode.Call("HasWater", waterNeeded);
+		// Buscar el DualGridTilemap en el nivel actual
+		var dualGrid = currentLevel.FindChild("TileMapLayers", true, false);
 		
-		if (!hasSeeds || !hasWater)
+		if (dualGrid != null)
 		{
-			GD.Print("GameLayoutManager: Sin recursos suficientes - Game Over");
-			if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+			int totalPlantSpots = (int)dualGrid.Call("GetTotalPlantSpots");
+			GD.Print($"GameLayoutManager: Total de lugares para plantar: {totalPlantSpots}");
+			
+			// Configurar PlantedSystem
+			if (plantedSystemNode != null)
 			{
-				currentLevel.Call("OnGameOver");
+				plantedSystemNode.Call("SetMaxPlanted", totalPlantSpots);
+				GD.Print("GameLayoutManager: PlantedSystem configurado");
 			}
-			return;
 		}
-		
-		// Consumir recursos
-		if (seedsSystemNode != null)
+		else
 		{
-			seedsSystemNode.Call("ConsumeSeeds", 1);
+			GD.PrintErr("GameLayoutManager: No se encontró DualGridTilemap");
 		}
+	}
+	
+	private void OnPlantGrown()
+	{
+		GD.Print("GameLayoutManager: Planta creció completamente");
 		
-		if (waterDropsSystemNode != null)
-		{
-			waterDropsSystemNode.Call("ConsumeWater", waterNeeded);
-		}
-		
-		// Actualizar plantados
-		if (plantedSystemNode != null && plantedSystemNode.HasMethod("OnPlantSuccessful"))
+		// Actualizar PlantedSystem
+		if (plantedSystemNode != null)
 		{
 			plantedSystemNode.Call("OnPlantSuccessful");
+		}
+		
+		// Verificar victoria
+		var dualGrid = currentLevel?.FindChild("TileMapLayers", true, false);
+		if (dualGrid != null)
+		{
+			int fullyGrown = (int)dualGrid.Call("GetFullyGrownCount");
+			int total = (int)dualGrid.Call("GetTotalPlantSpots");
+			
+			GD.Print($"GameLayoutManager: {fullyGrown}/{total} plantas completamente crecidas");
+			
+			if (fullyGrown >= total && total > 0)
+			{
+				GD.Print("GameLayoutManager: ¡Victoria! Todas las plantas han crecido");
+				if (currentLevel != null && currentLevel.HasMethod("OnVictory"))
+				{
+					currentLevel.Call("OnVictory");
+				}
+			}
+		}
+	}
+	
+	private void OnPlantAttempt(string action)
+	{
+		GD.Print($"GameLayoutManager: Intento de acción - {action}");
+		
+		if (action == "seed")
+		{
+			// Plantar semilla: solo consume semillas
+			bool hasSeeds = seedsSystemNode != null && (bool)seedsSystemNode.Call("HasSeeds", 1);
+			
+			if (!hasSeeds)
+			{
+				GD.Print("GameLayoutManager: Sin semillas - Game Over");
+				if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+				{
+					currentLevel.Call("OnGameOver");
+				}
+				return;
+			}
+			
+			// Consumir semilla
+			if (seedsSystemNode != null)
+			{
+				seedsSystemNode.Call("ConsumeSeeds", 1);
+				GD.Print("GameLayoutManager: Semilla consumida");
+			}
+		}
+		else if (action == "water")
+		{
+			// Regar planta: solo consume agua
+			int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 2;
+			bool hasWater = waterDropsSystemNode != null && (bool)waterDropsSystemNode.Call("HasWater", waterNeeded);
+			
+			if (!hasWater)
+			{
+				GD.Print("GameLayoutManager: Sin agua - Game Over");
+				if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+				{
+					currentLevel.Call("OnGameOver");
+				}
+				return;
+			}
+			
+			// Consumir agua
+			if (waterDropsSystemNode != null)
+			{
+				waterDropsSystemNode.Call("ConsumeWater", waterNeeded);
+				GD.Print("GameLayoutManager: Agua consumida");
+			}
 		}
 	}
 	

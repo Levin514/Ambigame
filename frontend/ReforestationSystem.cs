@@ -12,11 +12,12 @@ public partial class ReforestationSystem : Control
 	[Signal] public delegate void GameOverEventHandler();
 	[Signal] public delegate void VictoryEventHandler();
 	
-	private int currentPlanted = 0;
 	private int maxPlanted = 10;
-	private int currentSeeds = 5;
-	private int currentWater = 30;
-	private int waterPerPlant = 5;
+	private int currentSeeds = 10; // 10 semillas iniciales
+	private int currentWater = 20; // 20 gotas iniciales
+	private int waterPerPlant = 2; // 2 gotas por planta
+	
+	private Node dualGridTilemap = null;
 	
 	private bool hasEmittedGameOver = false;
 	private bool hasEmittedVictory = false;
@@ -25,49 +26,101 @@ public partial class ReforestationSystem : Control
 	public override void _Ready()
 	{
 		GD.Print("ReforestationSystem: Inicializando sistema de reforestación");
-		currentPlanted = 0;
-		currentSeeds = 5;
-		currentWater = 30;
+		currentSeeds = 10;
+		currentWater = 20;
 		UpdateDisplay();
 	}
+	
+	public void SetDualGridTilemap(Node dualGrid)
+	{
+		dualGridTilemap = dualGrid;
+		GD.Print("ReforestationSystem: Referencia a DualGridTilemap configurada");
+	}
 
-	public void OnPlantAttempt()
+	public void OnPlantSeed()
 	{
 		if (isGameOver) return;
 		
-		GD.Print($"ReforestationSystem: Intento de plantar - Semillas: {currentSeeds}, Agua: {currentWater}");
+		GD.Print($"ReforestationSystem: Intento de plantar semilla - Semillas: {currentSeeds}");
 		
-		// Verificar si tiene suficientes recursos
-		if (currentSeeds < 1 || currentWater < waterPerPlant)
+		// Verificar si tiene semillas
+		if (currentSeeds < 1)
 		{
 			isGameOver = true;
 			hasEmittedGameOver = true;
-			GD.Print("ReforestationSystem: Sin recursos suficientes - Emitiendo GameOver");
+			GD.Print("ReforestationSystem: Sin semillas - Emitiendo GameOver");
 			EmitSignal(SignalName.GameOver);
 			return;
 		}
 		
-		// Consumir recursos y plantar
+		// Consumir semilla
 		currentSeeds -= 1;
-		currentWater -= waterPerPlant;
-		currentPlanted += 1;
-		
-		GD.Print($"ReforestationSystem: Plantado exitoso - {currentPlanted}/{maxPlanted}");
+		GD.Print($"ReforestationSystem: Semilla plantada - Quedan: {currentSeeds}");
 		UpdateDisplay();
-		CheckGameStatus();
+		CheckVictory();
+	}
+	
+	public void OnWaterPlant()
+	{
+		if (isGameOver) return;
+		
+		GD.Print($"ReforestationSystem: Intento de regar - Agua: {currentWater}");
+		
+		// Verificar si tiene agua
+		if (currentWater < waterPerPlant)
+		{
+			isGameOver = true;
+			hasEmittedGameOver = true;
+			GD.Print("ReforestationSystem: Sin agua - Emitiendo GameOver");
+			EmitSignal(SignalName.GameOver);
+			return;
+		}
+		
+		// Consumir agua
+		currentWater -= waterPerPlant;
+		GD.Print($"ReforestationSystem: Planta regada - Quedan: {currentWater} gotas");
+		UpdateDisplay();
+		CheckVictory();
+	}
+	
+	public void CheckVictory()
+	{
+		if (isGameOver || hasEmittedVictory) return;
+		
+		if (dualGridTilemap != null)
+		{
+			int fullyGrown = (int)dualGridTilemap.Call("GetFullyGrownCount");
+			int total = (int)dualGridTilemap.Call("GetTotalPlantSpots");
+			
+			GD.Print($"ReforestationSystem: {fullyGrown}/{total} plantas completamente crecidas");
+			
+			if (fullyGrown >= total && total > 0)
+			{
+				isGameOver = true;
+				hasEmittedVictory = true;
+				GD.Print("ReforestationSystem: ¡Victoria! Todas las plantas han crecido");
+				EmitSignal(SignalName.Victory);
+			}
+		}
 	}
 
 	private void UpdateDisplay()
 	{
-		if (plantedBar != null)
+		if (dualGridTilemap != null)
 		{
-			plantedBar.MaxValue = maxPlanted;
-			plantedBar.Value = currentPlanted;
-		}
-		
-		if (plantedLabel != null)
-		{
-			plantedLabel.Text = $"{currentPlanted}/{maxPlanted}";
+			int fullyGrown = (int)dualGridTilemap.Call("GetFullyGrownCount");
+			int total = (int)dualGridTilemap.Call("GetTotalPlantSpots");
+			
+			if (plantedBar != null)
+			{
+				plantedBar.MaxValue = total;
+				plantedBar.Value = fullyGrown;
+			}
+			
+			if (plantedLabel != null)
+			{
+				plantedLabel.Text = $"{fullyGrown}/{total}";
+			}
 		}
 		
 		if (seedsLabel != null)
@@ -80,20 +133,14 @@ public partial class ReforestationSystem : Control
 			waterLabel.Text = $"Agua: {currentWater}";
 		}
 	}
-
-	private void CheckGameStatus()
+	
+	public bool HasSeeds(int amount)
 	{
-		if (currentPlanted >= maxPlanted && !hasEmittedVictory)
-		{
-			isGameOver = true;
-			hasEmittedVictory = true;
-			GD.Print("ReforestationSystem: ¡Victoria! 10 semillas plantadas");
-			EmitSignal(SignalName.Victory);
-		}
+		return currentSeeds >= amount;
 	}
 	
-	public bool CanPlant()
+	public bool HasWater(int amount)
 	{
-		return currentSeeds >= 1 && currentWater >= waterPerPlant && !isGameOver;
+		return currentWater >= amount;
 	}
 }

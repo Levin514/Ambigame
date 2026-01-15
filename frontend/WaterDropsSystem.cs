@@ -7,9 +7,9 @@ public partial class WaterDropsSystem : PanelContainer
 	
 	[Signal] public delegate void NoWaterEventHandler();
 	
-	private int currentWater = 30;
-	private int initialWater = 30;
-	private int waterPerPlant = 5;
+	private int currentWater = 20;
+	private int initialWater = 20;
+	private int waterPerPlant = 2;
 
 	public override void _Ready()
 	{

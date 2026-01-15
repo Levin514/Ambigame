@@ -8,7 +8,7 @@ public partial class WaterSnake : Node2D
 	// Señales para comunicarse con el GameLayout
 	[Signal] public delegate void GameOverEventHandler(int score, int recycled, int time);
 	[Signal] public delegate void VictoryEventHandler(int score, int recycled, int time);
-	[Signal] public delegate void PipeRepairedEventHandler();
+	[Signal] public delegate void PipeRepairedEventHandler(string action);
 	[Signal] public delegate void PipeBrokenEventHandler();
 	
 	// To generate random numbers.
@@ -115,10 +115,10 @@ public partial class WaterSnake : Node2D
 		}
 	}
 
-	private void OnPipeRepaired()
+	private void OnPipeRepaired(string action)
 	{
 		GD.Print("WaterSnake: Tubería reparada, emitiendo señal");
-		EmitSignal(SignalName.PipeRepaired);
+		EmitSignal(SignalName.PipeRepaired, action);
 	}
 
 	private void OnPipeBroken()
