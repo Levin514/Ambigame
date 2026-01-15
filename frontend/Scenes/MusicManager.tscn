@@ -7,4 +7,5 @@
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_iysw5")
 volume_db = -10.0
+bus = &"Music"
 autoplay = true

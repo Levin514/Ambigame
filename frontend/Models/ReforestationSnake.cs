@@ -88,6 +88,13 @@ public partial class ReforestationSnake : Node2D
 			gameMusic.Stop();
 		}
 		
+		// Reproducir efecto de sonido de derrota
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayDefeat();
+		}
+		
 		// Emitir señal de Game Over con estadísticas
 		if (_snakeBody != null)
 		{
@@ -108,6 +115,13 @@ public partial class ReforestationSnake : Node2D
 		if (gameMusic != null && gameMusic.Playing)
 		{
 			gameMusic.Stop();
+		}
+		
+		// Reproducir efecto de sonido de victoria
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayVictory();
 		}
 		
 		// Emitir señal de Victoria con estadísticas

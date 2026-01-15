@@ -23,5 +23,10 @@ public partial class LoginScene : MarginContainer
 		GetTree().ChangeSceneToFile("res://Scenes/CustomizationScene.tscn");
 	}
 
+	public void GoToSettings()
+	{
+		GetTree().ChangeSceneToFile("res://Scenes/SettingsScene.tscn");
+	}
+
 	
 }

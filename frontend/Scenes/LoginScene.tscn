@@ -87,3 +87,4 @@ label_settings = ExtResource("3_76d8l")
 
 [connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/PlayButton" to="MarginContainer3" method="GoToMain"]
 [connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/CustomizeButton" to="MarginContainer3" method="GoToCustomization"]
+[connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/ConfigButton" to="MarginContainer3" method="GoToSettings"]

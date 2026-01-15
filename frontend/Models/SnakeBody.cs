@@ -162,7 +162,12 @@ public partial class SnakeBody : Sprite2D
 				// Tubería BUENA → ROMPERLA (penalización)
 				DualGrid.BreakPipe(headPosition);
 				GD.Print("SnakeBody: ¡Rompiste una tubería buena! Penalización.");
-				// No reproducir sonido de reparación (es una penalización)
+				// Reproducir efecto de sonido al romper tubería
+				var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+				if (audioManager != null)
+				{
+					audioManager.PlayBreakPipe();
+				}
 				return true;
 			}
 			else
@@ -171,10 +176,10 @@ public partial class SnakeBody : Sprite2D
 				DualGrid.RepairPipe(headPosition);
 				
 				// Reproducir sonido de reparación
-				if (repairSound != null && audioPlayer != null)
+				var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+				if (audioManager != null)
 				{
-					audioPlayer.Stream = repairSound;
-					audioPlayer.Play();
+					audioManager.PlayRepairPipe();
 				}
 				
 				// Emitir señal de tubería reparada
@@ -191,6 +196,12 @@ public partial class SnakeBody : Sprite2D
 			Reciclados++;
 			Puntuacion += (int)(puntuacionBase * (_body.Count / 10.0));
 			DualGrid.RemoveTrashAt(headPosition);
+			// Reproducir efecto de sonido
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			if (audioManager != null)
+			{
+				audioManager.PlayTrashCollect();
+			}
 			return true;
 		}
 		return false;

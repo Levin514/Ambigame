@@ -10,7 +10,7 @@ public partial class CustomizationScene : MarginContainer
 	[Export] private Button _outfitsTabButton;
 	[Export] private Control _hatsPanel;
 	[Export] private Control _outfitsPanel;
-
+	
 	private int _selectedHat = 0;
 	private int _selectedOutfit = 0;
 

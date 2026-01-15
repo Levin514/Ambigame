@@ -6,13 +6,41 @@ public partial class PauseMenu : MarginContainer
 {
 	private AudioManager audioManager;
 	private CheckBox soundCheckBox;
+	private HSlider musicVolumeSlider;
+	private HSlider sfxVolumeSlider;
+	private Label musicValueLabel;
+	private Label sfxValueLabel;
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
     {
         Visible = false;
 		audioManager = GetNode<AudioManager>("/root/AudioManager");
-		soundCheckBox = GetNode<CheckBox>("PauseMenu/PanelContainer/VBoxContainer/SoundCheckBox");
+		soundCheckBox = GetNodeOrNull<CheckBox>("PauseMenu/PanelContainer/VBoxContainer/SoundCheckBox");
+		
+		// Intentar obtener los sliders (pueden no existir aún en la escena)
+		musicVolumeSlider = GetNodeOrNull<HSlider>("PauseMenu/PanelContainer/VBoxContainer/MusicVolumeContainer/MusicVolumeSlider");
+		sfxVolumeSlider = GetNodeOrNull<HSlider>("PauseMenu/PanelContainer/VBoxContainer/SFXVolumeContainer/SFXVolumeSlider");
+		
+		// Obtener labels de valor
+		musicValueLabel = GetNodeOrNull<Label>("PauseMenu/PanelContainer/VBoxContainer/MusicVolumeContainer/MusicValueLabel");
+		sfxValueLabel = GetNodeOrNull<Label>("PauseMenu/PanelContainer/VBoxContainer/SFXVolumeContainer/SFXValueLabel");
+		
+		// Inicializar valores de sliders si existen
+		if (audioManager != null)
+		{
+			if (musicVolumeSlider != null)
+			{
+				musicVolumeSlider.Value = audioManager.GetMusicVolume() * 100;
+				UpdateMusicLabel((float)musicVolumeSlider.Value);
+			}
+			
+			if (sfxVolumeSlider != null)
+			{
+				sfxVolumeSlider.Value = audioManager.GetSFXVolume() * 100;
+				UpdateSFXLabel((float)sfxVolumeSlider.Value);
+			}
+		}
     }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -36,6 +64,22 @@ public partial class PauseMenu : MarginContainer
 		if (soundCheckBox != null && audioManager != null)
 		{
 			soundCheckBox.ButtonPressed = !audioManager.IsMuted();
+		}
+		
+		// Actualizar sliders
+		if (audioManager != null)
+		{
+			if (musicVolumeSlider != null)
+			{
+				musicVolumeSlider.Value = audioManager.GetMusicVolume() * 100;
+				UpdateMusicLabel((float)musicVolumeSlider.Value);
+			}
+			
+			if (sfxVolumeSlider != null)
+			{
+				sfxVolumeSlider.Value = audioManager.GetSFXVolume() * 100;
+				UpdateSFXLabel((float)sfxVolumeSlider.Value);
+			}
 		}
     }
 
@@ -70,6 +114,40 @@ public partial class PauseMenu : MarginContainer
 		if (audioManager != null)
 		{
 			audioManager.SetMute(!buttonPressed);
+		}
+	}
+	
+	public void MusicVolume_changed(float value)
+	{
+		if (audioManager != null)
+		{
+			audioManager.SetMusicVolume(value / 100.0f);
+			UpdateMusicLabel(value);
+		}
+	}
+	
+	public void SFXVolume_changed(float value)
+	{
+		if (audioManager != null)
+		{
+			audioManager.SetSFXVolume(value / 100.0f);
+			UpdateSFXLabel(value);
+		}
+	}
+	
+	private void UpdateMusicLabel(float value)
+	{
+		if (musicValueLabel != null)
+		{
+			musicValueLabel.Text = $"{(int)value}%";
+		}
+	}
+	
+	private void UpdateSFXLabel(float value)
+	{
+		if (sfxValueLabel != null)
+		{
+			sfxValueLabel.Text = $"{(int)value}%";
 		}
 	}
 

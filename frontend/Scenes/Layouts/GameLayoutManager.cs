@@ -424,6 +424,13 @@ public partial class GameLayoutManager : Control
 	{
 		GD.Print($"GameLayoutManager: Game Over - Score: {score}, Recycled: {recycled}, Time: {time}");
 		
+		// Reproducir efecto de sonido de derrota
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayDefeat();
+		}
+		
 		// Pausar el juego
 		GetTree().Paused = true;
 		
@@ -443,6 +450,13 @@ public partial class GameLayoutManager : Control
 	private void OnLevelVictory(int score, int recycled, int time)
 	{
 		GD.Print($"GameLayoutManager: Victory! - Score: {score}, Recycled: {recycled}, Time: {time}");
+		
+		// Reproducir efecto de sonido de victoria
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayVictory();
+		}
 		
 		// Pausar el juego
 		GetTree().Paused = true;
@@ -613,6 +627,13 @@ public partial class GameLayoutManager : Control
 	{
 		GD.Print($"GameLayoutManager: Game Over (Reforestation) - Score: {score}, Time: {time}");
 		
+		// Reproducir efecto de sonido de derrota
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayDefeat();
+		}
+		
 		// Pausar el juego
 		GetTree().Paused = true;
 		
@@ -632,6 +653,13 @@ public partial class GameLayoutManager : Control
 	private void OnReforestationVictory(int score, int time)
 	{
 		GD.Print($"GameLayoutManager: Victory! (Reforestation) - Score: {score}, Time: {time}");
+		
+		// Reproducir efecto de sonido de victoria
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayVictory();
+		}
 		
 		// Pausar el juego
 		GetTree().Paused = true;

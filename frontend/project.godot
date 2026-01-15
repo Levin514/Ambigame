@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 MusicManager="*res://Scenes/MusicManager.tscn"
-AudioManager="*res://Scripts/AudioManager.cs"
+AudioManager="*res://Scripts/AudioManager.tscn"
 LevelManager="*res://Scripts/LevelManager.cs"
 GameData="*res://Scripts/GameData.cs"
 
