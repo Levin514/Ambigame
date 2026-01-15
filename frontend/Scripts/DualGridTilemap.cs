@@ -9,14 +9,18 @@ using static TileType;
 public partial class DualGridTilemap : Node2D {
 
 	[Signal] public delegate void TrashCollectorEventHandler(Trash trash);
+	[Signal] public delegate void PipeBrokenEventHandler();
 	[Export] TileMapLayer worldMapLayer;
 	[Export] TileMapLayer displayMapLayer;
 	[Export] TileMapLayer plantMapLayer;
 	[Export] public Vector2I grassPlaceholderAtlasCoord;
 	[Export] public Vector2I dirtPlaceholderAtlasCoord;
+	[Export] public bool generateObstacles = true; // Controla si se generan rocas (false para nivel de agua)
 	private Dictionary<Vector2I, Sprite2D> trashes = new();
 	private Dictionary<Vector2I, Trash> trashItems = new();
 	private Dictionary<Vector2I, Sprite2D> obstacles = new();
+	private Dictionary<Vector2I, Sprite2D> pipes = new();
+	private Dictionary<Vector2I, bool> pipeStates = new(); // true = arreglada, false = rota
 	private readonly Vector2I[] NEIGHBOURS = [new(0, 0), new(1, 0), new(0, 1), new(1, 1)];
 
 	readonly Dictionary<Tuple<TileType, TileType, TileType, TileType>, Vector2I> neighboursToAtlasCoord = new() {
@@ -63,19 +67,22 @@ public partial class DualGridTilemap : Node2D {
 		foreach (Vector2I coord in worldMapLayer.GetUsedCells()) {
 			SetDisplayTile(coord);
 		}
-		GenerateObstacles(rnd.Next(0,10000), scale: 0.12f, threshold: 0.2f, octaves: 4, clearExisting: true);
 		
-
-		while(obstacleAmount < 5)
+		// Generar obstáculos solo si está habilitado (niveles de reciclaje, reforestación)
+		if (generateObstacles)
 		{
-			Vector2I randomCoord = new Vector2I(rnd.Next(0, GetMapBounds().X + 1), rnd.Next(0, GetMapBounds().Y + 1));
-			if(CellIsEmpty(randomCoord))
+			GenerateObstacles(rnd.Next(0,10000), scale: 0.12f, threshold: 0.2f, octaves: 4, clearExisting: true);
+			
+			while(obstacleAmount < 5)
 			{
-				PlaceTetrisPiece(randomCoord, 6);
-				obstacleAmount++;
+				Vector2I randomCoord = new Vector2I(rnd.Next(0, GetMapBounds().X + 1), rnd.Next(0, GetMapBounds().Y + 1));
+				if(CellIsEmpty(randomCoord))
+				{
+					PlaceTetrisPiece(randomCoord, 6);
+					obstacleAmount++;
+				}
 			}
 		}
-		
 	}
 
 	/// <summary>
@@ -182,6 +189,122 @@ public partial class DualGridTilemap : Node2D {
 		}
 	}
 
+	// ===== MÉTODOS PARA TUBERÍAS =====
+	public void AddPipe(Vector2I coords, bool isBroken = true)
+	{
+		Sprite2D sprite = new Sprite2D();
+		sprite.Texture = isBroken 
+			? GD.Load<Texture2D>("res://Assets/BrokenPipe.png") 
+			: GD.Load<Texture2D>("res://Assets/Pipe.png");
+		sprite.Position = plantMapLayer.MapToLocal(coords);
+		sprite.Scale = new Vector2(0.5f, 0.5f);
+		sprite.ZIndex = 2;
+		CallDeferred("add_child", sprite);
+		GD.Print($"Added {(isBroken ? "broken" : "fixed")} pipe at {coords}");
+		pipes[coords] = sprite;
+		pipeStates[coords] = !isBroken; // true si está arreglada
+	}
+
+	public bool HasPipeAt(Vector2I coords)
+	{
+		return pipes.ContainsKey(coords);
+	}
+
+	public bool IsPipeRepairedAt(Vector2I coords)
+	{
+		return pipeStates.TryGetValue(coords, out bool isRepaired) && isRepaired;
+	}
+
+	public void RepairPipe(Vector2I coords)
+	{
+		if (pipes.TryGetValue(coords, out var sprite))
+		{
+			sprite.Texture = GD.Load<Texture2D>("res://Assets/Pipe.png");
+			pipeStates[coords] = true;
+			GD.Print($"Pipe repaired at {coords}");
+		}
+	}
+
+	public void BreakPipe(Vector2I coords)
+	{
+		if (pipes.TryGetValue(coords, out var sprite))
+		{
+			sprite.Texture = GD.Load<Texture2D>("res://Assets/BrokenPipe.png");
+			pipeStates[coords] = false;
+			GD.Print($"Pipe broken at {coords}");
+			EmitSignal(SignalName.PipeBroken);
+		}
+	}
+
+	public void RemovePipeAt(Vector2I coords)
+	{
+		if (pipes.TryGetValue(coords, out var sprite))
+		{
+			sprite.QueueFree();
+			pipes.Remove(coords);
+			pipeStates.Remove(coords);
+		}
+	}
+
+	public int GetTotalPipes()
+	{
+		return pipes.Count;
+	}
+
+	public int GetRepairedPipesCount()
+	{
+		int count = 0;
+		foreach (var kvp in pipeStates)
+		{
+			if (kvp.Value == true)
+				count++;
+		}
+		return count;
+	}
+
+	public int GetBrokenPipesCount()
+	{
+		int count = 0;
+		foreach (var kvp in pipeStates)
+		{
+			if (kvp.Value == false)
+				count++;
+		}
+		return count;
+	}
+
+	public Vector2I? GetRandomGoodPipe()
+	{
+		var goodPipes = new System.Collections.Generic.List<Vector2I>();
+		foreach (var kvp in pipeStates)
+		{
+			if (kvp.Value == true) // Tubería buena
+				goodPipes.Add(kvp.Key);
+		}
+
+		if (goodPipes.Count > 0)
+		{
+			int randomIndex = rnd.Next(goodPipes.Count);
+			return goodPipes[randomIndex];
+		}
+
+		return null; // No hay tuberías buenas
+	}
+
+	public void PlacePipeNetwork(Vector2I startCoord, int pipeLength)
+	{
+		Stack<Vector2I> pipeCoords = GenerateObstacleWithBacktracking(startCoord, pipeLength);
+		
+		GD.Print($"Red de tuberías generada con {pipeCoords.Count} segmentos");
+		
+		while (pipeCoords.Count > 0) {
+			Vector2I coord = pipeCoords.Pop();
+			// 50% probabilidad de estar rota o buena
+			bool isBroken = rnd.Next(2) == 0;
+			AddPipe(coord, isBroken: isBroken);
+		}
+	}
+
 	public int GenerateObstacles(int seed = 0, float scale = 0.1f, float threshold = 0.6f, int octaves = 4, bool clearExisting = true)
 	{
 		GD.Print("Generating obstacles...");
@@ -232,7 +355,7 @@ public partial class DualGridTilemap : Node2D {
 
 	private bool CellIsEmpty(Vector2I coord)
 	{
-		return !(HasTrashAt(coord) || HasRockAt(coord));
+		return !(HasTrashAt(coord) || HasRockAt(coord) || HasPipeAt(coord));
 	}
 
 	private Stack<Vector2I> GenerateObstacleWithBacktracking(Vector2I startCoord, int pieceSize)

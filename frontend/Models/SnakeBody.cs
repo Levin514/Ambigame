@@ -23,11 +23,13 @@ public partial class SnakeBody : Sprite2D
 	//[Export] CanvasLayer gameOverScreen;
 	[Export] PlayerAnimation player_ani;
 	[Export] LifeSystem life_system;
+	[Export] public AudioStream repairSound; // Sonido al reparar tubería
 	[Export] public bool HasWalls = false; // Si true, chocar con bordes causa Game Over
 	[Export] public bool HideBody = false; // Si true, no dibuja cuerpo ni crece (solo cabeza)
 
 	private LinkedList<Vector2I> _body;
 	private LinkedList<Trash> trashList;
+	private AudioStreamPlayer audioPlayer; // Reproductor de audio
 	private bool _crash;
 	private Direction _direction;
 	private Direction _nextDirection;  // Buffer para la próxima dirección
@@ -65,6 +67,10 @@ public partial class SnakeBody : Sprite2D
 
 	public override void _Ready()
 	{
+		// Inicializar reproductor de audio
+		audioPlayer = new AudioStreamPlayer();
+		AddChild(audioPlayer);
+		
 		trashList = new();
 		DualGrid.TrashCollector += AddToTrashList;
 		_direction = Direction.RIGHT;
@@ -101,11 +107,41 @@ public partial class SnakeBody : Sprite2D
 	{
 		Debug.Assert(_body != null, nameof(_body) + " != null");
 		var headPosition = _body.First.Value;
+		
+		// Detectar tubería y actuar según su estado
+		if (DualGrid.HasPipeAt(headPosition))
+		{
+			if (DualGrid.IsPipeRepairedAt(headPosition))
+			{
+				// Tubería BUENA → ROMPERLA (penalización)
+				DualGrid.BreakPipe(headPosition);
+				GD.Print("SnakeBody: ¡Rompiste una tubería buena! Penalización.");
+				// No reproducir sonido de reparación (es una penalización)
+				return true;
+			}
+			else
+			{
+				// Tubería ROTA → REPARARLA (objetivo)
+				DualGrid.RepairPipe(headPosition);
+				
+				// Reproducir sonido de reparación
+				if (repairSound != null && audioPlayer != null)
+				{
+					audioPlayer.Stream = repairSound;
+					audioPlayer.Play();
+				}
+				
+				// Emitir señal de tubería reparada
+				EmitSignal(SignalName.PipeRepaired);
+				GD.Print("SnakeBody: Tubería reparada correctamente.");
+				
+				return true;
+			}
+		}
+		
+		// Detectar basura (para niveles de reciclaje)
 		if (DualGrid.HasTrashAt(headPosition))
 		{
-			// Emitir señal de tubería reparada (el GameLayout/WaterSystem lo manejará)
-			EmitSignal(SignalName.PipeRepaired);
-			
 			Reciclados++;
 			Puntuacion += (int)(puntuacionBase * (_body.Count / 10.0));
 			DualGrid.RemoveTrashAt(headPosition);

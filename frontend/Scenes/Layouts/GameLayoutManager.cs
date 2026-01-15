@@ -109,6 +109,12 @@ public partial class GameLayoutManager : Control
 			
 			// Conectar señales del nivel a los indicadores
 			ConectarSeñalesDelNivel(tipoNivel);
+			
+			// Inicializar WaterSystem si es nivel de agua
+			if (tipoNivel == "water" && waterSystemNode != null)
+			{
+				InitializeWaterSystem();
+			}
 		}
 		else
 		{
@@ -211,16 +217,17 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("PipeRepaired", new Callable(this, nameof(OnPipeRepaired)));
 				GD.Print("GameLayoutManager: Señal PipeRepaired conectada");
 			}
-			
-			// Buscar el SnakeBody dentro del nivel
-			var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
-			if (snakeBody != null)
-			{
-				if (snakeBody.HasSignal("ScoreUpdated"))
-				{
-					snakeBody.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
-					GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
-				}
+		
+		if (currentLevel.HasSignal("PipeBroken"))
+		{
+			currentLevel.Connect("PipeBroken", new Callable(this, nameof(OnPipeBroken)));
+			GD.Print("GameLayoutManager: Señal PipeBroken conectada");
+		}
+		
+		// Buscar el SnakeBody dentro del nivel
+		var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
+		if (snakeBody != null)
+		{
 				
 				if (snakeBody.HasSignal("TimeUpdated"))
 				{
@@ -470,6 +477,40 @@ public partial class GameLayoutManager : Control
 		if (waterSystemNode != null && waterSystemNode.HasMethod("OnPipeRepaired"))
 		{
 			waterSystemNode.Call("OnPipeRepaired");
+		}
+	}
+	
+	private void OnPipeBroken()
+	{
+		GD.Print("GameLayoutManager: Tubería rota, actualizando WaterSystem");
+		if (waterSystemNode != null && waterSystemNode.HasMethod("OnPipeBroken"))
+		{
+			waterSystemNode.Call("OnPipeBroken");
+		}
+	}
+	
+	private void InitializeWaterSystem()
+	{
+		GD.Print("GameLayoutManager: Inicializando WaterSystem con total de tuberías");
+		
+		// Buscar el DualGridTilemap en el nivel actual
+		var dualGrid = currentLevel.FindChild("TileMapLayers", true, false);
+		
+		if (dualGrid != null && waterSystemNode != null)
+		{
+			// Obtener el total de tuberías
+			int totalPipes = (int)dualGrid.Call("GetTotalPipes");
+			int brokenPipes = (int)dualGrid.Call("GetBrokenPipesCount");
+			GD.Print($"GameLayoutManager: Total de tuberías: {totalPipes}, Rotas: {brokenPipes}");
+			
+			// Configurar el WaterSystem
+			waterSystemNode.Call("SetTotalPipes", totalPipes);
+			waterSystemNode.Call("SetDualGridTilemap", dualGrid); // Pasar referencia al DualGrid
+			waterSystemNode.Call("InitializeBrokenPipes"); // Inicializar sin parámetro
+		}
+		else
+		{
+			GD.PrintErr("GameLayoutManager: No se encontró DualGridTilemap o WaterSystem");
 		}
 	}
 	

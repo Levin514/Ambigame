@@ -63,6 +63,11 @@ layout_mode = 2
 theme = ExtResource("4_7bcn3")
 text = "Jugar"
 
+[node name="CustomizeButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
+layout_mode = 2
+theme = ExtResource("4_7bcn3")
+text = "Personalizar"
+
 [node name="ProgressButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
@@ -81,3 +86,4 @@ Kevin Mejia y Levin Moran"
 label_settings = ExtResource("3_76d8l")
 
 [connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/PlayButton" to="MarginContainer3" method="GoToMain"]
+[connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/CustomizeButton" to="MarginContainer3" method="GoToCustomization"]

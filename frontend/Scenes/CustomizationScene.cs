@@ -61,7 +61,7 @@ public partial class CustomizationScene : MarginContainer
 
 	public void GoBack()
 	{
-		GetTree().ChangeSceneToFile("res://Scenes/MainScene.tscn");
+		GetTree().ChangeSceneToFile("res://Scenes/LoginScene.tscn");
 	}
 
 	public void SaveCustomization()
@@ -69,6 +69,6 @@ public partial class CustomizationScene : MarginContainer
 		// Guardar la personalización seleccionada
 		GD.Print($"Guardando personalización - Sombrero: {_selectedHat}, Traje: {_selectedOutfit}");
 		// Aquí puedes agregar la lógica para guardar en el modelo Player
-		GoBack();
+		GetTree().ChangeSceneToFile("res://Scenes/LoginScene.tscn");
 	}
 }
