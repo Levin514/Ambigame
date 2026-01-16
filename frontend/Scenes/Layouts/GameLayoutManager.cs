@@ -638,6 +638,11 @@ public partial class GameLayoutManager : Control
 			GD.Print("GameLayoutManager: Cargando minijuego de agua en el layout");
 			CargarNivel("res://Scenes/WaterCatchLevel.tscn", "minigame");
 		}
+		if (currentLevelType.ToLower() == "recycling")
+		{
+			GD.Print("GameLayoutManager: Cargando minijuego de clasificación en el layout");
+			CargarNivel("res://Scenes/ClassifyLevel.tscn", "minigame");
+		}
 		else
 		{
 			// Para otros niveles, volver al menú principal

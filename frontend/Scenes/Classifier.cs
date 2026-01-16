@@ -12,6 +12,7 @@ public partial class Classifier : Node2D
 
 	[Export] Sprite2D recycleSprite;
 	[Export] Sprite2D sprite;
+	private ClassifyLevel classifyLevel;
 
 	private Dictionary<String, String> recycleObjects;
 
@@ -24,9 +25,14 @@ public partial class Classifier : Node2D
 
 	private String actualCategory;
 
+	private bool isCorrect;
+
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
+		// Obtener ClassifyLevel del nodo padre
+		classifyLevel = GetParent<ClassifyLevel>();
+
 		recycleObjects = GameData.Instance.recycleObjects;
 
 		if(GameData.Instance.globalTrashList != null)
@@ -50,21 +56,36 @@ public partial class Classifier : Node2D
 		
 	}
 
+	public bool GetHasTrashElements()
+	{
+		return hasTrashElements;
+	}
+
+	public bool GetCorrectClassification()
+	{
+		return isCorrect;
+	}
+
 	public String GetRandomCategory()
 	{
 		String category;
-		if(hasTrashList && hasTrashElements)
-		{
-			Trash trash = body.First.Value;
-			body.RemoveFirst();
-			category = trash.category;
-			hasTrashList = body.Count != 0;
-		}
-		else
+		if(!hasTrashList)
 		{
 			keys = GameData.Instance.recycleObjects.Keys.ToList();
 			category = keys[rnd.Next() % keys.Count()];
 		}
+		else if(hasTrashElements)
+		{
+			Trash trash = body.First.Value;
+			body.RemoveFirst();
+			category = trash.category;
+			hasTrashElements = body.Count != 0;
+		}
+		else
+		{
+			category = null;	
+		}
+
 		GD.Print(category);
 		GD.Print(hasTrashList);
 		return category;
@@ -80,57 +101,54 @@ public partial class Classifier : Node2D
 	public void GenerateSprite(String name)
 	{
 		sprite.Texture = GD.Load<Texture2D>("res://Assets/" + name + ".png");
-		sprite.Scale = new Vector2(0.05f,0.05f);
+		sprite.Scale = new Vector2(0.25f,0.25f);
 	}
 
 	public void UpdateItemSprite()
 	{
 		String newCategory = GetRandomCategory();
-		GenerateItemSprite(newCategory);
-		actualCategory = newCategory;
-		GD.Print("Sprite Updated with: " + newCategory);
+		if(newCategory != null)
+		{
+			GenerateItemSprite(newCategory);
+			actualCategory = newCategory;
+			GD.Print("Sprite Updated with: " + newCategory);
+		}
 	}
 
 	public override void _Input(InputEvent @event)
 	{
+		// Bloquear input si el jugador está en movimiento o esperando
+		if (classifyLevel != null && (classifyLevel.GetIsMoving() || classifyLevel.GetIsWaiting()))
+			return;
+
 		/* Vector2I element = body.First.Value;
 		body.RemoveFirst(); */
-
 		if (@event.IsActionPressed("ui_left"))
 		{
-			if(actualCategory == "paper")
+			isCorrect = actualCategory == "paper";
+			if(isCorrect)
 			{
 				GD.Print("Acierto");
-				
-				GenerateSprite("greencheck");
-			}
-			else
-			{
-				GenerateSprite("redcross");
 			}
 			UpdateItemSprite();
 		}
 
 		if (@event.IsActionPressed("ui_right") )
 		{
-			if(actualCategory == "glass")
+			isCorrect = actualCategory == "glass";
+			if(isCorrect)
 			{
 				GD.Print("Acierto");
-				GenerateSprite("greencheck");
-			}
-			else
-			{
-				GenerateSprite("redcross");
 			}
 			UpdateItemSprite();
 		}
 
 		if (@event.IsActionPressed("ui_up"))
 		{
-			if(actualCategory == "plastic")
+			isCorrect = actualCategory == "plastic";
+			if(isCorrect)
 			{
 				GD.Print("Acierto");
-				GenerateSprite("greencheck");
 			}
 			
 			UpdateItemSprite();

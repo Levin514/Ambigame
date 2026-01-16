@@ -22,6 +22,7 @@ public partial class RecyclingSnake : Node2D
 
 	private Timer timer;
 	private bool isGameOver = false;
+	private int victoryThreshold = 20; // Cantidad de basura para ganar
 
 	public override void _Ready()
 	{
@@ -48,6 +49,11 @@ public partial class RecyclingSnake : Node2D
 
 	public override void _Process(double delta)
 	{
+		// Verificar condición de victoria
+		if (!isGameOver && _snakeBody != null && _snakeBody.Reciclados >= victoryThreshold)
+		{
+			OnVictory();
+		}
 	}
 
 	public void OnGameOver()
@@ -66,6 +72,31 @@ public partial class RecyclingSnake : Node2D
 		if (_snakeBody != null)
 		{
 			EmitSignal(SignalName.GameOver, _snakeBody.Puntuacion, _snakeBody.Reciclados, (int)_snakeBody.juegoTime);
+		}
+	}
+
+	public void OnVictory()
+	{
+		GD.Print("RecyclingSnake: ¡VICTORIA! Basura recolectada: " + _snakeBody.Reciclados);
+		if (isGameOver) return;
+		
+		isGameOver = true;
+		timer.Stop();
+		if (gameMusic != null && gameMusic.Playing)
+		{
+			gameMusic.Stop();
+		}
+		
+		// Guardar la lista de basura en GameData
+		if (_snakeBody != null)
+		{
+			GameData.Instance.globalTrashList = _snakeBody.GetTrashList();
+		}
+		
+		// Emitir señal de Victoria con estadísticas
+		if (_snakeBody != null)
+		{
+			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, _snakeBody.Reciclados, (int)_snakeBody.juegoTime);
 		}
 	}
 

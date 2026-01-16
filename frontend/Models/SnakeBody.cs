@@ -28,6 +28,8 @@ public partial class SnakeBody : Sprite2D
 
 	private LinkedList<Vector2I> _body;
 	private LinkedList<Trash> trashList;
+	
+	public LinkedList<Trash> GetTrashList() => trashList;
 	private bool _crash;
 	private Direction _direction;
 	private Direction _nextDirection;  // Buffer para la próxima dirección
@@ -237,7 +239,6 @@ public void ShowGameOverScreen()
 	{
 		_crash = true;
 		//gameOverScreen.Visible = true;
-		GameData.Instance.globalTrashList = trashList;
 		
 		EmitSignal(SignalName.GameOver);
 	}
