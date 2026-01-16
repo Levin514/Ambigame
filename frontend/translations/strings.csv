@@ -1,0 +1,73 @@
+keys,es,en
+GAME_TITLE,Ambigame,Ambigame
+GAME_SUBTITLE,!Salva el planeta gana puntos!,Save the planet earn points!
+BTN_BACK,Volver,Back
+BTN_PLAY,Jugar,Play
+BTN_SETTINGS,Ajustes,Settings
+BTN_CUSTOMIZE,Personalizar,Customize
+BTN_PROGRESS,Progreso,Progress
+BTN_CONTINUE,Continuar,Continue
+BTN_START,Empezar,Start
+BTN_TUTORIAL,Tutorial,Tutorial
+BTN_SOUND,Sonido,Sound
+BTN_SAVE,Guardar,Save
+BTN_RETRY,Volver a jugar,Play Again
+BTN_EXIT,Salir,Exit
+BTN_MAIN_MENU,Menú principal,Main Menu
+BTN_NEXT_LEVEL,Siguiente Nivel,Next Level
+BTN_PAUSE,Pausa,Pause
+BTN_MINIGAME,Minigame,Minigame
+GAME_MODE_STORY,Modo historia,Story Mode
+GAME_MODE_INFINITE,Modo Infinito,Infinite Mode
+SETTINGS_TITLE,Ajustes,Settings
+SETTINGS_AUDIO,Configuración de Audio,Audio Settings
+SETTINGS_MUSIC_VOLUME,Volumen de Música,Music Volume
+SETTINGS_SFX_VOLUME,Volumen de Efectos,Sound Effects Volume
+PAUSE_MUSIC_LABEL,Volumen Música,Music Volume
+PAUSE_SFX_LABEL,Volumen Efectos,Sound Effects
+PAUSE_MUSIC_CHECKBOX,Música,Music
+CUSTOMIZATION_TITLE,Personalización,Customization
+CUSTOMIZATION_HATS,Sombreros,Hats
+CUSTOMIZATION_OUTFITS,Trajes,Outfits
+CUSTOMIZATION_HAT_1,Sombrero 1,Hat 1
+CUSTOMIZATION_HAT_2,Sombrero 2,Hat 2
+CUSTOMIZATION_HAT_3,Sombrero 3,Hat 3
+CUSTOMIZATION_OUTFIT_1,Traje 1,Outfit 1
+CUSTOMIZATION_OUTFIT_2,Traje 2,Outfit 2
+CUSTOMIZATION_OUTFIT_3,Traje 3,Outfit 3
+LEVEL1_TITLE,Limpieza comienza,Cleanup Begins
+LEVEL2_TITLE,Guardianes del agua,Water Guardians
+LEVEL3_TITLE,Sembrando vida,Planting Life
+WATER_SAVING_TITLE,Ahorrando Agua,Saving Water
+WATER_SAVING_DESC,Repara las tuberías y salva el agua,Fix the pipes and save the water
+MAP_HOUSE,Casa,House
+MAP_SCHOOL,Escuela,School
+MAP_PARK,Parque,Park
+MAP_RANDOM,Aleatorio,Random
+MAP_FOREST,Bosque,Forest
+MAP_BEACH,Playa,Beach
+MAP_RIVER,Río,River
+TUTORIAL_TITLE,Tutorial,Tutorial
+TUTORIAL_DESC,La guía para salvar al mundo,The guide to save the world
+TUTORIAL_TEXT,Controla a tu personaje: Mueves a tu héroe ecológico con las flechas direccionales o las teclas WASD para recolectar residuos esparcidos por el terreno. El objetivo es recoger la basura del entorno.\n\nHaz crecer tu bolsa de basura: Cada vez que recojas un residuo tu bolsa de basura se alarga. Cuanto más recojas más difícil será controlar la longitud de tu bolsa.\n\nEvita chocar: Ten cuidado de no chocar con tu propia bolsa de basura ya que esto provocará el fin del juego. La longitud de tu bolsa de basura aumenta con cada residuo recolectado.\n\nRecoge residuos especiales: Algunos residuos son especiales que te otorgarán puntos extra y te ayudarán a avanzar más rápido. Los residuos especiales también aumentan la dificultad.\n\nJuega sin límite de tiempo: No hay un tiempo límite para recolectar basura. El objetivo es lograr la mayor puntuación posible mientras continúas recolectando residuos y evitando dañar tu bolsa de basura. ¡Recoge todo lo que puedas y ayuda al planeta!,Control your character: Move your ecological hero with the arrow keys or WASD keys to collect waste scattered across the terrain. The goal is to pick up trash from the environment.\n\nGrow your trash bag: Each time you collect waste your trash bag gets longer. The more you collect the harder it will be to control your bag's length.\n\nAvoid crashing: Be careful not to crash into your own trash bag as this will end the game. Your trash bag's length increases with each piece of waste collected.\n\nCollect special waste: Some waste is special granting you extra points and helping you advance faster. Special waste also increases difficulty.\n\nPlay without time limit: There's no time limit to collect trash. The goal is to achieve the highest score possible while continuing to collect waste and avoiding damage to your trash bag. Collect everything you can and help the planet!
+GAME_OVER,Perdiste,Game Over
+VICTORY,¡Victoria!,Victory!
+UI_POINTS,Puntos,Points
+UI_RECYCLED,Reciclados,Recycled
+UI_TIME,Tiempo,Time
+UI_SEEDS,Semillas,Seeds
+UI_WATER,Agua,Water
+UI_PLANTED,Plantado,Planted
+UI_PLACEHOLDER_STATS,Placeholder for stats,Placeholder for stats
+UI_USER_PLACEHOLDER,Usuario: Invitado,User: Guest
+CREDITS_TEXT,Creado por: Kevin Mejia y Levin Moran,Created by: Kevin Mejia and Levin Moran
+LANGUAGE_SELECTOR,Idioma,Language
+SLIDE_RECYCLING_1,¡Bienvenido al nivel de reciclaje!,Welcome to the recycling level!
+SLIDE_RECYCLING_2,Recoge basura del mismo tipo para ganar puntos,Collect trash of the same type to earn points
+SLIDE_RECYCLING_3,¡Evita chocar con las paredes o contigo mismo!,Avoid crashing into walls or yourself!
+SLIDE_WATER_1,¡Ahorra agua reparando tuberías!,Save water by fixing pipes!
+SLIDE_WATER_2,Encuentra las tuberías rotas y repáralas rápidamente,Find broken pipes and fix them quickly
+SLIDE_WATER_3,¡Mientras más agua ahorres más puntos obtienes!,The more water you save the more points you get!
+SLIDE_REFORESTATION_1,¡Planta árboles y salva el bosque!,Plant trees and save the forest!
+SLIDE_REFORESTATION_2,Usa tus semillas y agua sabiamente,Use your seeds and water wisely
+SLIDE_REFORESTATION_3,¡Riega las plantas para que crezcan completamente!,Water the plants so they grow completely!

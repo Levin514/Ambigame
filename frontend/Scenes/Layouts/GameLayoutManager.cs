@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Snake;
 
 public partial class GameLayoutManager : Control
 {
@@ -27,6 +28,8 @@ public partial class GameLayoutManager : Control
 	
 	private Node currentLevel;
 	private string currentLevelType = ""; // Guardar el tipo de nivel actual
+	private string pendingLevelPath = ""; // Ruta del nivel que se cargará después de los slides
+	private string pendingLevelType = ""; // Tipo del nivel pendiente
 
 	public override void _Ready()
 	{
@@ -39,6 +42,11 @@ public partial class GameLayoutManager : Control
 		scoreLabel.Visible = true;
 		timeLabel.Visible = true;
 		
+		// Inicializar textos de indicadores con traducciones
+		ActualizarPuntaje(0);
+		ActualizarTiempo(0);
+		ActualizarReciclados(0);
+		
 		// Conectar el botón de pausa
 		if (pauseButton != null)
 		{
@@ -50,7 +58,7 @@ public partial class GameLayoutManager : Control
 		if (levelManager != null && !string.IsNullOrEmpty(levelManager.LevelPath))
 		{
 			GD.Print($"GameLayoutManager: Cargando nivel desde LevelManager - {levelManager.LevelPath}");
-			CargarNivel(levelManager.LevelPath, levelManager.LevelType);
+			CargarNivelConSlides(levelManager.LevelPath, levelManager.LevelType, levelManager.SlideKeys, levelManager.SlideTitleKey);
 		}
 		else
 		{
@@ -83,7 +91,93 @@ public partial class GameLayoutManager : Control
 	/// </summary>
 	public void CargarNivel(string rutaNivel, string tipoNivel)
 	{
+		CargarNivelConSlides(rutaNivel, tipoNivel, null);
+	}
+	
+	/// <summary>
+	/// Carga un nivel con slides de tutorial opcionales
+	/// </summary>
+	/// <param name="rutaNivel">Ruta del nivel a cargar</param>
+	/// <param name="tipoNivel">Tipo de nivel</param>
+	/// <param name="slideKeys">Claves de traducción para los slides (null = sin slides)</param>
+	/// <param name="titleKey">Clave de traducción del título (opcional)</param>
+	public void CargarNivelConSlides(string rutaNivel, string tipoNivel, string[] slideKeys, string titleKey = "TUTORIAL_TITLE")
+	{
 		GD.Print($"GameLayoutManager: Cargando nivel {rutaNivel} de tipo {tipoNivel}");
+		
+		// Si hay slides, mostrarlos primero
+		if (slideKeys != null && slideKeys.Length > 0)
+		{
+			GD.Print($"GameLayoutManager: Mostrando {slideKeys.Length} slides antes del nivel");
+			
+			// Guardar la información del nivel para cargarlo después
+			pendingLevelPath = rutaNivel;
+			pendingLevelType = tipoNivel;
+			
+			// Cargar y mostrar los slides
+			MostrarSlides(slideKeys, titleKey);
+		}
+		else
+		{
+			// Cargar el nivel directamente sin slides
+			CargarNivelDirecto(rutaNivel, tipoNivel);
+		}
+	}
+	
+	/// <summary>
+	/// Muestra los slides de tutorial
+	/// </summary>
+	private void MostrarSlides(string[] slideKeys, string titleKey)
+	{
+		// Limpiar cualquier contenido previo
+		if (currentLevel != null)
+		{
+			currentLevel.QueueFree();
+			currentLevel = null;
+		}
+		
+		// Cargar la escena de slides
+		var slidesScene = GD.Load<PackedScene>("res://Scenes/TutorialSlides.tscn");
+		if (slidesScene != null)
+		{
+			var slides = slidesScene.Instantiate<TutorialSlides>();
+			gameContainer.AddChild(slides);
+			
+			// Configurar los slides
+			slides.SetupSlides(slideKeys, titleKey);
+			
+			// Conectar la señal de completado
+			slides.SlidesCompleted += OnSlidesCompleted;
+			
+			currentLevel = slides;
+			GD.Print("GameLayoutManager: Slides cargados correctamente");
+		}
+		else
+		{
+			GD.PrintErr("GameLayoutManager: No se pudo cargar TutorialSlides.tscn");
+			// Cargar el nivel directamente si hay error
+			CargarNivelDirecto(pendingLevelPath, pendingLevelType);
+		}
+	}
+	
+	/// <summary>
+	/// Maneja el evento cuando se completan los slides
+	/// </summary>
+	private void OnSlidesCompleted()
+	{
+		GD.Print("GameLayoutManager: Slides completados, cargando nivel");
+		CargarNivelDirecto(pendingLevelPath, pendingLevelType);
+	}
+	
+	/// <summary>
+	/// Carga el nivel directamente sin slides
+	/// </summary>
+	private void CargarNivelDirecto(string rutaNivel, string tipoNivel)
+	{
+		GD.Print($"GameLayoutManager: Cargando nivel directo {rutaNivel} de tipo {tipoNivel}");
+		
+		// Guardar el tipo de nivel actual
+		currentLevelType = tipoNivel;
 		
 		// Guardar el tipo de nivel actual
 		currentLevelType = tipoNivel;
@@ -109,6 +203,12 @@ public partial class GameLayoutManager : Control
 			
 			// Conectar señales del nivel a los indicadores
 			ConectarSeñalesDelNivel(tipoNivel);
+			
+			// Inicializar WaterSystem si es nivel de agua
+			if (tipoNivel == "water" && waterSystemNode != null)
+			{
+				InitializeWaterSystem();
+			}
 		}
 		else
 		{
@@ -211,16 +311,17 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("PipeRepaired", new Callable(this, nameof(OnPipeRepaired)));
 				GD.Print("GameLayoutManager: Señal PipeRepaired conectada");
 			}
-			
-			// Buscar el SnakeBody dentro del nivel
-			var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
-			if (snakeBody != null)
-			{
-				if (snakeBody.HasSignal("ScoreUpdated"))
-				{
-					snakeBody.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
-					GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
-				}
+		
+		if (currentLevel.HasSignal("PipeBroken"))
+		{
+			currentLevel.Connect("PipeBroken", new Callable(this, nameof(OnPipeBroken)));
+			GD.Print("GameLayoutManager: Señal PipeBroken conectada");
+		}
+		
+		// Buscar el SnakeBody dentro del nivel
+		var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
+		if (snakeBody != null)
+		{
 				
 				if (snakeBody.HasSignal("TimeUpdated"))
 				{
@@ -319,6 +420,9 @@ public partial class GameLayoutManager : Control
 		}
 		else if (tipoNivel.ToLower() == "reforestation" || tipoNivel.ToLower() == "reforestationlevel")
 		{
+			// Inicializar sistemas para reforestación
+			InitializeReforestationSystems();
+			
 			// Conectar señales del ReforestationSnake (nodo raíz del nivel)
 			if (currentLevel.HasSignal("GameOver"))
 			{
@@ -336,6 +440,12 @@ public partial class GameLayoutManager : Control
 			{
 				currentLevel.Connect("PlantAttempt", new Callable(this, nameof(OnPlantAttempt)));
 				GD.Print("GameLayoutManager: Señal PlantAttempt conectada");
+			}
+			
+			if (currentLevel.HasSignal("PlantGrown"))
+			{
+				currentLevel.Connect("PlantGrown", new Callable(this, nameof(OnPlantGrown)));
+				GD.Print("GameLayoutManager: Señal PlantGrown conectada");
 			}
 			
 			// Buscar el SnakeBody dentro del nivel
@@ -357,26 +467,6 @@ public partial class GameLayoutManager : Control
 			else
 			{
 				GD.PrintErr("GameLayoutManager: No se encontró SnakeBody en el nivel de reforestación");
-			}
-			
-			// Conectar señales del PlantedSystem
-			if (plantedSystemNode != null && plantedSystemNode.HasSignal("Victory"))
-			{
-				plantedSystemNode.Connect("Victory", new Callable(currentLevel, "OnVictory"));
-				GD.Print("GameLayoutManager: PlantedSystem.Victory conectado a nivel");
-			}
-			
-			// Conectar señales de los sistemas de recursos (para Game Over)
-			if (seedsSystemNode != null && seedsSystemNode.HasSignal("NoSeeds"))
-			{
-				seedsSystemNode.Connect("NoSeeds", new Callable(currentLevel, "OnGameOver"));
-				GD.Print("GameLayoutManager: SeedsSystem.NoSeeds conectado a nivel");
-			}
-			
-			if (waterDropsSystemNode != null && waterDropsSystemNode.HasSignal("NoWater"))
-			{
-				waterDropsSystemNode.Connect("NoWater", new Callable(currentLevel, "OnGameOver"));
-				GD.Print("GameLayoutManager: WaterDropsSystem.NoWater conectado a nivel");
 			}
 		}
 		else if (tipoNivel.ToLower() == "minigame")
@@ -421,7 +511,7 @@ public partial class GameLayoutManager : Control
 	/// </summary>
 	public void ActualizarPuntaje(int puntos)
 	{
-		scoreLabel.Text = $"Puntos: {puntos}";
+		scoreLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {puntos}";
 	}
 
 	/// <summary>
@@ -431,7 +521,7 @@ public partial class GameLayoutManager : Control
 	{
 		int minutos = tiempo / 60;
 		int segundos = tiempo % 60;
-		timeLabel.Text = $"Tiempo: {minutos:00}:{segundos:00}";
+		timeLabel.Text = $"{TranslationManager.Tr("UI_TIME")}: {minutos:00}:{segundos:00}";
 	}
 
 	/// <summary>
@@ -439,7 +529,7 @@ public partial class GameLayoutManager : Control
 	/// </summary>
 	public void ActualizarReciclados(int cantidad)
 	{
-		recycledLabel.Text = $"Reciclados: {cantidad}";
+		recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: {cantidad}";
 	}
 	
 	// ========== Manejadores de Señales del Nivel ==========
@@ -448,13 +538,20 @@ public partial class GameLayoutManager : Control
 	{
 		GD.Print($"GameLayoutManager: Game Over - Score: {score}, Recycled: {recycled}, Time: {time}");
 		
+		// Reproducir efecto de sonido de derrota
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayDefeat();
+		}
+		
 		// Pausar el juego
 		GetTree().Paused = true;
 		
 		// Actualizar estadísticas
 		if (gameOverStatsLabel != null)
 		{
-			gameOverStatsLabel.Text = $"Puntos: {score}\nReciclados: {recycled}\nTiempo: {time}s";
+			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_RECYCLED")}: {recycled}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Game Over
@@ -468,13 +565,20 @@ public partial class GameLayoutManager : Control
 	{
 		GD.Print($"GameLayoutManager: Victory! - Score: {score}, Recycled: {recycled}, Time: {time}");
 		
+		// Reproducir efecto de sonido de victoria
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayVictory();
+		}
+		
 		// Pausar el juego
 		GetTree().Paused = true;
 		
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
-			victoryStatsLabel.Text = $"Puntos: {score}\nReciclados: {recycled}\nTiempo: {time}s";
+			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_RECYCLED")}: {recycled}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Victoria
@@ -493,40 +597,143 @@ public partial class GameLayoutManager : Control
 		}
 	}
 	
-	private void OnPlantAttempt()
+	private void OnPipeBroken()
 	{
-		GD.Print("GameLayoutManager: Intento de plantar");
-		
-		// Verificar y consumir recursos
-		bool hasSeeds = seedsSystemNode != null && (bool)seedsSystemNode.Call("HasSeeds", 1);
-		int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 5;
-		bool hasWater = waterDropsSystemNode != null && (bool)waterDropsSystemNode.Call("HasWater", waterNeeded);
-		
-		if (!hasSeeds || !hasWater)
+		GD.Print("GameLayoutManager: Tubería rota, actualizando WaterSystem");
+		if (waterSystemNode != null && waterSystemNode.HasMethod("OnPipeBroken"))
 		{
-			GD.Print("GameLayoutManager: Sin recursos suficientes - Game Over");
-			if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+			waterSystemNode.Call("OnPipeBroken");
+		}
+	}
+	
+	private void InitializeWaterSystem()
+	{
+		GD.Print("GameLayoutManager: Inicializando WaterSystem con total de tuberías");
+		
+		// Buscar el DualGridTilemap en el nivel actual
+		var dualGrid = currentLevel.FindChild("TileMapLayers", true, false);
+		
+		if (dualGrid != null && waterSystemNode != null)
+		{
+			// Obtener el total de tuberías
+			int totalPipes = (int)dualGrid.Call("GetTotalPipes");
+			int brokenPipes = (int)dualGrid.Call("GetBrokenPipesCount");
+			GD.Print($"GameLayoutManager: Total de tuberías: {totalPipes}, Rotas: {brokenPipes}");
+			
+			// Configurar el WaterSystem
+			waterSystemNode.Call("SetTotalPipes", totalPipes);
+			waterSystemNode.Call("SetDualGridTilemap", dualGrid); // Pasar referencia al DualGrid
+			waterSystemNode.Call("InitializeBrokenPipes"); // Inicializar sin parámetro
+		}
+		else
+		{
+			GD.PrintErr("GameLayoutManager: No se encontró DualGridTilemap o WaterSystem");
+		}
+	}
+	
+	private void InitializeReforestationSystems()
+	{
+		GD.Print("GameLayoutManager: Inicializando sistemas de reforestación");
+		
+		// Buscar el DualGridTilemap en el nivel actual
+		var dualGrid = currentLevel.FindChild("TileMapLayers", true, false);
+		
+		if (dualGrid != null)
+		{
+			int totalPlantSpots = (int)dualGrid.Call("GetTotalPlantSpots");
+			GD.Print($"GameLayoutManager: Total de lugares para plantar: {totalPlantSpots}");
+			
+			// Configurar PlantedSystem
+			if (plantedSystemNode != null)
 			{
-				currentLevel.Call("OnGameOver");
+				plantedSystemNode.Call("SetMaxPlanted", totalPlantSpots);
+				GD.Print("GameLayoutManager: PlantedSystem configurado");
 			}
-			return;
 		}
-		
-		// Consumir recursos
-		if (seedsSystemNode != null)
+		else
 		{
-			seedsSystemNode.Call("ConsumeSeeds", 1);
+			GD.PrintErr("GameLayoutManager: No se encontró DualGridTilemap");
 		}
+	}
+	
+	private void OnPlantGrown()
+	{
+		GD.Print("GameLayoutManager: Planta creció completamente");
 		
-		if (waterDropsSystemNode != null)
-		{
-			waterDropsSystemNode.Call("ConsumeWater", waterNeeded);
-		}
-		
-		// Actualizar plantados
-		if (plantedSystemNode != null && plantedSystemNode.HasMethod("OnPlantSuccessful"))
+		// Actualizar PlantedSystem
+		if (plantedSystemNode != null)
 		{
 			plantedSystemNode.Call("OnPlantSuccessful");
+		}
+		
+		// Verificar victoria
+		var dualGrid = currentLevel?.FindChild("TileMapLayers", true, false);
+		if (dualGrid != null)
+		{
+			int fullyGrown = (int)dualGrid.Call("GetFullyGrownCount");
+			int total = (int)dualGrid.Call("GetTotalPlantSpots");
+			
+			GD.Print($"GameLayoutManager: {fullyGrown}/{total} plantas completamente crecidas");
+			
+			if (fullyGrown >= total && total > 0)
+			{
+				GD.Print("GameLayoutManager: ¡Victoria! Todas las plantas han crecido");
+				if (currentLevel != null && currentLevel.HasMethod("OnVictory"))
+				{
+					currentLevel.Call("OnVictory");
+				}
+			}
+		}
+	}
+	
+	private void OnPlantAttempt(string action)
+	{
+		GD.Print($"GameLayoutManager: Intento de acción - {action}");
+		
+		if (action == "seed")
+		{
+			// Plantar semilla: solo consume semillas
+			bool hasSeeds = seedsSystemNode != null && (bool)seedsSystemNode.Call("HasSeeds", 1);
+			
+			if (!hasSeeds)
+			{
+				GD.Print("GameLayoutManager: Sin semillas - Game Over");
+				if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+				{
+					currentLevel.Call("OnGameOver");
+				}
+				return;
+			}
+			
+			// Consumir semilla
+			if (seedsSystemNode != null)
+			{
+				seedsSystemNode.Call("ConsumeSeeds", 1);
+				GD.Print("GameLayoutManager: Semilla consumida");
+			}
+		}
+		else if (action == "water")
+		{
+			// Regar planta: solo consume agua
+			int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 2;
+			bool hasWater = waterDropsSystemNode != null && (bool)waterDropsSystemNode.Call("HasWater", waterNeeded);
+			
+			if (!hasWater)
+			{
+				GD.Print("GameLayoutManager: Sin agua - Game Over");
+				if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+				{
+					currentLevel.Call("OnGameOver");
+				}
+				return;
+			}
+			
+			// Consumir agua
+			if (waterDropsSystemNode != null)
+			{
+				waterDropsSystemNode.Call("ConsumeWater", waterNeeded);
+				GD.Print("GameLayoutManager: Agua consumida");
+			}
 		}
 	}
 	
@@ -534,13 +741,20 @@ public partial class GameLayoutManager : Control
 	{
 		GD.Print($"GameLayoutManager: Game Over (Reforestation) - Score: {score}, Time: {time}");
 		
+		// Reproducir efecto de sonido de derrota
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayDefeat();
+		}
+		
 		// Pausar el juego
 		GetTree().Paused = true;
 		
 		// Actualizar estadísticas
 		if (gameOverStatsLabel != null)
 		{
-			gameOverStatsLabel.Text = $"Puntos: {score}\nTiempo: {time}s";
+			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Game Over
@@ -554,13 +768,20 @@ public partial class GameLayoutManager : Control
 	{
 		GD.Print($"GameLayoutManager: Victory! (Reforestation) - Score: {score}, Time: {time}");
 		
+		// Reproducir efecto de sonido de victoria
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayVictory();
+		}
+		
 		// Pausar el juego
 		GetTree().Paused = true;
 		
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
-			victoryStatsLabel.Text = $"Puntos: {score}\nTiempo: {time}s";
+			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Victoria

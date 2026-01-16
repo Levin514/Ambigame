@@ -42,14 +42,14 @@ alignment = 1
 [node name="Title" type="Label" parent="MarginContainer3/VBoxContainer/Header"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Ambigame"
+text = "GAME_TITLE"
 label_settings = ExtResource("2_76d8l")
 horizontal_alignment = 1
 
 [node name="SubTitle" type="Label" parent="MarginContainer3/VBoxContainer/Header"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "!Salva el planeta, gana puntos!"
+text = "GAME_SUBTITLE"
 label_settings = ExtResource("3_76d8l")
 horizontal_alignment = 1
 
@@ -61,23 +61,29 @@ alignment = 1
 [node name="PlayButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
-text = "Jugar"
+text = "BTN_PLAY"
+
+[node name="CustomizeButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
+layout_mode = 2
+theme = ExtResource("4_7bcn3")
+text = "BTN_CUSTOMIZE"
 
 [node name="ProgressButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
-text = "Progreso"
+text = "BTN_PROGRESS"
 
 [node name="ConfigButton" type="Button" parent="MarginContainer3/VBoxContainer/MainButtons"]
 layout_mode = 2
 theme = ExtResource("4_7bcn3")
-text = "Ajustes"
+text = "BTN_SETTINGS"
 
 [node name="CreditsLabel" type="Label" parent="MarginContainer3/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Creado por: 
-Kevin Mejia y Levin Moran"
+text = "CREDITS_TEXT"
 label_settings = ExtResource("3_76d8l")
 
 [connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/PlayButton" to="MarginContainer3" method="GoToMain"]
+[connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/CustomizeButton" to="MarginContainer3" method="GoToCustomization"]
+[connection signal="pressed" from="MarginContainer3/VBoxContainer/MainButtons/ConfigButton" to="MarginContainer3" method="GoToSettings"]

@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Snake;
 
 public partial class WaterDropsSystem : PanelContainer
 {
@@ -7,9 +8,9 @@ public partial class WaterDropsSystem : PanelContainer
 	
 	[Signal] public delegate void NoWaterEventHandler();
 	
-	private int currentWater = 30;
-	private int initialWater = 30;
-	private int waterPerPlant = 5;
+	private int currentWater = 20;
+	private int initialWater = 20;
+	private int waterPerPlant = 2;
 
 	public override void _Ready()
 	{
@@ -54,7 +55,7 @@ public partial class WaterDropsSystem : PanelContainer
 	{
 		if (waterLabel != null)
 		{
-			waterLabel.Text = $"Agua: {currentWater}";
+			waterLabel.Text = $"{TranslationManager.Tr("UI_WATER")}: {currentWater}";
 		}
 	}
 

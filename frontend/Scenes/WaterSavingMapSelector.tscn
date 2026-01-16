@@ -44,7 +44,17 @@ offset_top = 100.0
 offset_right = 270.0
 offset_bottom = 150.0
 theme = ExtResource("3_theme")
-text = "Volver"
+text = "BTN_BACK"
+
+[node name="SettingsButton" type="Button" parent="MarginContainer/ExitControl"]
+top_level = true
+layout_mode = 0
+offset_left = 820.0
+offset_top = 100.0
+offset_right = 970.0
+offset_bottom = 150.0
+theme = ExtResource("3_theme")
+text = "BTN_SETTINGS"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
@@ -56,13 +66,13 @@ layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
-text = "Ahorrando Agua"
+text = "WATER_SAVING_TITLE"
 label_settings = ExtResource("4_titles")
 horizontal_alignment = 1
 
 [node name="SubTitle" type="Label" parent="MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
-text = "Repara las tuberías y salva el agua"
+text = "WATER_SAVING_DESC"
 label_settings = ExtResource("5_text")
 horizontal_alignment = 1
 
@@ -87,7 +97,7 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_theme")
-text = "Casa"
+text = "MAP_HOUSE"
 
 [node name="EscuelaMapContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
 layout_mode = 2
@@ -104,7 +114,7 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_theme")
-text = "Escuela"
+text = "MAP_SCHOOL"
 
 [node name="ParqueMapContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
 layout_mode = 2
@@ -121,7 +131,7 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_theme")
-text = "Parque"
+text = "MAP_PARK"
 
 [node name="RandomMapContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/MainButtons"]
 layout_mode = 2
@@ -138,14 +148,15 @@ stretch_mode = 5
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_theme")
-text = "Aleatorio"
+text = "MAP_RANDOM"
 
 [node name="UserData" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "User: <Placeholder>"
+text = "UI_USER_PLACEHOLDER"
 label_settings = ExtResource("5_text")
 
 [connection signal="pressed" from="MarginContainer/ExitControl/BackButton" to="MarginContainer" method="_on_back_button_pressed"]
+[connection signal="pressed" from="MarginContainer/ExitControl/SettingsButton" to="MarginContainer" method="GoToSettings"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/CasaMapContainer/CasaTextureButton" to="MarginContainer" method="Casa_level_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/CasaMapContainer/CasaLevelButton" to="MarginContainer" method="Casa_level_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/EscuelaMapContainer/EscuelaTextureButton" to="MarginContainer" method="Escuela_level_button_pressed"]

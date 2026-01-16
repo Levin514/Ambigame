@@ -1,0 +1,73 @@
+[gd_scene load_steps=4 format=3 uid="uid://xm2fb5v1twhu"]
+
+[ext_resource type="Script" uid="uid://dq0cmhyqlq8jk" path="res://Scenes/TutorialSlides.cs" id="1_slides"]
+[ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_titles"]
+[ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="3_theme"]
+
+[node name="TutorialSlides" type="Control" node_paths=PackedStringArray("titleLabel", "contentLabel", "counterLabel", "continueButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -533.0
+offset_bottom = -310.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_slides")
+titleLabel = NodePath("CenterContainer/VBoxContainer/TitleLabel")
+contentLabel = NodePath("CenterContainer/VBoxContainer/ContentContainer/ContentLabel")
+counterLabel = NodePath("CenterContainer/VBoxContainer/CounterLabel")
+continueButton = NodePath("CenterContainer/VBoxContainer/ContinueButton")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(500, 0)
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 18
+text = "TUTORIAL_TITLE"
+label_settings = ExtResource("2_titles")
+horizontal_alignment = 1
+
+[node name="ContentContainer" type="PanelContainer" parent="CenterContainer/VBoxContainer"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+
+[node name="ContentLabel" type="Label" parent="CenterContainer/VBoxContainer/ContentContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "Contenido del slide..."
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 3
+
+[node name="CounterLabel" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 14
+text = "1/3"
+horizontal_alignment = 1
+
+[node name="ContinueButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("3_theme")
+text = "BTN_CONTINUE"

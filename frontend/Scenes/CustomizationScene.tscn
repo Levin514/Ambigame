@@ -32,7 +32,7 @@ layout_mode = 2
 [node name="Title" type="Label" parent="VBoxContainer/Header"]
 layout_mode = 2
 size_flags_horizontal = 3
-text = "Personalización"
+text = "CUSTOMIZATION_TITLE"
 label_settings = ExtResource("2_custom")
 horizontal_alignment = 1
 
@@ -65,13 +65,13 @@ theme_override_constants/separation = 10
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_custom")
-text = "Sombreros"
+text = "CUSTOMIZATION_HATS"
 
 [node name="OutfitsButton" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("3_custom")
-text = "Trajes"
+text = "CUSTOMIZATION_OUTFITS"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -89,19 +89,19 @@ columns = 3
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Sombrero 1"
+text = "CUSTOMIZATION_HAT_1"
 
 [node name="Hat2Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Sombrero 2"
+text = "CUSTOMIZATION_HAT_2"
 
 [node name="Hat3Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/HatsContainer"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Sombrero 3"
+text = "CUSTOMIZATION_HAT_3"
 
 [node name="OutfitsContainer" type="GridContainer" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer"]
 visible = false
@@ -116,19 +116,19 @@ columns = 3
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Traje 1"
+text = "CUSTOMIZATION_OUTFIT_1"
 
 [node name="Outfit2Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Traje 2"
+text = "CUSTOMIZATION_OUTFIT_2"
 
 [node name="Outfit3Button" type="Button" parent="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/ScrollContainer/OutfitsContainer"]
 custom_minimum_size = Vector2(120, 120)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Traje 3"
+text = "CUSTOMIZATION_OUTFIT_3"
 
 [node name="PreviewPanel" type="PanelContainer" parent="VBoxContainer/ContentContainer"]
 layout_mode = 2
@@ -154,13 +154,13 @@ alignment = 1
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Volver"
+text = "BTN_BACK"
 
 [node name="SaveButton" type="Button" parent="VBoxContainer/ButtonsContainer"]
 custom_minimum_size = Vector2(200, 40)
 layout_mode = 2
 theme = ExtResource("3_custom")
-text = "Guardar"
+text = "BTN_SAVE"
 
 [connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons/HatsButton" to="." method="ShowHatsPanel"]
 [connection signal="pressed" from="VBoxContainer/ContentContainer/CatalogPanel/MarginContainer/VBoxContainer/TabButtons/OutfitsButton" to="." method="ShowOutfitsPanel"]

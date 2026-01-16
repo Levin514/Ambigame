@@ -11,6 +11,7 @@
 [ext_resource type="Script" uid="uid://cfyiwwvuvvng0" path="res://Scenes/PlayerAnimation.cs" id="9_playeranimscript"]
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="10_playeraniminv"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="11_snakebody"]
+[ext_resource type="AudioStream" path="res://Assets/RepairPipe.mp3" id="12_repairsound"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_m2sw2"]
 texture = ExtResource("5_plant")
@@ -169,6 +170,7 @@ worldMapLayer = NodePath("WorldLayer")
 displayMapLayer = NodePath("DisplayLayer")
 plantMapLayer = NodePath("PlantLayer")
 dirtPlaceholderAtlasCoord = Vector2i(1, 0)
+generateObstacles = false
 
 [node name="WorldLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true
@@ -199,6 +201,7 @@ position = Vector2(0, 8)
 script = ExtResource("11_snakebody")
 DualGrid = NodePath("../../TileMapLayers")
 player_ani = NodePath("../../PlayerAnimation")
+repairSound = ExtResource("12_repairsound")
 HasWalls = true
 HideBody = true
 
@@ -212,4 +215,5 @@ animation = &"walk_right"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_music")
 volume_db = -10.0
+bus = &"Music"
 autoplay = true

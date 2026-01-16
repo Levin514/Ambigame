@@ -13,7 +13,7 @@ public partial class SnakeBody : Sprite2D
 {
 	[Signal] public delegate void GameOverEventHandler();
 	[Signal] public delegate void UpdateHealthEventHandler();
-	[Signal] public delegate void PipeRepairedEventHandler();
+	[Signal] public delegate void PipeRepairedEventHandler(string action);
 	[Signal] public delegate void ScoreUpdatedEventHandler(int score);
 	[Signal] public delegate void RecycledUpdatedEventHandler(int recycled);
 	[Signal] public delegate void TimeUpdatedEventHandler(int time);
@@ -23,13 +23,16 @@ public partial class SnakeBody : Sprite2D
 	//[Export] CanvasLayer gameOverScreen;
 	[Export] PlayerAnimation player_ani;
 	[Export] LifeSystem life_system;
+	[Export] public AudioStream repairSound; // Sonido al reparar tubería
 	[Export] public bool HasWalls = false; // Si true, chocar con bordes causa Game Over
 	[Export] public bool HideBody = false; // Si true, no dibuja cuerpo ni crece (solo cabeza)
+	[Export] public bool FreeMovement = false; // Si true, movimiento libre sin serpiente (reforestación)
 
 	private LinkedList<Vector2I> _body;
 	private LinkedList<Trash> trashList;
 	
 	public LinkedList<Trash> GetTrashList() => trashList;
+	private AudioStreamPlayer audioPlayer; // Reproductor de audio
 	private bool _crash;
 	private Direction _direction;
 	private Direction _nextDirection;  // Buffer para la próxima dirección
@@ -67,11 +70,36 @@ public partial class SnakeBody : Sprite2D
 
 	public override void _Ready()
 	{
+		// Inicializar reproductor de audio
+		audioPlayer = new AudioStreamPlayer();
+		AddChild(audioPlayer);
+		
 		trashList = new();
 		DualGrid.TrashCollector += AddToTrashList;
 		_direction = Direction.RIGHT;
 		_nextDirection = Direction.RIGHT;  // Inicializar buffer
-		_body = new([new(1, 0), new(0, 0)]);
+		
+		// Inicializar posición según modo de movimiento
+		if (FreeMovement)
+		{
+			// Modo libre: empezar en el centro del mapa
+			var bounds = DualGrid.GetMapBounds();
+			Vector2I centerPos = new Vector2I(bounds.X / 2, bounds.Y / 2);
+			_body = new([centerPos]);
+			GD.Print($"SnakeBody: Modo movimiento libre - Posición inicial: {centerPos}");
+			
+			// Actualizar posición visual del sprite inmediatamente
+			if (player_ani != null)
+			{
+				player_ani.MoveSprite(centerPos, 0);
+			}
+		}
+		else
+		{
+			// Modo serpiente: posición tradicional
+			_body = new([new(1, 0), new(0, 0)]);
+		}
+		
 		ZIndex = 1;
 		
 		// Conectar al LifeSystem solo si existe (nivel de limpieza)
@@ -103,14 +131,85 @@ public partial class SnakeBody : Sprite2D
 	{
 		Debug.Assert(_body != null, nameof(_body) + " != null");
 		var headPosition = _body.First.Value;
+		
+		// Detectar lugar de plantación (para nivel de reforestación)
+		if (DualGrid.HasPlantSpotAt(headPosition))
+		{
+			var plantState = (int)DualGrid.Call("GetPlantState", headPosition);
+			
+			// 0 = Empty (puede plantar), 2 = NeedsWater (puede regar)
+			if (plantState == 0) // PlantState.Empty
+			{
+				bool planted = (bool)DualGrid.Call("TryPlantSeed", headPosition);
+				if (planted)
+				{
+					GD.Print("SnakeBody: Semilla plantada");
+					EmitSignal(SignalName.PipeRepaired, "seed"); // Pasar "seed" como parámetro
+					return true;
+				}
+			}
+			else if (plantState == 2) // PlantState.NeedsWater
+			{
+				bool watered = (bool)DualGrid.Call("TryWaterPlant", headPosition);
+				if (watered)
+				{
+					GD.Print("SnakeBody: Planta regada");
+					EmitSignal(SignalName.PipeRepaired, "water"); // Pasar "water" como parámetro
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		// Detectar tubería y actuar según su estado
+		if (DualGrid.HasPipeAt(headPosition))
+		{
+			if (DualGrid.IsPipeRepairedAt(headPosition))
+			{
+				// Tubería BUENA → ROMPERLA (penalización)
+				DualGrid.BreakPipe(headPosition);
+				GD.Print("SnakeBody: ¡Rompiste una tubería buena! Penalización.");
+				// Reproducir efecto de sonido al romper tubería
+				var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+				if (audioManager != null)
+				{
+					audioManager.PlayBreakPipe();
+				}
+				return true;
+			}
+			else
+			{
+				// Tubería ROTA → REPARARLA (objetivo)
+				DualGrid.RepairPipe(headPosition);
+				
+				// Reproducir sonido de reparación
+				var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+				if (audioManager != null)
+				{
+					audioManager.PlayRepairPipe();
+				}
+				
+				// Emitir señal de tubería reparada
+				EmitSignal(SignalName.PipeRepaired, "pipe");
+				GD.Print("SnakeBody: Tubería reparada correctamente.");
+				
+				return true;
+			}
+		}
+		
+		// Detectar basura (para niveles de reciclaje)
 		if (DualGrid.HasTrashAt(headPosition))
 		{
-			// Emitir señal de tubería reparada (el GameLayout/WaterSystem lo manejará)
-			EmitSignal(SignalName.PipeRepaired);
-			
 			Reciclados++;
 			Puntuacion += (int)(puntuacionBase * (_body.Count / 10.0));
 			DualGrid.RemoveTrashAt(headPosition);
+			// Reproducir efecto de sonido
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			if (audioManager != null)
+			{
+				audioManager.PlayTrashCollect();
+			}
 			return true;
 		}
 		return false;
@@ -145,7 +244,7 @@ public partial class SnakeBody : Sprite2D
 
 	public override void _Process(double delta)
 	{
-		_time += delta;
+		// Actualizar timer del juego
 		elapsedTime += delta;
 		if (elapsedTime > 1 && !_crash)
 		{
@@ -153,6 +252,88 @@ public partial class SnakeBody : Sprite2D
 			UpdateTimerLabel();
 			elapsedTime = 0;
 		}
+		
+		// En modo FreeMovement, movimiento continuo mientras se mantiene presionada la tecla
+		if (FreeMovement && !_crash)
+		{
+			_time += delta;
+			
+			// Velocidad de movimiento (ajustable)
+			if (_time > 0.1) // Moverse cada 0.1 segundos
+			{
+				Direction newDirection = _direction;
+				bool hasMoved = false;
+				
+				// Detectar qué tecla está presionada
+				if (Input.IsActionPressed("ui_left"))
+				{
+					newDirection = Direction.LEFT;
+					hasMoved = true;
+				}
+				else if (Input.IsActionPressed("ui_right"))
+				{
+					newDirection = Direction.RIGHT;
+					hasMoved = true;
+				}
+				else if (Input.IsActionPressed("ui_up"))
+				{
+					newDirection = Direction.UP;
+					hasMoved = true;
+				}
+				else if (Input.IsActionPressed("ui_down"))
+				{
+					newDirection = Direction.DOWN;
+					hasMoved = true;
+				}
+				
+				if (hasMoved)
+				{
+					// Aplicar movimiento
+					_direction = newDirection;
+					var translation = _direction switch
+					{
+						Direction.RIGHT => new Vector2I(1, 0),
+						Direction.LEFT => new Vector2I(-1, 0),
+						Direction.UP => new Vector2I(0, -1),
+						Direction.DOWN => new Vector2I(0, 1),
+						_ => new Vector2I(0, 0)
+					};
+					
+					var mapBounds = DualGrid.GetMapBounds();
+					var newVect = new Vector2I(_body.First.Value.X, _body.First.Value.Y);
+					newVect += translation;
+					
+					// Limitar a los bordes del mapa
+					if (newVect.X < 0) newVect.X = 0;
+					if (newVect.X > mapBounds.X) newVect.X = mapBounds.X;
+					if (newVect.Y < 0) newVect.Y = 0;
+					if (newVect.Y > mapBounds.Y) newVect.Y = mapBounds.Y;
+					
+					// Actualizar animación
+					if (_direction == Direction.RIGHT)
+						player_ani.ChangeAnimation("walk_right");
+					if (_direction == Direction.LEFT)
+						player_ani.ChangeAnimation("walk_left");
+					if (_direction == Direction.UP)
+						player_ani.ChangeAnimation("walk_up");
+					if (_direction == Direction.DOWN)
+						player_ani.ChangeAnimation("walk_down");
+					
+					// Mover personaje
+					_body.Clear();
+					_body.AddFirst(newVect);
+					TryEat(); // Procesar interacciones
+					player_ani.MoveSprite(_body.First.Value, delta);
+					
+					_time = 0;
+				}
+			}
+			
+			return;
+		}
+		
+		// Modo serpiente: movimiento automático con timer
+		_time += delta;
 		if (_time > 0.2 && !_crash)
 		{
 			// Aplicar la dirección del buffer
@@ -202,23 +383,34 @@ public partial class SnakeBody : Sprite2D
 			if (_direction == Direction.DOWN)
 				player_ani.ChangeAnimation("walk_down");
 
-			_body.AddFirst(newVect);
-			
-			// Si HideBody está activo, siempre eliminar el último segmento (no crecer)
-			if (HideBody)
+			// En modo movimiento libre, solo mover la posición actual sin cuerpo
+			if (FreeMovement)
 			{
-				TryEat(); // Procesar colección pero sin crecer
-				var last = _body.Last.Value;
-				_body.RemoveLast();
+				_body.Clear();
+				_body.AddFirst(newVect);
+				TryEat(); // Procesar interacciones
 				player_ani.MoveSprite(_body.First.Value, delta);
-				DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
 			}
-			else if (!TryEat())
+			else
 			{
-				var last = _body.Last.Value;
-				_body.RemoveLast();
-				player_ani.MoveSprite(_body.First.Value, delta);
-				DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
+				_body.AddFirst(newVect);
+				
+				// Si HideBody está activo, siempre eliminar el último segmento (no crecer)
+				if (HideBody)
+				{
+					TryEat(); // Procesar colección pero sin crecer
+					var last = _body.Last.Value;
+					_body.RemoveLast();
+					player_ani.MoveSprite(_body.First.Value, delta);
+					DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
+				}
+				else if (!TryEat())
+				{
+					var last = _body.Last.Value;
+					_body.RemoveLast();
+					player_ani.MoveSprite(_body.First.Value, delta);
+					DualGrid.SetTile(last, DualGrid.dirtPlaceholderAtlasCoord);
+				}
 			}
 
 			TryObstacle();
@@ -245,7 +437,13 @@ public void ShowGameOverScreen()
 
 	public override void _Input(InputEvent @event)
 	{
-		// Guardar en buffer la próxima dirección (validando que no sea opuesta a la ACTUAL)
+		// En modo FreeMovement, el movimiento se maneja en _Process
+		if (FreeMovement)
+		{
+			return;
+		}
+		
+		// Modo serpiente: guardar en buffer la próxima dirección (validando que no sea opuesta a la ACTUAL)
 		if (@event.IsAction("ui_left") && _direction != Direction.RIGHT)
 		{
 			_nextDirection = Direction.LEFT;

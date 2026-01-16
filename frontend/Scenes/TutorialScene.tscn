@@ -26,7 +26,7 @@ alignment = 1
 
 [node name="Header" type="Label" parent="VBoxContainer"]
 layout_mode = 2
-text = "Ambigame"
+text = "GAME_TITLE"
 label_settings = ExtResource("1_tt6wg")
 horizontal_alignment = 1
 
@@ -36,12 +36,12 @@ layout_mode = 2
 [node name="Tittle" type="Label" parent="VBoxContainer/Info"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 11
-text = "Tutorial"
+text = "TUTORIAL_TITLE"
 label_settings = ExtResource("3_ch2se")
 
 [node name="Desc" type="Label" parent="VBoxContainer/Info"]
 layout_mode = 2
-text = "La guía para salvar al mundo"
+text = "TUTORIAL_DESC"
 label_settings = ExtResource("3_ch2se")
 
 [node name="Data" type="VBoxContainer" parent="VBoxContainer"]
@@ -65,22 +65,14 @@ theme_override_colors/caret_color = Color(0, 0, 0, 1)
 theme_override_colors/search_result_border_color = Color(0, 0, 0, 1)
 theme_override_colors/search_result_color = Color(0, 0, 0, 1)
 theme_override_styles/normal = SubResource("StyleBoxEmpty_74byh")
-text = "Controla a tu personaje: Mueves a tu héroe ecológico con las flechas direccionales o las teclas WASD para recolectar residuos esparcidos por el terreno. El objetivo es recoger la basura del entorno.
-
-Haz crecer tu bolsa de basura: Cada vez que recojas un residuo, tu bolsa de basura se alarga. Cuanto más recojas, más difícil será controlar la longitud de tu bolsa.
-
-Evita chocar: Ten cuidado de no chocar con tu propia bolsa de basura, ya que esto provocará el fin del juego. La longitud de tu bolsa de basura aumenta con cada residuo recolectado.
-
-Recoge residuos especiales: Algunos residuos son especiales, que te otorgarán puntos extra y te ayudarán a avanzar más rápido. Los residuos especiales también aumentan la dificultad.
-
-Juega sin límite de tiempo: No hay un tiempo límite para recolectar basura. El objetivo es lograr la mayor puntuación posible mientras continúas recolectando residuos y evitando dañar tu bolsa de basura. ¡Recoge todo lo que puedas y ayuda al planeta!"
+text = "TUTORIAL_TEXT"
 editable = false
 wrap_mode = 1
 
 [node name="Button" type="Button" parent="VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_jbvax")
-text = "Volver"
+text = "BTN_BACK"
 
 [node name="HTTPRequest" type="HTTPRequest" parent="."]
 

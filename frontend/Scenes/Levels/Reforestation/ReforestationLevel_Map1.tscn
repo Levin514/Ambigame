@@ -169,6 +169,7 @@ worldMapLayer = NodePath("WorldLayer")
 displayMapLayer = NodePath("DisplayLayer")
 plantMapLayer = NodePath("PlantLayer")
 dirtPlaceholderAtlasCoord = Vector2i(1, 0)
+generateObstacles = false
 
 [node name="WorldLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true
@@ -198,6 +199,7 @@ texture = ExtResource("7_blank")
 position = Vector2(0, 8)
 script = ExtResource("11_snakebody")
 DualGrid = NodePath("../../TileMapLayers")
+FreeMovement = true
 player_ani = NodePath("../../PlayerAnimation")
 HideBody = true
 
@@ -211,4 +213,5 @@ animation = &"walk_right"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_music")
 volume_db = -10.0
+bus = &"Music"
 autoplay = true
