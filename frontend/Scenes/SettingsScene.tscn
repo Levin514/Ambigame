@@ -39,7 +39,7 @@ alignment = 1
 
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer/Header"]
 layout_mode = 2
-text = "Ajustes"
+text = "SETTINGS_TITLE"
 label_settings = ExtResource("3_titles")
 horizontal_alignment = 1
 
@@ -62,7 +62,7 @@ alignment = 1
 [node name="AudioTitle" type="Label" parent="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("4_theme")
-text = "Configuración de Audio"
+text = "SETTINGS_AUDIO"
 horizontal_alignment = 1
 
 [node name="MusicSection" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer"]
@@ -76,7 +76,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_theme")
-text = "Volumen de Música"
+text = "SETTINGS_MUSIC_VOLUME"
 
 [node name="MusicValueLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer/MusicSection/MusicHeader"]
 layout_mode = 2
@@ -102,7 +102,7 @@ layout_mode = 2
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_theme")
-text = "Volumen de Efectos"
+text = "SETTINGS_SFX_VOLUME"
 
 [node name="SFXValueLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer/SFXSection/SFXHeader"]
 layout_mode = 2
@@ -117,6 +117,27 @@ max_value = 100.0
 step = 1.0
 value = 80.0
 
+[node name="LanguageSection" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LanguageLabel" type="Label" parent="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer/LanguageSection"]
+layout_mode = 2
+theme = ExtResource("4_theme")
+text = "LANGUAGE_SELECTOR"
+horizontal_alignment = 1
+
+[node name="LanguageOptionButton" type="OptionButton" parent="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer/LanguageSection"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme = ExtResource("4_theme")
+item_count = 2
+selected = 0
+popup/item_0/text = "Español"
+popup/item_0/id = 0
+popup/item_1/text = "English"
+popup/item_1/id = 1
+
 [node name="ButtonsContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_constants/separation = 30
@@ -126,8 +147,9 @@ alignment = 1
 custom_minimum_size = Vector2(200, 50)
 layout_mode = 2
 theme = ExtResource("4_theme")
-text = "Volver"
+text = "BTN_BACK"
 
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer/MusicSection/MusicVolumeSlider" to="MarginContainer" method="MusicVolume_changed"]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer/SFXSection/SFXVolumeSlider" to="MarginContainer" method="SFXVolume_changed"]
+[connection signal="item_selected" from="MarginContainer/VBoxContainer/ContentPanel/MarginContainer/VBoxContainer/LanguageSection/LanguageOptionButton" to="MarginContainer" method="Language_selected"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/ButtonsContainer/BackButton" to="MarginContainer" method="GoBack"]

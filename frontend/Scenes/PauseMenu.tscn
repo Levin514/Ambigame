@@ -60,17 +60,17 @@ alignment = 1
 [node name="ContinueButton" type="Button" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_qwhev")
-text = "Continuar"
+text = "BTN_CONTINUE"
 
 [node name="SoundCheckBox" type="CheckBox" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_qwhev")
-text = "Música"
+text = "PAUSE_MUSIC_CHECKBOX"
 
 [node name="MusicVolumeLabel" type="Label" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_qwhev")
-text = "Volumen Música"
+text = "PAUSE_MUSIC_LABEL"
 
 [node name="MusicVolumeContainer" type="HBoxContainer" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -93,7 +93,7 @@ horizontal_alignment = 2
 [node name="SFXVolumeLabel" type="Label" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_qwhev")
-text = "Volumen Efectos"
+text = "PAUSE_SFX_LABEL"
 
 [node name="SFXVolumeContainer" type="HBoxContainer" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -116,7 +116,7 @@ horizontal_alignment = 2
 [node name="MainMenuButton" type="Button" parent="PauseMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("2_qwhev")
-text = "Menú principal"
+text = "BTN_MAIN_MENU"
 
 [connection signal="pressed" from="PauseMenu/PanelContainer/VBoxContainer/ContinueButton" to="." method="Continue_button_pressed"]
 [connection signal="toggled" from="PauseMenu/PanelContainer/VBoxContainer/SoundCheckBox" to="." method="Sound_toggled"]

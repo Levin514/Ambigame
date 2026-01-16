@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Snake;
 
 public partial class WaterDropsSystem : PanelContainer
 {
@@ -54,7 +55,7 @@ public partial class WaterDropsSystem : PanelContainer
 	{
 		if (waterLabel != null)
 		{
-			waterLabel.Text = $"Agua: {currentWater}";
+			waterLabel.Text = $"{TranslationManager.Tr("UI_WATER")}: {currentWater}";
 		}
 	}
 

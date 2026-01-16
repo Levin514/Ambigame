@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Snake;
 
 public partial class GameLayoutManager : Control
 {
@@ -27,6 +28,8 @@ public partial class GameLayoutManager : Control
 	
 	private Node currentLevel;
 	private string currentLevelType = ""; // Guardar el tipo de nivel actual
+	private string pendingLevelPath = ""; // Ruta del nivel que se cargará después de los slides
+	private string pendingLevelType = ""; // Tipo del nivel pendiente
 
 	public override void _Ready()
 	{
@@ -39,6 +42,11 @@ public partial class GameLayoutManager : Control
 		scoreLabel.Visible = true;
 		timeLabel.Visible = true;
 		
+		// Inicializar textos de indicadores con traducciones
+		ActualizarPuntaje(0);
+		ActualizarTiempo(0);
+		ActualizarReciclados(0);
+		
 		// Conectar el botón de pausa
 		if (pauseButton != null)
 		{
@@ -50,7 +58,7 @@ public partial class GameLayoutManager : Control
 		if (levelManager != null && !string.IsNullOrEmpty(levelManager.LevelPath))
 		{
 			GD.Print($"GameLayoutManager: Cargando nivel desde LevelManager - {levelManager.LevelPath}");
-			CargarNivel(levelManager.LevelPath, levelManager.LevelType);
+			CargarNivelConSlides(levelManager.LevelPath, levelManager.LevelType, levelManager.SlideKeys, levelManager.SlideTitleKey);
 		}
 		else
 		{
@@ -83,7 +91,93 @@ public partial class GameLayoutManager : Control
 	/// </summary>
 	public void CargarNivel(string rutaNivel, string tipoNivel)
 	{
+		CargarNivelConSlides(rutaNivel, tipoNivel, null);
+	}
+	
+	/// <summary>
+	/// Carga un nivel con slides de tutorial opcionales
+	/// </summary>
+	/// <param name="rutaNivel">Ruta del nivel a cargar</param>
+	/// <param name="tipoNivel">Tipo de nivel</param>
+	/// <param name="slideKeys">Claves de traducción para los slides (null = sin slides)</param>
+	/// <param name="titleKey">Clave de traducción del título (opcional)</param>
+	public void CargarNivelConSlides(string rutaNivel, string tipoNivel, string[] slideKeys, string titleKey = "TUTORIAL_TITLE")
+	{
 		GD.Print($"GameLayoutManager: Cargando nivel {rutaNivel} de tipo {tipoNivel}");
+		
+		// Si hay slides, mostrarlos primero
+		if (slideKeys != null && slideKeys.Length > 0)
+		{
+			GD.Print($"GameLayoutManager: Mostrando {slideKeys.Length} slides antes del nivel");
+			
+			// Guardar la información del nivel para cargarlo después
+			pendingLevelPath = rutaNivel;
+			pendingLevelType = tipoNivel;
+			
+			// Cargar y mostrar los slides
+			MostrarSlides(slideKeys, titleKey);
+		}
+		else
+		{
+			// Cargar el nivel directamente sin slides
+			CargarNivelDirecto(rutaNivel, tipoNivel);
+		}
+	}
+	
+	/// <summary>
+	/// Muestra los slides de tutorial
+	/// </summary>
+	private void MostrarSlides(string[] slideKeys, string titleKey)
+	{
+		// Limpiar cualquier contenido previo
+		if (currentLevel != null)
+		{
+			currentLevel.QueueFree();
+			currentLevel = null;
+		}
+		
+		// Cargar la escena de slides
+		var slidesScene = GD.Load<PackedScene>("res://Scenes/TutorialSlides.tscn");
+		if (slidesScene != null)
+		{
+			var slides = slidesScene.Instantiate<TutorialSlides>();
+			gameContainer.AddChild(slides);
+			
+			// Configurar los slides
+			slides.SetupSlides(slideKeys, titleKey);
+			
+			// Conectar la señal de completado
+			slides.SlidesCompleted += OnSlidesCompleted;
+			
+			currentLevel = slides;
+			GD.Print("GameLayoutManager: Slides cargados correctamente");
+		}
+		else
+		{
+			GD.PrintErr("GameLayoutManager: No se pudo cargar TutorialSlides.tscn");
+			// Cargar el nivel directamente si hay error
+			CargarNivelDirecto(pendingLevelPath, pendingLevelType);
+		}
+	}
+	
+	/// <summary>
+	/// Maneja el evento cuando se completan los slides
+	/// </summary>
+	private void OnSlidesCompleted()
+	{
+		GD.Print("GameLayoutManager: Slides completados, cargando nivel");
+		CargarNivelDirecto(pendingLevelPath, pendingLevelType);
+	}
+	
+	/// <summary>
+	/// Carga el nivel directamente sin slides
+	/// </summary>
+	private void CargarNivelDirecto(string rutaNivel, string tipoNivel)
+	{
+		GD.Print($"GameLayoutManager: Cargando nivel directo {rutaNivel} de tipo {tipoNivel}");
+		
+		// Guardar el tipo de nivel actual
+		currentLevelType = tipoNivel;
 		
 		// Guardar el tipo de nivel actual
 		currentLevelType = tipoNivel;
@@ -397,7 +491,7 @@ public partial class GameLayoutManager : Control
 	/// </summary>
 	public void ActualizarPuntaje(int puntos)
 	{
-		scoreLabel.Text = $"Puntos: {puntos}";
+		scoreLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {puntos}";
 	}
 
 	/// <summary>
@@ -407,7 +501,7 @@ public partial class GameLayoutManager : Control
 	{
 		int minutos = tiempo / 60;
 		int segundos = tiempo % 60;
-		timeLabel.Text = $"Tiempo: {minutos:00}:{segundos:00}";
+		timeLabel.Text = $"{TranslationManager.Tr("UI_TIME")}: {minutos:00}:{segundos:00}";
 	}
 
 	/// <summary>
@@ -415,7 +509,7 @@ public partial class GameLayoutManager : Control
 	/// </summary>
 	public void ActualizarReciclados(int cantidad)
 	{
-		recycledLabel.Text = $"Reciclados: {cantidad}";
+		recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: {cantidad}";
 	}
 	
 	// ========== Manejadores de Señales del Nivel ==========
@@ -437,7 +531,7 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (gameOverStatsLabel != null)
 		{
-			gameOverStatsLabel.Text = $"Puntos: {score}\nReciclados: {recycled}\nTiempo: {time}s";
+			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_RECYCLED")}: {recycled}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Game Over
@@ -464,7 +558,7 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
-			victoryStatsLabel.Text = $"Puntos: {score}\nReciclados: {recycled}\nTiempo: {time}s";
+			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_RECYCLED")}: {recycled}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Victoria
@@ -640,7 +734,7 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (gameOverStatsLabel != null)
 		{
-			gameOverStatsLabel.Text = $"Puntos: {score}\nTiempo: {time}s";
+			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Game Over
@@ -667,7 +761,7 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
-			victoryStatsLabel.Text = $"Puntos: {score}\nTiempo: {time}s";
+			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Victoria

@@ -90,7 +90,7 @@ layout_mode = 2
 custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_pauseButton")
-text = "Pausa"
+text = "BTN_PAUSE"
 
 [node name="CenterContainer" type="HBoxContainer" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
@@ -99,17 +99,17 @@ theme_override_constants/separation = 20
 
 [node name="ScoreLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
 layout_mode = 2
-text = "Puntos: 0"
+text = "UI_POINTS: 0"
 label_settings = SubResource("LabelSettings_indicators")
 
 [node name="TimeLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
 layout_mode = 2
-text = "Tiempo: 0"
+text = "UI_TIME: 0"
 label_settings = SubResource("LabelSettings_indicators")
 
 [node name="RecycledLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
 layout_mode = 2
-text = "Reciclados: 0"
+text = "UI_RECYCLED: 0"
 label_settings = SubResource("LabelSettings_indicators")
 
 [node name="WaterSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("2_water")]
@@ -190,16 +190,16 @@ alignment = 1
 
 [node name="GameoverLabel" type="Label" parent="GameOverScreen/VBoxContainer"]
 layout_mode = 2
-text = "Game Over"
+text = "GAME_OVER"
 label_settings = ExtResource("9_titles")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Stats" type="Label" parent="GameOverScreen/VBoxContainer"]
 layout_mode = 2
-text = "Puntos: 0
-Reciclados: 0
-Tiempo: 0"
+text = "UI_POINTS: 0
+UI_RECYCLED: 0
+UI_TIME: 0"
 label_settings = ExtResource("10_text")
 horizontal_alignment = 1
 
@@ -210,12 +210,12 @@ layout_mode = 2
 [node name="Again" type="Button" parent="GameOverScreen/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("8_theme")
-text = "Volver a jugar"
+text = "BTN_RETRY"
 
 [node name="Salir" type="Button" parent="GameOverScreen/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("8_theme")
-text = "Menú Principal"
+text = "BTN_MAIN_MENU"
 
 [node name="VictoryScreen" type="CanvasLayer" parent="."]
 process_mode = 3
@@ -246,16 +246,16 @@ alignment = 1
 
 [node name="VictoryLabel" type="Label" parent="VictoryScreen/VBoxContainer"]
 layout_mode = 2
-text = "¡Victoria!"
+text = "VICTORY"
 label_settings = ExtResource("9_titles")
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="Stats" type="Label" parent="VictoryScreen/VBoxContainer"]
 layout_mode = 2
-text = "Puntos: 0
-Reciclados: 0
-Tiempo: 0"
+text = "UI_POINTS: 0
+UI_RECYCLED: 0
+UI_TIME: 0"
 label_settings = ExtResource("10_text")
 horizontal_alignment = 1
 
@@ -266,12 +266,12 @@ layout_mode = 2
 [node name="Continuar" type="Button" parent="VictoryScreen/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("8_theme")
-text = "Siguiente Nivel"
+text = "BTN_NEXT_LEVEL"
 
 [node name="Salir" type="Button" parent="VictoryScreen/VBoxContainer"]
 layout_mode = 2
 theme = ExtResource("8_theme")
-text = "Menú Principal"
+text = "BTN_MAIN_MENU"
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]

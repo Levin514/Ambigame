@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using Snake;
 
 public partial class SeedsSystem : PanelContainer
 {
@@ -48,7 +49,7 @@ public partial class SeedsSystem : PanelContainer
 	{
 		if (seedsLabel != null)
 		{
-			seedsLabel.Text = $"Semillas: {currentSeeds}";
+			seedsLabel.Text = $"{TranslationManager.Tr("UI_SEEDS")}: {currentSeeds}";
 		}
 	}
 

@@ -47,9 +47,9 @@ offset_top = 100.0
 offset_right = 270.0
 offset_bottom = 150.0
 theme = ExtResource("4_qxria")
-text = "Volver"
+text = "BTN_BACK"
 
-[node name="SoundButton" type="Button" parent="MarginContainer2/ExitControl"]
+[node name="SettingsButton" type="Button" parent="MarginContainer2/ExitControl"]
 top_level = true
 layout_mode = 0
 offset_left = 820.0
@@ -57,7 +57,7 @@ offset_top = 100.0
 offset_right = 970.0
 offset_bottom = 150.0
 theme = ExtResource("4_qxria")
-text = "🔊 Sonido"
+text = "BTN_SETTINGS"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer2"]
 layout_mode = 2
@@ -69,13 +69,13 @@ layout_mode = 2
 
 [node name="Title" type="Label" parent="MarginContainer2/VBoxContainer/Header"]
 layout_mode = 2
-text = "Ambigame"
+text = "GAME_TITLE"
 label_settings = ExtResource("2_7rqgy")
 horizontal_alignment = 1
 
 [node name="SubTitle" type="Label" parent="MarginContainer2/VBoxContainer/Header"]
 layout_mode = 2
-text = "!Salva el planeta, gana puntos!"
+text = "GAME_SUBTITLE"
 label_settings = ExtResource("3_7rqgy")
 horizontal_alignment = 1
 
@@ -90,7 +90,7 @@ visible = false
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_qxria")
-text = "Tutorial"
+text = "BTN_TUTORIAL"
 
 [node name="Level1Container" type="VBoxContainer" parent="MarginContainer2/VBoxContainer/MainButtons"]
 layout_mode = 2
@@ -108,7 +108,7 @@ stretch_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_qxria")
-text = "Limpieza comienza"
+text = "LEVEL1_TITLE"
 
 [node name="Level2Container" type="VBoxContainer" parent="MarginContainer2/VBoxContainer/MainButtons"]
 layout_mode = 2
@@ -126,7 +126,7 @@ stretch_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_qxria")
-text = "Guardianes del agua"
+text = "LEVEL2_TITLE"
 
 [node name="Level3Container" type="VBoxContainer" parent="MarginContainer2/VBoxContainer/MainButtons"]
 layout_mode = 2
@@ -144,15 +144,15 @@ stretch_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 theme = ExtResource("4_qxria")
-text = "Sembrando vida"
+text = "LEVEL3_TITLE"
 
 [node name="UserData" type="Label" parent="MarginContainer2/VBoxContainer"]
 layout_mode = 2
-text = "User: <Placeholder>"
+text = "UI_USER_PLACEHOLDER"
 label_settings = ExtResource("3_7rqgy")
 
 [connection signal="pressed" from="MarginContainer2/ExitControl/LogOutButton" to="MarginContainer2" method="LogOut"]
-[connection signal="pressed" from="MarginContainer2/ExitControl/SoundButton" to="MarginContainer2" method="ToggleSound"]
+[connection signal="pressed" from="MarginContainer2/ExitControl/SettingsButton" to="MarginContainer2" method="GoToSettings"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/TutorialButton" to="MarginContainer2" method="GoToTutorial"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level1Container/Level1TextureButton" to="MarginContainer2" method="Level_1_button_pressed"]
 [connection signal="pressed" from="MarginContainer2/VBoxContainer/MainButtons/Level1Container/Level1Button" to="MarginContainer2" method="Level_1_button_pressed"]

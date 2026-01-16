@@ -85,6 +85,12 @@ public partial class SnakeBody : Sprite2D
 			Vector2I centerPos = new Vector2I(bounds.X / 2, bounds.Y / 2);
 			_body = new([centerPos]);
 			GD.Print($"SnakeBody: Modo movimiento libre - Posición inicial: {centerPos}");
+			
+			// Actualizar posición visual del sprite inmediatamente
+			if (player_ani != null)
+			{
+				player_ani.MoveSprite(centerPos, 0);
+			}
 		}
 		else
 		{
