@@ -483,6 +483,26 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("Victory", new Callable(this, nameof(OnLevelVictory)));
 				GD.Print("GameLayoutManager: Señal Victory (minijuego) conectada");
 			}
+
+			// Conectar señales de score y time directamente del nivel (WaterCatchLevel)
+			if (currentLevel.HasSignal("ScoreUpdated"))
+			{
+				currentLevel.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
+				GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
+			}
+			
+			if (currentLevel.HasSignal("TimeUpdated"))
+			{
+				currentLevel.Connect("TimeUpdated", new Callable(this, nameof(OnTimeUpdated)));
+				GD.Print("GameLayoutManager: Señal TimeUpdated conectada");
+			}
+			
+			// Inicializar las señales con valores cero
+			if (currentLevel.HasMethod("InitializeSignals"))
+			{
+				currentLevel.Call("InitializeSignals");
+				GD.Print("GameLayoutManager: Señales inicializadas");
+			}
 		}
 	}
 

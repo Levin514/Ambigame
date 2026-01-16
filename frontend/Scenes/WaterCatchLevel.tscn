@@ -1,8 +1,8 @@
 [gd_scene load_steps=24 format=3 uid="uid://7dueujmbdbb"]
 
 [ext_resource type="Script" uid="uid://cfjnrjlfa1ucu" path="res://Scenes/WaterCatchLevel.cs" id="1_5yb3d"]
-[ext_resource type="Texture2D" uid="uid://dqoxpp63kqfod" path="res://Assets/plasticBottle.png" id="2_tr4fx"]
-[ext_resource type="Texture2D" uid="uid://cqqbcgd2c622" path="res://Assets/plasticBin.png" id="3_hnijh"]
+[ext_resource type="Texture2D" uid="uid://d1d27y3ghas0x" path="res://Assets/water_droplet.png" id="2_6fsoc"]
+[ext_resource type="Texture2D" uid="uid://bir01kg3xbgs0" path="res://Assets/water_basket.png" id="3_6fsoc"]
 [ext_resource type="Script" uid="uid://cfyiwwvuvvng0" path="res://Scenes/PlayerAnimation.cs" id="4_6fsoc"]
 [ext_resource type="Texture2D" uid="uid://5yyd8xshkk0f" path="res://PlayerAnimations/PlayerAnimations.png" id="5_23cqi"]
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="6_102ep"]
@@ -142,12 +142,12 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Node2D" type="Node2D"]
+[node name="Minigame" type="Node2D"]
 script = ExtResource("1_5yb3d")
 SpawnRate = 2.0
-FallingObjectTexture = ExtResource("2_tr4fx")
-FallingObjectScale = Vector2(1, 1)
-BasketTexture = ExtResource("3_hnijh")
+FallingObjectTexture = ExtResource("2_6fsoc")
+FallingObjectScale = Vector2(0.025, 0.025)
+BasketTexture = ExtResource("3_6fsoc")
 BasketScale = Vector2(0.2, 0.1)
 
 [node name="WaterDroplet" type="Node2D" parent="."]

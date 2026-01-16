@@ -6,6 +6,8 @@ public partial class WaterCatchLevel : Node2D
 {
 	[Signal] public delegate void GameOverEventHandler(int score, int recycled, int time);
 	[Signal] public delegate void VictoryEventHandler(int score, int recycled, int time);
+	[Signal] public delegate void ScoreUpdatedEventHandler(int score);
+	[Signal] public delegate void TimeUpdatedEventHandler(int time);
 	
 	// Configuración de pantalla
 	private float ScreenWidth;
@@ -33,9 +35,31 @@ public partial class WaterCatchLevel : Node2D
 	
 	// Control
 	private float spawnTimer = 0f;
-	private int score = 0;
-	private int lives = 3;
-	private int elapsedTime = 0;
+	private int waterCollected = 0;
+	private int waterCollectedStreak= 0;
+	private int _score = 0;
+	private int baseScore = 100;
+	public int Score
+	{
+		get => _score;
+		set
+		{
+			_score = value;
+			EmitSignal(SignalName.ScoreUpdated, _score);
+		}
+	}
+
+	private int _elapsedTime = 0;
+	public int ElapsedTime
+	{
+		get => _elapsedTime;
+		set
+		{
+			_elapsedTime = value;
+			EmitSignal(SignalName.TimeUpdated, _elapsedTime);
+		}
+	}
+
 	private float timeAccumulator = 0f;
 	private List<Node2D> fallingObjects = new List<Node2D>();
 	private Vector2 basketPosition;
@@ -89,13 +113,20 @@ public partial class WaterCatchLevel : Node2D
 		GD.Print("WaterCatchLevel iniciado. Pantalla: " + ScreenWidth + "x" + ScreenHeight);
 	}
 
+	public void InitializeSignals()
+	{
+		EmitSignal(SignalName.ScoreUpdated, Score);
+		EmitSignal(SignalName.TimeUpdated, ElapsedTime);
+		GD.Print("WaterCatchLevel: Señales inicializadas");
+	}
+
 	public override void _Process(double delta)
 	{
 		// Actualizar tiempo
 		timeAccumulator += (float)delta;
 		if (timeAccumulator >= 1f)
 		{
-			elapsedTime++;
+			ElapsedTime++;
 			timeAccumulator = 0f;
 		}
 		
@@ -216,7 +247,7 @@ public partial class WaterCatchLevel : Node2D
 			if (obj.Position.Y > ScreenHeight + 100f)
 			{
 				GD.Print("Objeto perdido");
-				lives--;
+				waterCollectedStreak = 0;
 				objectsToRemove.Add(i);
 				UpdateUI();
 				continue;
@@ -226,7 +257,9 @@ public partial class WaterCatchLevel : Node2D
 			if (IsObjectCaughtByBasket(obj))
 			{
 				GD.Print("¡Objeto atrapado!");
-				score += 10;
+				UpdateScore();
+				waterCollected += 1;
+				waterCollectedStreak += 1;
 				objectsToRemove.Add(i);
 				UpdateUI();
 			}
@@ -243,7 +276,7 @@ public partial class WaterCatchLevel : Node2D
 		}
 		
 		// Verificar Game Over
-		if (lives <= 0)
+		if (ElapsedTime >= 60)
 		{
 			TriggerGameOver();
 		}
@@ -265,15 +298,25 @@ public partial class WaterCatchLevel : Node2D
 		return objX >= basketMinX && objX <= basketMaxX && 
 		       objY >= basketMinY && objY <= basketMaxY;
 	}
+	
+	private void UpdateScore()
+	{
+		if(waterCollectedStreak > 0)
+		{
+			Score += baseScore + baseScore * waterCollectedStreak / 2;
+		}
+		else
+		Score += baseScore;
+	}
 
 	private void UpdateUI()
 	{
-		GD.Print($"Puntuación: {score} | Vidas: {lives}");
+		GD.Print($"Puntuación: {Score} | Tiempo: {ElapsedTime}");
 	}
 
 	private void TriggerGameOver()
 	{
-		GD.Print($"¡JUEGO TERMINADO! Puntuación final: {score}");
-		EmitSignal(SignalName.GameOver, score, 0, elapsedTime);
+		GD.Print($"¡JUEGO TERMINADO! Puntuación final: {Score}");
+		EmitSignal(SignalName.GameOver, Score, waterCollected, ElapsedTime);
 	}
 }
