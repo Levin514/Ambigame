@@ -2,13 +2,10 @@ using Godot;
 using Snake;
 using System;
 using System.Collections.Generic;
-
-public partial class SeedsInfoUI : Control
+public partial class TreesInfoUi : Control
 {
-	private LinkedList<Card> cardList = new LinkedList<Card>();
+	private LinkedList<Card> cardList;
 	private LinkedListNode<Card> currentCardNode;
-
-	[Export] private VBoxContainer cardContainer;
 	[Export] private TextureRect imageDisplay;
 	[Export] private Label nameLabel;
 	[Export] private Label descriptionLabel;
@@ -17,8 +14,9 @@ public partial class SeedsInfoUI : Control
 	[Export] private Button nextButton;
 	[Export] private Label cardCounterLabel;
 	private Camera2D _camera;
-	[Signal] public delegate void SlidesCompletedEventHandler();
 
+
+	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
 		//Temporal solution
@@ -32,7 +30,6 @@ public partial class SeedsInfoUI : Control
 
 	private void InitializeUI()
 	{
-		cardContainer.AddThemeConstantOverride("separation", 16);
 
 		// Name label
 		nameLabel.HorizontalAlignment = HorizontalAlignment.Center;
@@ -129,8 +126,8 @@ public partial class SeedsInfoUI : Control
 		else
 		{
 			_camera.Zoom = new Vector2I(2,2);
-			GameData.Instance.globalcardSeedsList = cardList;
-			EmitSignal(SignalName.SlidesCompleted);
 		}
 	}
+
+	
 }

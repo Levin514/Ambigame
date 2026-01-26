@@ -15,6 +15,7 @@ public partial class GameData : Node
 	};
 
 	public LinkedList<Trash> globalTrashList;
+	public LinkedList<Card> globalcardSeedsList;
 
 	public static GameData Instance { get; private set; }
 

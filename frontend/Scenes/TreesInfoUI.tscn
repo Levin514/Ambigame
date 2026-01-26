@@ -1,0 +1,73 @@
+[gd_scene load_steps=4 format=3 uid="uid://bhfhk25a65m4v"]
+
+[ext_resource type="Script" uid="uid://d38or6ra2vf5r" path="res://Scenes/TreesInfoUi.cs" id="1_jn1r2"]
+[ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="1_x50u2"]
+[ext_resource type="LabelSettings" uid="uid://do2ku7btlfenh" path="res://whiteText.tres" id="2_jn1r2"]
+
+[node name="TreesInfoUI" type="Control" node_paths=PackedStringArray("imageDisplay", "nameLabel", "descriptionLabel", "buttonContainer", "previousButton", "nextButton", "cardCounterLabel")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_jn1r2")
+imageDisplay = NodePath("PanelContainer/VBoxContainer/HBoxContainer/ImageDisplay")
+nameLabel = NodePath("PanelContainer/VBoxContainer/NameLabel")
+descriptionLabel = NodePath("PanelContainer/VBoxContainer/HBoxContainer/DescriptionLabel")
+buttonContainer = NodePath("PanelContainer/VBoxContainer/ButtonContainer")
+previousButton = NodePath("PanelContainer/VBoxContainer/ButtonContainer/PreviusButton")
+nextButton = NodePath("PanelContainer/VBoxContainer/ButtonContainer/NextButton")
+cardCounterLabel = NodePath("PanelContainer/VBoxContainer/CounterLabel")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 15
+alignment = 1
+
+[node name="NameLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+label_settings = ExtResource("1_x50u2")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 200
+alignment = 1
+
+[node name="ImageDisplay" type="TextureRect" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+label_settings = ExtResource("2_jn1r2")
+
+[node name="CounterLabel" type="Label" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+label_settings = ExtResource("2_jn1r2")
+
+[node name="ButtonContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PreviusButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonContainer"]
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonContainer"]
+layout_mode = 2

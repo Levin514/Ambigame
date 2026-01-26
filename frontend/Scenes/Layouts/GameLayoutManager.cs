@@ -166,7 +166,15 @@ public partial class GameLayoutManager : Control
 	private void OnSlidesCompleted()
 	{
 		GD.Print("GameLayoutManager: Slides completados, cargando nivel");
-		CargarNivelDirecto(pendingLevelPath, pendingLevelType);
+		if(pendingLevelType == "reforestation" && currentLevelType == "")
+		{
+			string newPath = "res://Scenes/SeedsInfoUI.tscn";
+			CargarNivelDirecto(newPath, "reforestationInfo");
+		}
+		else
+		{
+			CargarNivelDirecto(pendingLevelPath, pendingLevelType);
+		}
 	}
 	
 	/// <summary>
@@ -502,6 +510,14 @@ public partial class GameLayoutManager : Control
 			{
 				currentLevel.Call("InitializeSignals");
 				GD.Print("GameLayoutManager: Señales inicializadas");
+			}
+		}
+		else if (tipoNivel.ToLower() == "reforestationinfo")
+		{
+			if (currentLevel.HasSignal("SlidesCompleted"))
+			{
+				currentLevel.Connect("SlidesCompleted", new Callable(this, nameof(OnSlidesCompleted)));
+				GD.Print("GameLayoutManager: Señal SlidesCompleted conectada");
 			}
 		}
 	}

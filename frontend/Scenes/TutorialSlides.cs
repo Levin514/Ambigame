@@ -19,8 +19,7 @@ public partial class TutorialSlides : Control
 	/// <summary>
 	/// Señal emitida cuando se completan todos los slides
 	/// </summary>
-	[Signal]
-	public delegate void SlidesCompletedEventHandler();
+	[Signal] public delegate void SlidesCompletedEventHandler();
 	
 	public override void _Ready()
 	{

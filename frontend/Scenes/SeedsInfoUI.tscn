@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://dnjgnrfaex0eb"]
+[gd_scene load_steps=4 format=3 uid="uid://dnjgnrfaex0eb"]
 
 [ext_resource type="Script" uid="uid://dqlvh0v6po44n" path="res://SeedsInfoUI.cs" id="1_t8gis"]
+[ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_2v3da"]
+[ext_resource type="LabelSettings" uid="uid://do2ku7btlfenh" path="res://whiteText.tres" id="3_2v3da"]
 
-[node name="Control" type="Control"]
+[node name="SeedsInfoUI" type="Control" node_paths=PackedStringArray("cardContainer", "imageDisplay", "nameLabel", "descriptionLabel", "buttonContainer", "previousButton", "nextButton", "cardCounterLabel")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +12,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_t8gis")
+cardContainer = NodePath("PanelContainer/CardVBox")
+imageDisplay = NodePath("PanelContainer/CardVBox/ImageDisplay")
+nameLabel = NodePath("PanelContainer/CardVBox/NameLabel")
+descriptionLabel = NodePath("PanelContainer/CardVBox/DescriptionLabel")
+buttonContainer = NodePath("PanelContainer/CardVBox/ButtonContainer")
+previousButton = NodePath("PanelContainer/CardVBox/ButtonContainer/PreviusButton")
+nextButton = NodePath("PanelContainer/CardVBox/ButtonContainer/NextButton")
+cardCounterLabel = NodePath("PanelContainer/CardVBox/CardCounterLabel")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.8)
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -26,4 +45,28 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="CardVBox" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="NameLabel" type="Label" parent="PanelContainer/CardVBox"]
+layout_mode = 2
+label_settings = ExtResource("2_2v3da")
+
+[node name="ImageDisplay" type="TextureRect" parent="PanelContainer/CardVBox"]
+layout_mode = 2
+
+[node name="DescriptionLabel" type="Label" parent="PanelContainer/CardVBox"]
+layout_mode = 2
+label_settings = ExtResource("3_2v3da")
+
+[node name="CardCounterLabel" type="Label" parent="PanelContainer/CardVBox"]
+layout_mode = 2
+label_settings = ExtResource("3_2v3da")
+
+[node name="ButtonContainer" type="HBoxContainer" parent="PanelContainer/CardVBox"]
+layout_mode = 2
+
+[node name="PreviusButton" type="Button" parent="PanelContainer/CardVBox/ButtonContainer"]
+layout_mode = 2
+
+[node name="NextButton" type="Button" parent="PanelContainer/CardVBox/ButtonContainer"]
 layout_mode = 2

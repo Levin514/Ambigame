@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://xm2fb5v1twhu"]
+[gd_scene load_steps=5 format=3 uid="uid://xm2fb5v1twhu"]
 
 [ext_resource type="Script" uid="uid://dq0cmhyqlq8jk" path="res://Scenes/TutorialSlides.cs" id="1_slides"]
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="2_titles"]
+[ext_resource type="LabelSettings" uid="uid://do2ku7btlfenh" path="res://whiteText.tres" id="3_n2ww8"]
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="3_theme"]
 
 [node name="TutorialSlides" type="Control" node_paths=PackedStringArray("titleLabel", "contentLabel", "counterLabel", "continueButton")]
@@ -57,6 +58,7 @@ layout_mode = 2
 layout_mode = 2
 theme_override_font_sizes/font_size = 16
 text = "Contenido del slide..."
+label_settings = ExtResource("3_n2ww8")
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
@@ -65,6 +67,7 @@ autowrap_mode = 3
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "1/3"
+label_settings = ExtResource("3_n2ww8")
 horizontal_alignment = 1
 
 [node name="ContinueButton" type="Button" parent="CenterContainer/VBoxContainer"]
