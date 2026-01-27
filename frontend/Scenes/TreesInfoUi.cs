@@ -13,19 +13,14 @@ public partial class TreesInfoUi : Control
 	[Export] private Button previousButton;
 	[Export] private Button nextButton;
 	[Export] private Label cardCounterLabel;
+	[Signal] public delegate void InfoCompletedEventHandler();
 	private Camera2D _camera;
 
 
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
 	{
-		//Temporal solution
-		_camera = GetNode<Camera2D>("/root/GameLayout/VBoxContainer/GameContainer/SubViewportContainer/SubViewport/Camera2D");
-		_camera.Zoom = new Vector2I(1,1);
-
 		InitializeUI();
-		PopulateCards();
-		DisplayCard();
 	}
 
 	private void InitializeUI()
@@ -62,15 +57,18 @@ public partial class TreesInfoUi : Control
 		nextButton.Pressed += OnNextButtonPressed;
 	}
 
+	public void ShowCards()
+	{
+		PopulateCards();
+		DisplayCard();
+	}
+	
 	private void PopulateCards()
 	{
-		Texture2D sunflowerImage = GD.Load<Texture2D>("res://Assets/sunflower_seeds.jpg");
-		// Add sample cards - modify with actual data as needed
-		cardList.AddLast(new Card("Semilla de Girasol", "Girasol", sunflowerImage, "Una semilla de girasol es una semilla oleaginosa que produce un aceite de alta calidad."));
-		cardList.AddLast(new Card("Semilla de Trigo", "Trigo", null, "El trigo es un cereal fundamental en la alimentación humana con alto contenido de carbohidratos."));
-		cardList.AddLast(new Card("Semilla de Maíz", "Maiz", null, "El maíz es uno de los cultivos más importantes del mundo, utilizado para alimento y combustible."));
-		cardList.AddLast(new Card("Semilla de Frijol", "Frijol", null, "Los frijoles son ricos en proteína y fibra, esenciales para una dieta equilibrada."));
-
+		if(GameData.Instance.globalcardSeedsList != null)
+		{
+			cardList = GameData.Instance.globalcardSeedsList;
+		}
 		// Initialize pointer to first card
 		currentCardNode = cardList.First;
 	}
@@ -82,7 +80,7 @@ public partial class TreesInfoUi : Control
 
 		Card currentCard = currentCardNode.Value;
 
-		nameLabel.Text = currentCard.cardName;
+		nameLabel.Text = currentCard.seedType;
 		descriptionLabel.Text = currentCard.description;
 		
 		if (currentCard.image != null)
@@ -125,7 +123,7 @@ public partial class TreesInfoUi : Control
 		}
 		else
 		{
-			_camera.Zoom = new Vector2I(2,2);
+			EmitSignal(SignalName.InfoCompleted);
 		}
 	}
 

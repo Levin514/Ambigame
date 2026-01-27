@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://c8jyak2n3qp1m"]
+[gd_scene load_steps=15 format=3 uid="uid://c8jyak2n3qp1m"]
 
 [ext_resource type="Script" uid="uid://cp87smwx3b5ky" path="res://Scenes/Layouts/GameLayoutManager.cs" id="1_layout"]
 [ext_resource type="PackedScene" uid="uid://daoltbuu4b7ke" path="res://Scenes/WaterSystem.tscn" id="2_water"]
@@ -10,6 +10,7 @@
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="8_theme"]
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="9_titles"]
 [ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="10_text"]
+[ext_resource type="PackedScene" uid="uid://bhfhk25a65m4v" path="res://Scenes/TreesInfoUI.tscn" id="11_vdo7m"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 bg_color = Color(0.15, 0.15, 0.2, 0.95)
@@ -32,7 +33,7 @@ corner_radius_bottom_left = 5
 outline_size = 3
 outline_color = Color(0, 0, 0, 1)
 
-[node name="GameLayout" type="Control" node_paths=PackedStringArray("indicatorsPanel", "waterSystemNode", "lifeSystemNode", "plantedSystemNode", "seedsSystemNode", "waterDropsSystemNode", "scoreLabel", "timeLabel", "recycledLabel", "pauseButton", "pauseMenu", "gameContainer", "gameOverScreen", "gameOverStatsLabel", "victoryScreen", "victoryStatsLabel")]
+[node name="GameLayout" type="Control" node_paths=PackedStringArray("indicatorsPanel", "waterSystemNode", "lifeSystemNode", "plantedSystemNode", "seedsSystemNode", "waterDropsSystemNode", "scoreLabel", "timeLabel", "recycledLabel", "pauseButton", "pauseMenu", "gameContainer", "gameOverScreen", "gameOverStatsLabel", "victoryScreen", "victoryStatsLabel", "treeInfoScreen", "treeInfoUI")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -56,6 +57,8 @@ gameOverScreen = NodePath("GameOverScreen")
 gameOverStatsLabel = NodePath("GameOverScreen/VBoxContainer/Stats")
 victoryScreen = NodePath("VictoryScreen")
 victoryStatsLabel = NodePath("VictoryScreen/VBoxContainer/Stats")
+treeInfoScreen = NodePath("TreeInfoScreen")
+treeInfoUI = NodePath("TreeInfoScreen/TreesInfoUI")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -272,6 +275,11 @@ text = "BTN_NEXT_LEVEL"
 layout_mode = 2
 theme = ExtResource("8_theme")
 text = "BTN_MAIN_MENU"
+
+[node name="TreeInfoScreen" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="TreesInfoUI" parent="TreeInfoScreen" instance=ExtResource("11_vdo7m")]
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Salir" to="." method="OnSalirPressed"]

@@ -1,10 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://bhfhk25a65m4v"]
+[gd_scene load_steps=5 format=3 uid="uid://bhfhk25a65m4v"]
 
 [ext_resource type="Script" uid="uid://d38or6ra2vf5r" path="res://Scenes/TreesInfoUi.cs" id="1_jn1r2"]
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="1_x50u2"]
 [ext_resource type="LabelSettings" uid="uid://do2ku7btlfenh" path="res://whiteText.tres" id="2_jn1r2"]
+[ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="4_xk7m7"]
 
 [node name="TreesInfoUI" type="Control" node_paths=PackedStringArray("imageDisplay", "nameLabel", "descriptionLabel", "buttonContainer", "previousButton", "nextButton", "cardCounterLabel")]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -68,6 +70,8 @@ layout_mode = 2
 
 [node name="PreviusButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonContainer"]
 layout_mode = 2
+theme = ExtResource("4_xk7m7")
 
 [node name="NextButton" type="Button" parent="PanelContainer/VBoxContainer/ButtonContainer"]
 layout_mode = 2
+theme = ExtResource("4_xk7m7")

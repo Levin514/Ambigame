@@ -25,6 +25,8 @@ public partial class GameLayoutManager : Control
 	[Export] private Label gameOverStatsLabel;
 	[Export] private CanvasLayer victoryScreen;
 	[Export] private Label victoryStatsLabel;
+	[Export] private CanvasLayer treeInfoScreen;
+	[Export] private TreesInfoUi treeInfoUI;
 	
 	private Node currentLevel;
 	private string currentLevelType = ""; // Guardar el tipo de nivel actual
@@ -455,6 +457,12 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("PlantGrown", new Callable(this, nameof(OnPlantGrown)));
 				GD.Print("GameLayoutManager: Señal PlantGrown conectada");
 			}
+
+			if (treeInfoUI.HasSignal("InfoCompleted"))
+			{
+				treeInfoUI.Connect("InfoCompleted", new Callable(this, nameof(OnReforestationInfoCompleted)));
+				GD.Print("GameLayoutManager: Señal InfoCompleted (Reforestation) conectada");
+			}
 			
 			// Buscar el SnakeBody dentro del nivel
 			var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
@@ -799,10 +807,20 @@ public partial class GameLayoutManager : Control
 		{
 			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
-		
+
+		if(treeInfoScreen != null)
+		{
+			treeInfoScreen.Visible = true;
+			treeInfoUI.ShowCards();
+		}
+	}
+
+	private void OnReforestationInfoCompleted()
+	{
 		// Mostrar pantalla de Victoria
 		if (victoryScreen != null)
 		{
+			treeInfoScreen.Visible = false;
 			victoryScreen.Visible = true;
 		}
 	}
