@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://13urn0ed1r5j"]
+[gd_scene load_steps=29 format=3 uid="uid://13urn0ed1r5j"]
 
 [ext_resource type="Script" uid="uid://ctul58ntr0dqx" path="res://Scenes/ClassifyLevel.cs" id="1_776c1"]
 [ext_resource type="Texture2D" uid="uid://be61iif8gc3uk" path="res://Assets/paperBin.png" id="1_oqsg3"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" uid="uid://cfyiwwvuvvng0" path="res://Scenes/PlayerAnimation.cs" id="6_po04n"]
 [ext_resource type="Texture2D" uid="uid://5yyd8xshkk0f" path="res://PlayerAnimations/PlayerAnimations.png" id="7_hb7pu"]
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="8_lg5t5"]
+[ext_resource type="Texture2D" uid="uid://db355i8yufhqm" path="res://Assets/classifier_Background.jpg" id="9_po04n"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_walk_down_1"]
 atlas = ExtResource("7_hb7pu")
@@ -221,3 +222,25 @@ label_settings = SubResource("LabelSettings_r8iaa")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_ys2lh")
+
+[node name="Background" type="CanvasLayer" parent="."]
+layer = -1
+follow_viewport_enabled = true
+
+[node name="Control" type="Control" parent="Background"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="Background/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("9_po04n")
+expand_mode = 1
