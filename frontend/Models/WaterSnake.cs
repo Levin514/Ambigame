@@ -6,13 +6,16 @@ namespace Snake;
 public partial class WaterSnake : Node2D
 {
 	// Señales para comunicarse con el GameLayout
-	[Signal] public delegate void GameOverEventHandler(int score, int recycled, int time);
-	[Signal] public delegate void VictoryEventHandler(int score, int recycled, int time);
+	[Signal] public delegate void GameOverEventHandler(int score, int pipesRepaired, int time);
+	[Signal] public delegate void VictoryEventHandler(int score, int pipesRepaired, int time);
 	[Signal] public delegate void PipeRepairedEventHandler(string action);
 	[Signal] public delegate void PipeBrokenEventHandler();
 	
 	// To generate random numbers.
 	private static readonly Random rnd = new();
+	
+	// Contador de tuberías reparadas
+	private int pipesRepaired = 0;
 
 	[Export] DualGridTilemap DualGrid;
 	// Scenes
@@ -83,10 +86,10 @@ public partial class WaterSnake : Node2D
 			gameMusic.Stop();
 		}
 		
-		// Emitir señal de Game Over con estadísticas
+		// Emitir señal de Game Over con estadísticas (puntaje, tuberías reparadas, tiempo)
 		if (_snakeBody != null)
 		{
-			EmitSignal(SignalName.GameOver, _snakeBody.Puntuacion, _snakeBody.Reciclados, (int)_snakeBody.juegoTime);
+			EmitSignal(SignalName.GameOver, _snakeBody.Puntuacion, pipesRepaired, (int)_snakeBody.juegoTime);
 		}
 	}
 
@@ -107,17 +110,19 @@ public partial class WaterSnake : Node2D
 			gameMusic.Stop();
 		}
 		
-		// Emitir señal de Victoria con estadísticas
-		// Usar waterScore como puntuación principal
+		// Emitir señal de Victoria con estadísticas (puntaje, tuberías reparadas, tiempo)
+		// El waterScore ya incluye la bonificación del WaterSystem
 		if (_snakeBody != null)
 		{
-			EmitSignal(SignalName.Victory, waterScore, 0, (int)_snakeBody.juegoTime);
+			EmitSignal(SignalName.Victory, waterScore, pipesRepaired, (int)_snakeBody.juegoTime);
 		}
 	}
 
 	private void OnPipeRepaired(string action)
 	{
 		GD.Print("WaterSnake: Tubería reparada, emitiendo señal");
+		pipesRepaired++;
+		GD.Print($"WaterSnake: Total tuberías reparadas: {pipesRepaired}");
 		EmitSignal(SignalName.PipeRepaired, action);
 	}
 

@@ -4,7 +4,6 @@ using Snake;
 
 public partial class GameLayoutManager : Control
 {
-	// Referencias a los indicadores
 	[Export] private PanelContainer indicatorsPanel;
 	[Export] private Control waterSystemNode;
 	[Export] private Control lifeSystemNode;
@@ -47,7 +46,7 @@ public partial class GameLayoutManager : Control
 		// Inicializar textos de indicadores con traducciones
 		ActualizarPuntaje(0);
 		ActualizarTiempo(0);
-		ActualizarReciclados(0);
+		// No inicializar reciclados aquí, se hará al cargar el nivel
 		
 		// Conectar el botón de pausa
 		if (pauseButton != null)
@@ -244,13 +243,19 @@ public partial class GameLayoutManager : Control
 			case "water":
 			case "waterlevel":
 				waterSystemNode.Visible = true;
-				GD.Print("GameLayoutManager: Mostrando indicador de agua");
+				lifeSystemNode.Visible = true;
+				recycledLabel.Visible = true; // Mostrar contador de tuberías reparadas
+				// Inicializar con el texto correcto
+				recycledLabel.Text = $"{TranslationManager.Tr("UI_PIPES_REPAIRED")}: 0";
+				GD.Print("GameLayoutManager: Mostrando indicadores de agua (water, life, pipes repaired)");
 				break;
 				
 			case "classify":
 			case "classifylevel":
 				lifeSystemNode.Visible = true;
 				recycledLabel.Visible = true;
+				// Inicializar con el texto correcto
+				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0";
 				GD.Print("GameLayoutManager: Mostrando indicadores de clasificación");
 				break;
 				
@@ -258,6 +263,8 @@ public partial class GameLayoutManager : Control
 			case "recyclinglevel":
 				lifeSystemNode.Visible = true;
 				recycledLabel.Visible = true;
+				// Inicializar con el texto correcto
+				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0";
 				GD.Print("GameLayoutManager: Mostrando indicadores de reciclaje");
 				break;
 				
@@ -332,6 +339,11 @@ public partial class GameLayoutManager : Control
 		var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
 		if (snakeBody != null)
 		{
+				if (snakeBody.HasSignal("ScoreUpdated"))
+				{
+					snakeBody.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
+					GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
+				}
 				
 				if (snakeBody.HasSignal("TimeUpdated"))
 				{
@@ -356,6 +368,23 @@ public partial class GameLayoutManager : Control
 				GD.PrintErr("GameLayoutManager: No se encontró SnakeBody en el nivel");
 			}
 			
+			// Conectar SnakeBody.UpdateHealth al LifeSystem y LifeSystem.GameOver al SnakeBody
+			var body = currentLevel.GetNodeOrNull("Snake/SnakeBody");
+			if (body != null && lifeSystemNode != null)
+			{
+				if (body.HasSignal("UpdateHealth"))
+				{
+					body.Connect("UpdateHealth", new Callable(lifeSystemNode, "OnUpdateHealth"));
+					GD.Print("GameLayoutManager: SnakeBody.UpdateHealth conectado a LifeSystem (Water)");
+				}
+				
+				if (lifeSystemNode.HasSignal("GameOver"))
+				{
+					lifeSystemNode.Connect("GameOver", new Callable(body, "OnLifeSystemGameOver"));
+					GD.Print("GameLayoutManager: LifeSystem.GameOver conectado a SnakeBody (Water)");
+				}
+			}
+			
 			// Conectar señales del WaterSystem a señales del nivel
 			if (waterSystemNode != null && waterSystemNode.HasSignal("GameOver"))
 			{
@@ -367,6 +396,20 @@ public partial class GameLayoutManager : Control
 			{
 				waterSystemNode.Connect("Victory", new Callable(currentLevel, "OnVictory"));
 				GD.Print("GameLayoutManager: WaterSystem.Victory conectado a nivel");
+			}
+			
+			// Conectar señal PipesRepairedUpdated del WaterSystem para actualizar indicador
+			if (waterSystemNode != null && waterSystemNode.HasSignal("PipesRepairedUpdated"))
+			{
+				waterSystemNode.Connect("PipesRepairedUpdated", new Callable(this, nameof(OnPipesRepairedUpdated)));
+				GD.Print("GameLayoutManager: WaterSystem.PipesRepairedUpdated conectado");
+			}
+			
+			// Conectar señal ScoreUpdated del WaterSystem para actualizar el puntaje en UI
+			if (waterSystemNode != null && waterSystemNode.HasSignal("ScoreUpdated"))
+			{
+				waterSystemNode.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
+				GD.Print("GameLayoutManager: WaterSystem.ScoreUpdated conectado");
 			}
 		}
 		else if (tipoNivel.ToLower() == "recycling" || tipoNivel.ToLower() == "recyclinglevel")
@@ -549,18 +592,26 @@ public partial class GameLayoutManager : Control
 	}
 
 	/// <summary>
-	/// Actualiza el contador de reciclados
+	/// Actualiza el contador de reciclados o tuberías reparadas
 	/// </summary>
 	public void ActualizarReciclados(int cantidad)
 	{
-		recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: {cantidad}";
+		// En nivel de agua muestra "Pipes Repaired", en otros "Recycled"
+		string key = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel") 
+			? "UI_PIPES_REPAIRED" : "UI_RECYCLED";
+		recycledLabel.Text = $"{TranslationManager.Tr(key)}: {cantidad}";
+	}
+	
+	private void OnPipesRepairedUpdated(int pipesRepaired)
+	{
+		ActualizarReciclados(pipesRepaired);
 	}
 	
 	// ========== Manejadores de Señales del Nivel ==========
 	
-	private void OnLevelGameOver(int score, int recycled, int time)
+	private void OnLevelGameOver(int score, int pipesRepaired, int time)
 	{
-		GD.Print($"GameLayoutManager: Game Over - Score: {score}, Recycled: {recycled}, Time: {time}");
+		GD.Print($"GameLayoutManager: Game Over - Score: {score}, Pipes Repaired: {pipesRepaired}, Time: {time}");
 		
 		// Reproducir efecto de sonido de derrota
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
@@ -575,7 +626,7 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (gameOverStatsLabel != null)
 		{
-			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_RECYCLED")}: {recycled}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
+			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_PIPES_REPAIRED")}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Game Over
@@ -585,9 +636,9 @@ public partial class GameLayoutManager : Control
 		}
 	}
 	
-	private void OnLevelVictory(int score, int recycled, int time)
+	private void OnLevelVictory(int score, int pipesRepaired, int time)
 	{
-		GD.Print($"GameLayoutManager: Victory! - Score: {score}, Recycled: {recycled}, Time: {time}");
+		GD.Print($"GameLayoutManager: Victory! - Score: {score}, Pipes Repaired: {pipesRepaired}, Time: {time}");
 		
 		// Reproducir efecto de sonido de victoria
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
@@ -602,7 +653,7 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
-			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_RECYCLED")}: {recycled}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
+			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_PIPES_REPAIRED")}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Victoria
@@ -612,7 +663,7 @@ public partial class GameLayoutManager : Control
 		}
 	}
 	
-	private void OnPipeRepaired()
+	private void OnPipeRepaired(string action = "")
 	{
 		GD.Print("GameLayoutManager: Tubería reparada, actualizando WaterSystem");
 		if (waterSystemNode != null && waterSystemNode.HasMethod("OnPipeRepaired"))
@@ -893,7 +944,7 @@ public partial class GameLayoutManager : Control
 			GD.Print("GameLayoutManager: Cargando minijuego de agua en el layout");
 			CargarNivel("res://Scenes/WaterCatchLevel.tscn", "minigame");
 		}
-		if (currentLevelType.ToLower() == "recycling")
+		else if (currentLevelType.ToLower() == "recycling")
 		{
 			GD.Print("GameLayoutManager: Cargando minijuego de clasificación en el layout");
 			CargarNivel("res://Scenes/ClassifyLevel.tscn", "minigame");

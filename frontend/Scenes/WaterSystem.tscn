@@ -36,12 +36,8 @@ outline_size = 4
 outline_color = Color(0, 0, 0, 1)
 
 [node name="WaterSystem" type="Control" node_paths=PackedStringArray("waterBar", "waterLabel")]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+custom_minimum_size = Vector2(250, 60)
+layout_mode = 2
 script = ExtResource("1_watersys")
 waterBar = NodePath("WaterContainer/VBoxContainer/WaterProgressBar")
 waterLabel = NodePath("WaterContainer/VBoxContainer/WaterLabel")

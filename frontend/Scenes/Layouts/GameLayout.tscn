@@ -42,15 +42,15 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_layout")
 indicatorsPanel = NodePath("VBoxContainer/IndicatorsPanel")
-waterSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/WaterSystem")
-lifeSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/LifeSystem")
-plantedSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/PlantedSystem")
-seedsSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/SeedsSystem")
-waterDropsSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/WaterDropsSystem")
-scoreLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/ScoreLabel")
-timeLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/TimeLabel")
-recycledLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer/RecycledLabel")
-pauseButton = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/PauseButton")
+waterSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer/WaterSystem")
+lifeSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer/LifeSystem")
+plantedSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer/PlantedSystem")
+seedsSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer/SeedsSystem")
+waterDropsSystemNode = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer/WaterDropsSystem")
+scoreLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer/ScoreLabel")
+timeLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer/TimeLabel")
+recycledLabel = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer/RecycledLabel")
+pauseButton = NodePath("VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer/PauseButton")
 pauseMenu = NodePath("PauseMenuLayer/PauseMenu")
 gameContainer = NodePath("VBoxContainer/GameContainer/SubViewportContainer/SubViewport")
 gameOverScreen = NodePath("GameOverScreen")
@@ -83,60 +83,50 @@ theme_override_constants/margin_bottom = 10
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/IndicatorsPanel/MarginContainer"]
 layout_mode = 2
-theme_override_constants/separation = 30
+theme_override_constants/separation = 20
 
-[node name="LeftSpacer" type="Control" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(40, 0)
+[node name="LeftContainer" type="HBoxContainer" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 20
 
-[node name="PauseButton" type="Button" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
+[node name="PauseButton" type="Button" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer"]
 custom_minimum_size = Vector2(80, 40)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_pauseButton")
 text = "BTN_PAUSE"
 
-[node name="CenterContainer" type="HBoxContainer" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 20
-
-[node name="ScoreLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+[node name="ScoreLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer"]
 layout_mode = 2
 text = "UI_POINTS: 0"
 label_settings = SubResource("LabelSettings_indicators")
 
-[node name="TimeLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+[node name="TimeLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer"]
 layout_mode = 2
 text = "UI_TIME: 0"
 label_settings = SubResource("LabelSettings_indicators")
 
-[node name="RecycledLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+[node name="RecycledLabel" type="Label" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/LeftContainer"]
 layout_mode = 2
 text = "UI_RECYCLED: 0"
 label_settings = SubResource("LabelSettings_indicators")
 
-[node name="WaterSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("2_water")]
-layout_mode = 2
-
-[node name="LifeSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("3_life")]
-layout_mode = 2
-
-[node name="PlantedSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("4_planted")]
-layout_mode = 2
-
-[node name="MiddleSpacer" type="Control" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer"]
+[node name="Spacer" type="Control" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="SeedsSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("5_seeds")]
-custom_minimum_size = Vector2(0, 0)
-
-[node name="WaterDropsSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/CenterContainer" instance=ExtResource("6_waterdrops")]
-custom_minimum_size = Vector2(0, 0)
-
-[node name="RightSpacer" type="Control" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
-custom_minimum_size = Vector2(120, 0)
+[node name="RightContainer" type="HBoxContainer" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_constants/separation = 10
+
+[node name="LifeSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("3_life")]
+
+[node name="WaterSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("2_water")]
+
+[node name="PlantedSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("4_planted")]
+
+[node name="SeedsSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("5_seeds")]
+
+[node name="WaterDropsSystem" parent="VBoxContainer/IndicatorsPanel/MarginContainer/HBoxContainer/RightContainer" instance=ExtResource("6_waterdrops")]
 
 [node name="GameContainer" type="MarginContainer" parent="VBoxContainer"]
 layout_mode = 2
@@ -152,7 +142,7 @@ stretch = true
 
 [node name="SubViewport" type="SubViewport" parent="VBoxContainer/GameContainer/SubViewportContainer"]
 handle_input_locally = false
-size = Vector2i(1080, 640)
+size = Vector2i(1453, 637)
 render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="VBoxContainer/GameContainer/SubViewportContainer/SubViewport"]
