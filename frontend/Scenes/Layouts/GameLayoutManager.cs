@@ -31,6 +31,7 @@ public partial class GameLayoutManager : Control
 	private string currentLevelType = ""; // Guardar el tipo de nivel actual
 	private string pendingLevelPath = ""; // Ruta del nivel que se cargará después de los slides
 	private string pendingLevelType = ""; // Tipo del nivel pendiente
+	private int victoryThreshold = 20;
 
 	public override void _Ready()
 	{
@@ -255,7 +256,7 @@ public partial class GameLayoutManager : Control
 				lifeSystemNode.Visible = true;
 				recycledLabel.Visible = true;
 				// Inicializar con el texto correcto
-				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0";
+				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0/{victoryThreshold}";
 				GD.Print("GameLayoutManager: Mostrando indicadores de clasificación");
 				break;
 				
@@ -264,7 +265,7 @@ public partial class GameLayoutManager : Control
 				lifeSystemNode.Visible = true;
 				recycledLabel.Visible = true;
 				// Inicializar con el texto correcto
-				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0";
+				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0/{victoryThreshold}";
 				GD.Print("GameLayoutManager: Mostrando indicadores de reciclaje");
 				break;
 				
@@ -599,7 +600,7 @@ public partial class GameLayoutManager : Control
 		// En nivel de agua muestra "Pipes Repaired", en otros "Recycled"
 		string key = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel") 
 			? "UI_PIPES_REPAIRED" : "UI_RECYCLED";
-		recycledLabel.Text = $"{TranslationManager.Tr(key)}: {cantidad}";
+		recycledLabel.Text = $"{TranslationManager.Tr(key)}: {cantidad}/{victoryThreshold}";
 	}
 	
 	private void OnPipesRepairedUpdated(int pipesRepaired)

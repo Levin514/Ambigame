@@ -5,6 +5,7 @@ using Snake;
 public partial class BackgroundSelector : MarginContainer
 {
 	private NavigationManager navigationManager;
+	private Random rnd = new();
 	
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -43,7 +44,7 @@ public partial class BackgroundSelector : MarginContainer
 		);
     }
 
-	public void Escuela_level_button_pressed()
+	public void Beach_level_button_pressed()
     {
         // Cargar nivel de Escuela (Map2)
 		var levelManager = GetNode<LevelManager>("/root/LevelManager");
@@ -63,7 +64,7 @@ public partial class BackgroundSelector : MarginContainer
 		);
     }
 
-	public void Parque_level_button_pressed()
+	public void Manglar_level_button_pressed()
     {
         // Cargar nivel de Parque (Map3)
 		var levelManager = GetNode<LevelManager>("/root/LevelManager");
@@ -85,22 +86,19 @@ public partial class BackgroundSelector : MarginContainer
 
 	public void Random_level_button_pressed()
     {
-        // Cargar nivel Bonus/Aleatorio
-		var levelManager = GetNode<LevelManager>("/root/LevelManager");
-		string[] slides = new string[] 
-		{ 
-			"SLIDE_RECYCLING_1", 
-			"SLIDE_RECYCLING_2", 
-			"SLIDE_RECYCLING_3" 
-		};
-		levelManager.LoadLevelWithSlides(
-			"res://Scenes/Levels/Recycling/RecyclingLevel_Bonus.tscn", 
-			"recycling", 
-			"Aleatorio", 
-			4,
-			slides,
-			"TUTORIAL_TITLE"
-		);
+		int rndNumber = rnd.Next(0,3);
+		if(rndNumber == 0)
+		{
+			Forest_level_button_pressed();
+		}
+		else if(rndNumber == 1)
+		{
+			Beach_level_button_pressed();
+		}
+		else
+		{
+			Manglar_level_button_pressed();
+		}
     }
 	
 	public void GoToSettings()

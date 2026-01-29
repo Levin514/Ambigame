@@ -236,6 +236,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="TextureRect" type="TextureRect" parent="Background/Control"]
+modulate = Color(0.735357, 0.735357, 0.735357, 0.851)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
