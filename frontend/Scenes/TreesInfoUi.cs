@@ -83,10 +83,10 @@ public partial class TreesInfoUi : Control
 		nameLabel.Text = currentCard.seedType;
 		descriptionLabel.Text = currentCard.description;
 		
-		if (currentCard.image != null)
-		{
-			imageDisplay.Texture = currentCard.image;
-		}
+		string seedTypeFormat = currentCard.seedType.ToLower().Replace(" ", "");
+		Texture2D treeImage = GD.Load<Texture2D>("res://Assets/" + seedTypeFormat + "_tree" + ".jpg");
+		imageDisplay.Texture = treeImage;
+
 		
 		// Update counter
 		int cardIndex = GetCardIndex();

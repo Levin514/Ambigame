@@ -68,13 +68,19 @@ public partial class SeedsInfoUI : Control
 	private void PopulateCards()
 	{
 		Texture2D sunflowerImage = GD.Load<Texture2D>("res://Assets/sunflower_seeds.jpg");
+		Texture2D ceiboImage = GD.Load<Texture2D>("res://Assets/ceibo_seeds.jpg");
+		Texture2D guayacanImage = GD.Load<Texture2D>("res://Assets/guayacan_seeds.jpg");
+		Texture2D algarroboImage = GD.Load<Texture2D>("res://Assets/algarrobo_seeds.jpg");
+		Texture2D paloSantoImage = GD.Load<Texture2D>("res://Assets/palosanto_seeds.jpg");
+		Texture2D cascolImage = GD.Load<Texture2D>("res://Assets/cascol_seeds.jpg");
+
 		// Add sample cards - modify with actual data as needed
 		cardList.AddLast(new Card("Semilla de Girasol", "Girasol", sunflowerImage, "Una semilla de girasol es una semilla oleaginosa que produce un aceite de alta calidad."));
-		cardList.AddLast(new Card("Semilla de Ceibo", "Ceibo", null, "El ceibo es un árbol característico de la costa ecuatoriana, puede alcanzar gran altura y es símbolo de identidad cultural."));
-		cardList.AddLast(new Card("Semilla de Guayacán", "Guayacán", null, "El guayacán es un árbol típico de los bosques secos de la costa, reconocido por su intensa floración amarilla."));
-		cardList.AddLast(new Card("Semilla de Algarrobo", "Algarrobo", null, "El algarrobo es un árbol resistente a la sequía, común en la costa, cuyas vainas sirven de alimento para animales."));
-		cardList.AddLast(new Card("Semilla de Palo Santo", "Palo Santo", null, "El palo santo es un árbol nativo de la costa ecuatoriana, apreciado por su aroma y usos medicinales y espirituales."));
-		cardList.AddLast(new Card("Semilla de Cascol", "Cascol", null, "El cascol es un árbol propio de la costa, utilizado tradicionalmente como cerca viva y para la recuperación de suelos."));
+		cardList.AddLast(new Card("Semilla de Ceibo", "Ceibo", ceiboImage, "El ceibo es un árbol característico de la costa ecuatoriana, puede alcanzar gran altura y es símbolo de identidad cultural."));
+		cardList.AddLast(new Card("Semilla de Guayacán", "Guayacán", guayacanImage, "El guayacán es un árbol típico de los bosques secos de la costa, reconocido por su intensa floración amarilla."));
+		cardList.AddLast(new Card("Semilla de Algarrobo", "Algarrobo", algarroboImage, "El algarrobo es un árbol resistente a la sequía, común en la costa, cuyas vainas sirven de alimento para animales."));
+		cardList.AddLast(new Card("Semilla de Palo Santo", "Palo Santo", paloSantoImage, "El palo santo es un árbol nativo de la costa ecuatoriana, apreciado por su aroma y usos medicinales y espirituales."));
+		cardList.AddLast(new Card("Semilla de Cascol", "Cascol", cascolImage, "El cascol es un árbol propio de la costa, utilizado tradicionalmente como cerca viva y para la recuperación de suelos."));
 
 		// Initialize pointer to first card
 		currentCardNode = cardList.First;
