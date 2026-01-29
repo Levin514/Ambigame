@@ -102,7 +102,21 @@ public partial class SnakeBody : Sprite2D
 		
 		ZIndex = 1;
 		
-		// Conectar al LifeSystem solo si existe (nivel de limpieza)
+		// Buscar el LifeSystem si no está asignado (puede estar en GameLayout)
+		if (life_system == null)
+		{
+			life_system = GetTree().Root.FindChild("LifeSystem", true, false) as LifeSystem;
+			if (life_system != null)
+			{
+				GD.Print("SnakeBody: LifeSystem encontrado dinámicamente");
+			}
+			else
+			{
+				GD.Print("SnakeBody: LifeSystem NO encontrado - usando modo HasWalls sin vidas");
+			}
+		}
+		
+		// Conectar al LifeSystem solo si existe (nivel de limpieza o agua)
 		if (life_system != null)
 		{
 			life_system.GameOver += OnLifeSystemGameOver;
@@ -113,6 +127,7 @@ public partial class SnakeBody : Sprite2D
 	{
 		GD.Print("SnakeBody: OnLifeSystemGameOver - deteniendo movimiento");
 		_crash = true;
+		ScreenFlash.HideFlash(); // Ocultar el destello rojo si estaba visible
 		EmitSignal(SignalName.GameOver);
 	}
 
@@ -183,6 +198,8 @@ public partial class SnakeBody : Sprite2D
 				// Tubería ROTA → REPARARLA (objetivo)
 				DualGrid.RepairPipe(headPosition);
 				
+				// NO incrementar puntuación aquí - el WaterSystem lo maneja con puntos dinámicos
+				
 				// Reproducir sonido de reparación
 				var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
 				if (audioManager != null)
@@ -222,6 +239,7 @@ public partial class SnakeBody : Sprite2D
 		if (DualGrid.HasRockAt(headPosition))
 		{
 			EmitSignal(SignalName.UpdateHealth);
+			ScreenFlash.Show();
 			DualGrid.RemoveRockAt(headPosition);
 		}
 	}
@@ -358,8 +376,37 @@ public partial class SnakeBody : Sprite2D
 			{
 				if (newVect.X < 0 || newVect.X > mapBounds.X || newVect.Y < 0 || newVect.Y > mapBounds.Y)
 				{
-					ShowGameOverScreen();
-					return;
+					// Si hay LifeSystem, perder vida y rebotar
+					if (life_system != null)
+					{
+						GD.Print("SnakeBody: Colisión con pared - perdiendo vida y rebotando");
+						EmitSignal(SignalName.UpdateHealth);
+						ScreenFlash.Show();
+						
+						// Rebotar: invertir dirección ACTUAL y del buffer
+						if (newVect.X < 0 || newVect.X > mapBounds.X)
+						{
+							// Colisión horizontal: invertir dirección
+							_direction = _direction == Direction.LEFT ? Direction.RIGHT : Direction.LEFT;
+							_nextDirection = _direction;
+						}
+						else if (newVect.Y < 0 || newVect.Y > mapBounds.Y)
+						{
+							// Colisión vertical: invertir dirección
+							_direction = _direction == Direction.UP ? Direction.DOWN : Direction.UP;
+							_nextDirection = _direction;
+						}
+						
+						// No aplicar el movimiento fuera de los límites, resetear el timer y retornar
+						_time = 0;
+						return;
+					}
+					else
+					{
+						// Sin LifeSystem, game over inmediato
+						ShowGameOverScreen();
+						return;
+					}
 				}
 			}
 			else // Teletransporte (comportamiento original)
@@ -417,7 +464,6 @@ public partial class SnakeBody : Sprite2D
 
 			if (Crash())
 			{
-				
 				ShowGameOverScreen();
 			}
 		}
@@ -427,9 +473,10 @@ public partial class SnakeBody : Sprite2D
 	}
 }
 
-public void ShowGameOverScreen()
+	public void ShowGameOverScreen()
 	{
 		_crash = true;
+		ScreenFlash.HideFlash(); // Ocultar el destello rojo si estaba visible
 		//gameOverScreen.Visible = true;
 		
 		EmitSignal(SignalName.GameOver);

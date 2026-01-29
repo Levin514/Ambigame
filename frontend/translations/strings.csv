@@ -54,6 +54,7 @@ GAME_OVER,Perdiste,Game Over
 VICTORY,¡Victoria!,Victory!
 UI_POINTS,Puntos,Points
 UI_RECYCLED,Reciclados,Recycled
+UI_PIPES_REPAIRED,Tuberías reparadas,Pipes Repaired
 UI_TIME,Tiempo,Time
 UI_SEEDS,Semillas,Seeds
 UI_WATER,Agua,Water

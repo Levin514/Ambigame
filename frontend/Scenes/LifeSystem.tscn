@@ -11,12 +11,8 @@
 font_color = Color(0, 0.73337764, 0.19966345, 1)
 
 [node name="LifeSystem" type="Control" node_paths=PackedStringArray("healthLabel")]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+custom_minimum_size = Vector2(150, 45)
+layout_mode = 2
 script = ExtResource("1_a1dbf")
 healthLabel = NodePath("HealthContainer/HealthLabel")
 

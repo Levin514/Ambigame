@@ -8,8 +8,13 @@ public partial class WaterSystem : Control
 	[Export] private Label waterLabel;
 	[Signal] public delegate void GameOverEventHandler();
 	[Signal] public delegate void VictoryEventHandler(int waterScore);
+	[Signal] public delegate void PipesRepairedUpdatedEventHandler(int pipesRepaired);
+	[Signal] public delegate void ScoreUpdatedEventHandler(int score); // Nueva señal para actualizar UI
 	
 	private int totalPipes = 0;
+	private int pipesRepaired = 0;
+	private int pointsPerPipe = 10; // Puntos por cada tubería reparada
+	private int currentScore = 0;
 	private Node dualGridTilemap = null; // Referencia al DualGridTilemap
 	private float currentWater;
 	private float maxWater = 100f;
@@ -25,6 +30,10 @@ public partial class WaterSystem : Control
         GD.Print("WaterSystem: Inicializando sistema de agua");
 		currentWater = maxWater; // Iniciar en 100%
 		UpdateWaterDisplay();
+		// Emitir señales iniciales
+		EmitSignal(SignalName.PipesRepairedUpdated, pipesRepaired);
+		EmitSignal(SignalName.ScoreUpdated, currentScore);
+		GD.Print($"WaterSystem: Score inicial: {currentScore}");
 	}
 
 	public void SetTotalPipes(int total)
@@ -67,6 +76,34 @@ public partial class WaterSystem : Control
 	public void OnPipeRepaired()
 	{
 		GD.Print("WaterSystem: Tubería reparada, recalculando pérdida de agua");
+		pipesRepaired++;
+		
+		// Calcular puntos según el porcentaje de agua ACTUAL
+		int pointsEarned = 0;
+		if (currentWater >= 85f)
+		{
+			pointsEarned = 50;
+		}
+		else if (currentWater >= 50f)
+		{
+			pointsEarned = 30;
+		}
+		else if (currentWater >= 25f)
+		{
+			pointsEarned = 10;
+		}
+		else
+		{
+			pointsEarned = 5;
+		}
+		
+		currentScore += pointsEarned;
+		GD.Print($"WaterSystem: Tubería reparada con {currentWater:F1}% de agua → +{pointsEarned} puntos (Total: {currentScore})");
+		GD.Print($"WaterSystem: Tuberías reparadas: {pipesRepaired}/{totalPipes}");
+		
+		// Emitir señal de score actualizado para la UI
+		EmitSignal(SignalName.ScoreUpdated, currentScore);
+		EmitSignal(SignalName.PipesRepairedUpdated, pipesRepaired);
 		UpdateWaterLossRate();
 		CheckGameStatus(); // Verificar victoria inmediatamente
 	}
@@ -110,17 +147,10 @@ public partial class WaterSystem : Control
 
 	private int CalculateScore()
 	{
-		// Puntaje base: 1000 puntos
-		// Multiplicador según agua salvada: (agua/100) × 1000
-		// Ejemplos:
-		// - 80% agua restante → 800 puntos
-		// - 50% agua restante → 500 puntos  
-		// - 5% agua restante → 50 puntos
-		int baseScore = 1000;
-		float waterPercentage = currentWater / maxWater;
-		int finalScore = Mathf.RoundToInt(baseScore * waterPercentage);
-		GD.Print($"WaterSystem: Puntaje calculado - Agua: {currentWater:F1}% → {finalScore} puntos");
-		return finalScore;
+		// El puntaje ya está calculado según el momento de cada reparación
+		// Ya no hay bonificación adicional al final
+		GD.Print($"WaterSystem: Puntaje final: {currentScore} (sin bonus adicional)");
+		return currentScore;
 	}
 
 	private void CheckGameStatus()

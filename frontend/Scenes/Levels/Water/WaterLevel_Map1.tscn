@@ -170,7 +170,7 @@ worldMapLayer = NodePath("WorldLayer")
 displayMapLayer = NodePath("DisplayLayer")
 plantMapLayer = NodePath("PlantLayer")
 dirtPlaceholderAtlasCoord = Vector2i(1, 0)
-generateObstacles = false
+generateObstacles = true
 
 [node name="WorldLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true
