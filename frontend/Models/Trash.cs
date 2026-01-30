@@ -11,12 +11,13 @@ public partial class Trash : RefCounted
     public String category { get; private set; }
     public String trashName { get; private set; }
 
-    private readonly Dictionary<String, List<String>> recycleObjects = new Dictionary<string, List<String>>()
-	{
-		{"paper", ["newspaper"]},
-		{"plastic", ["plasticBottle"]},
-		{"glass", ["glassJar"]}
-	};
+    // private readonly Dictionary<String, List<String>> recycleObjects = new Dictionary<string, List<String>>()
+	// {
+	// 	{"paper", ["newspaper"]},
+	// 	{"plastic", ["plasticBottle"]},
+	// 	{"glass", ["glassJar"]}
+	// };
+    private readonly Dictionary<String, List<String>> recycleObjects = GameData.Instance.recycleObjects[GameData.Instance.recycleBackground];
 
     public Trash()
     {

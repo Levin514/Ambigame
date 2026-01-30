@@ -7,11 +7,27 @@ namespace Snake;
 
 public partial class GameData : Node
 {
-	public readonly Dictionary<String, String> recycleObjects = new Dictionary<string, string>()
+	public string recycleBackground = "forest";
+	public Dictionary<string, Dictionary<string,List<String>>> recycleObjects;
+	public readonly Dictionary<String, List<String>> forestRecycleObjects = new Dictionary<string, List<String>>()
 	{
-		{"paper", "newspaper"},
-		{"plastic", "plasticBottle"},
-		{"glass", "glassJar"}
+		{"paper", ["newspaper"]},
+		{"plastic", ["plasticBottle"]},
+		{"glass", ["glassJar"]}
+	};
+
+	public readonly Dictionary<String, List<String>> beachRecycleObjects = new Dictionary<string, List<String>>()
+	{
+		{"paper", ["cardboardBox"]},
+		{"plastic", ["plasticBaskets"]},
+		{"glass", ["glassJar"]}
+	};
+
+	public readonly Dictionary<String, List<String>> manglarRecycleObjects = new Dictionary<string, List<String>>()
+	{
+		{"paper", ["cardboardBox"]},
+		{"plastic", ["plasticBaskets", "plasticBottle"]},
+		{"glass", ["glassJar", "metalCan"]}
 	};
 
 	public LinkedList<Trash> globalTrashList;
@@ -22,6 +38,12 @@ public partial class GameData : Node
     public override void _Ready()
     {
         Instance = this;
+		recycleObjects = new Dictionary<string, Dictionary<string,List<String>>>()
+		{
+			{"forest", forestRecycleObjects},
+			{"beach", beachRecycleObjects},
+			{"manglar", manglarRecycleObjects}
+		};
     }
 
 

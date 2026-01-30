@@ -14,7 +14,7 @@ public partial class Classifier : Node2D
 	[Export] Sprite2D sprite;
 	private ClassifyLevel classifyLevel;
 
-	private Dictionary<String, String> recycleObjects;
+	private Dictionary<String, List<String>> recycleObjects;
 
 	private Random rnd = new();
 	private List<String> keys;
@@ -33,7 +33,7 @@ public partial class Classifier : Node2D
 		// Obtener ClassifyLevel del nodo padre
 		classifyLevel = GetParent<ClassifyLevel>();
 
-		recycleObjects = GameData.Instance.recycleObjects;
+		recycleObjects = GameData.Instance.recycleObjects[GameData.Instance.recycleBackground];
 
 		if(GameData.Instance.globalTrashList != null)
 		{
@@ -93,7 +93,7 @@ public partial class Classifier : Node2D
 
 	public void GenerateItemSprite(String category)
 	{
-		String item = recycleObjects[category];
+		String item = recycleObjects[category][rnd.Next(0, recycleObjects[category].Count)];
 		recycleSprite.Texture = GD.Load<Texture2D>("res://Assets/" + item + ".png");
 		recycleSprite.Scale = new Vector2I(3,3);
 	}

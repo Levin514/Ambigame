@@ -26,6 +26,7 @@ public partial class BackgroundSelector : MarginContainer
 
 	public void Forest_level_button_pressed()
     {
+		GameData.Instance.recycleBackground = "forest";
         // Cargar nivel de Bosque (Map1 del nivel de Reciclaje)
 		var levelManager = GetNode<LevelManager>("/root/LevelManager");
 		string[] slides = new string[] 
@@ -46,6 +47,7 @@ public partial class BackgroundSelector : MarginContainer
 
 	public void Beach_level_button_pressed()
     {
+		GameData.Instance.recycleBackground = "beach";
         // Cargar nivel de Escuela (Map2)
 		var levelManager = GetNode<LevelManager>("/root/LevelManager");
 		string[] slides = new string[] 
@@ -66,6 +68,7 @@ public partial class BackgroundSelector : MarginContainer
 
 	public void Manglar_level_button_pressed()
     {
+		GameData.Instance.recycleBackground = "manglar";
         // Cargar nivel de Parque (Map3)
 		var levelManager = GetNode<LevelManager>("/root/LevelManager");
 		string[] slides = new string[] 
