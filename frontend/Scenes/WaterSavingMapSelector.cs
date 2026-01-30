@@ -85,7 +85,7 @@ public partial class WaterSavingMapSelector : MarginContainer
 
 	public void Random_level_button_pressed()
 	{
-		// Cargar nivel Bonus/Aleatorio
+		// Seleccionar un mapa aleatorio entre los 3 disponibles
 		var levelManager = GetNode<LevelManager>("/root/LevelManager");
 		string[] slides = new string[] 
 		{ 
@@ -93,11 +93,35 @@ public partial class WaterSavingMapSelector : MarginContainer
 			"SLIDE_WATER_2", 
 			"SLIDE_WATER_3" 
 		};
+		
+		// Generar número aleatorio entre 1 y 3
+		Random random = new Random();
+		int randomMap = random.Next(1, 4); // 1, 2 o 3
+		
+		string mapPath = "";
+		string mapName = "";
+		
+		switch (randomMap)
+		{
+			case 1:
+				mapPath = "res://Scenes/Levels/Water/WaterLevel_Map1.tscn";
+				mapName = "Casa";
+				break;
+			case 2:
+				mapPath = "res://Scenes/Levels/Water/WaterLevel_Map2.tscn";
+				mapName = "Escuela";
+				break;
+			case 3:
+				mapPath = "res://Scenes/Levels/Water/WaterLevel_Map3.tscn";
+				mapName = "Parque";
+				break;
+		}
+		
 		levelManager.LoadLevelWithSlides(
-			"res://Scenes/Levels/Water/WaterLevel_Bonus.tscn", 
+			mapPath, 
 			"water", 
-			"Bonus", 
-			4,
+			mapName, 
+			randomMap,
 			slides,
 			"TUTORIAL_TITLE"
 		);

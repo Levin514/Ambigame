@@ -1,6 +1,6 @@
-[gd_scene load_steps=33 format=4 uid="uid://bw7h5m3oaqp2x"]
+[gd_scene load_steps=33 format=4 uid="uid://hgevtnj3pff1"]
 
-[ext_resource type="TileSet" uid="uid://bq8v7n3m5k2wp" path="res://Assets/CasaTileSet.tres" id="1_tileset"]
+[ext_resource type="TileSet" uid="uid://cq7m8n4p6r3ws" path="res://Assets/EscuelaTileSet.tres" id="1_tileset"]
 [ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="2_music"]
 [ext_resource type="Script" uid="uid://b6yxjkpyu7akh" path="res://Models/WaterSnake.cs" id="3_watersnake"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="4_dualgrid"]
