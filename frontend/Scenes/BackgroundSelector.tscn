@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://konwcjphckjl"]
+[gd_scene load_steps=10 format=3 uid="uid://konwcjphckjl"]
 
 [ext_resource type="Script" uid="uid://bejdnx6u62nvr" path="res://Scenes/BackgroundSelector.cs" id="1_esf64"]
 [ext_resource type="PackedScene" uid="uid://c11lqpfr40b2x" path="res://Scenes/Background.tscn" id="1_p0tgr"]
@@ -6,6 +6,9 @@
 [ext_resource type="LabelSettings" uid="uid://c27xfl56525tk" path="res://titles.tres" id="3_d1r8k"]
 [ext_resource type="LabelSettings" uid="uid://tjelqaktb831" path="res://text.tres" id="4_wkiiu"]
 [ext_resource type="Texture2D" uid="uid://cqk20arl22bsn" path="res://icon.png" id="5_qxh2t"]
+[ext_resource type="Texture2D" uid="uid://ckk82wkpuvlhh" path="res://Assets/forestBackground.jpg" id="6_qxh2t"]
+[ext_resource type="Texture2D" uid="uid://dvmnvprcv6qlc" path="res://Assets/beachBackground.jpg" id="7_7dtf5"]
+[ext_resource type="Texture2D" uid="uid://4nq6au7v0boj" path="res://Assets/mangroveBackground.jpg" id="8_t5y3f"]
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -92,8 +95,9 @@ theme_override_constants/separation = 25
 [node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/ForestBackgroundContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture_normal = ExtResource("5_qxh2t")
-stretch_mode = 5
+texture_normal = ExtResource("6_qxh2t")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="ForestLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/ForestBackgroundContainer"]
 layout_mode = 2
@@ -109,8 +113,9 @@ theme_override_constants/separation = 25
 [node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/BeachBackgroundContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture_normal = ExtResource("5_qxh2t")
-stretch_mode = 5
+texture_normal = ExtResource("7_7dtf5")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="BeachLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/BeachBackgroundContainer"]
 layout_mode = 2
@@ -126,8 +131,9 @@ theme_override_constants/separation = 25
 [node name="TextureButton" type="TextureButton" parent="MarginContainer/VBoxContainer/MainButtons/SchoolBackgroundContainer2"]
 layout_mode = 2
 size_flags_vertical = 3
-texture_normal = ExtResource("5_qxh2t")
-stretch_mode = 5
+texture_normal = ExtResource("8_t5y3f")
+ignore_texture_size = true
+stretch_mode = 0
 
 [node name="SchoolLevelButton" type="Button" parent="MarginContainer/VBoxContainer/MainButtons/SchoolBackgroundContainer2"]
 layout_mode = 2

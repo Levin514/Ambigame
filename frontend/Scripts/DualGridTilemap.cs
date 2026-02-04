@@ -17,6 +17,7 @@ public partial class DualGridTilemap : Node2D {
 	[Export] public Vector2I grassPlaceholderAtlasCoord;
 	[Export] public Vector2I dirtPlaceholderAtlasCoord;
 	[Export] public bool generateObstacles = true; // Controla si se generan rocas (false para nivel de agua)
+	[Export] public Texture2D obstacleSprite;
 	private Dictionary<Vector2I, Sprite2D> trashes = new();
 	private Dictionary<Vector2I, Trash> trashItems = new();
 	private Dictionary<Vector2I, Sprite2D> obstacles = new();
@@ -170,11 +171,19 @@ public partial class DualGridTilemap : Node2D {
 	public void AddRock(Vector2I coords)
 	{
 		Sprite2D sprite = new Sprite2D();
-		sprite.Texture = GD.Load<Texture2D>("res://Assets/Stone.png");
+		if(obstacleSprite == null)
+		{
+			sprite.Texture = GD.Load<Texture2D>("res://Assets/Stone.png");
+		}
+		else
+		{
+			sprite.Texture = obstacleSprite;
+		}
 		sprite.Position = plantMapLayer.MapToLocal(coords);
 		sprite.ZIndex = 3;
 		CallDeferred("add_child", sprite);
 		GD.Print($"Added stone at {coords}");
+		
 		obstacles[coords] = sprite;
 	}
 

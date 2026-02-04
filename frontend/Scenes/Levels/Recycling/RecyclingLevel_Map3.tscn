@@ -1,8 +1,9 @@
-[gd_scene load_steps=29 format=4 uid="uid://cy6hqdvxd823m"]
+[gd_scene load_steps=30 format=4 uid="uid://cy6hqdvxd823m"]
 
 [ext_resource type="Script" uid="uid://dto8nqx28bkfn" path="res://Models/RecyclingSnake.cs" id="1_o0x82"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="2_vyqwk"]
 [ext_resource type="TileSet" uid="uid://cv82tetnvnxwm" path="res://Assets/ManglarTileSet.tres" id="3_o0x82"]
+[ext_resource type="Texture2D" uid="uid://cwncb73rsvhrv" path="res://Assets/treeBranch.png" id="3_vyqwk"]
 [ext_resource type="Texture2D" uid="uid://83u81ntvymi0" path="res://Assets/Plant.png" id="4_523hp"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="5_rupf5"]
 [ext_resource type="Script" uid="uid://cfyiwwvuvvng0" path="res://Scenes/PlayerAnimation.cs" id="6_h72gk"]
@@ -164,6 +165,7 @@ worldMapLayer = NodePath("WorldLayer")
 displayMapLayer = NodePath("DisplayLayer")
 plantMapLayer = NodePath("PlantLayer")
 dirtPlaceholderAtlasCoord = Vector2i(1, 0)
+obstacleSprite = ExtResource("3_vyqwk")
 
 [node name="WorldLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true

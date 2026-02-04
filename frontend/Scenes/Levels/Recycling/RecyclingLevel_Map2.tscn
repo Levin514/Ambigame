@@ -1,9 +1,10 @@
-[gd_scene load_steps=30 format=4 uid="uid://dmrn3noh5g58c"]
+[gd_scene load_steps=31 format=4 uid="uid://dmrn3noh5g58c"]
 
 [ext_resource type="Script" uid="uid://dto8nqx28bkfn" path="res://Models/RecyclingSnake.cs" id="1_h7oab"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="2_kk8ui"]
 [ext_resource type="TileSet" uid="uid://gt6mcddwxp4" path="res://Assets/BeachTileSet.tres" id="3_h7oab"]
 [ext_resource type="TileSet" uid="uid://cv82tetnvnxwm" path="res://Assets/ManglarTileSet.tres" id="3_kk8ui"]
+[ext_resource type="Texture2D" uid="uid://dwv4gaeqfj2gq" path="res://Assets/RedStone.png" id="3_nlsn8"]
 [ext_resource type="Texture2D" uid="uid://83u81ntvymi0" path="res://Assets/Plant.png" id="4_iqxbc"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="5_4gwon"]
 [ext_resource type="Script" uid="uid://cfyiwwvuvvng0" path="res://Scenes/PlayerAnimation.cs" id="6_hn28b"]
@@ -165,6 +166,7 @@ worldMapLayer = NodePath("WorldLayer")
 displayMapLayer = NodePath("DisplayLayer")
 plantMapLayer = NodePath("PlantLayer")
 dirtPlaceholderAtlasCoord = Vector2i(1, 0)
+obstacleSprite = ExtResource("3_nlsn8")
 
 [node name="WorldLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true

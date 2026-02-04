@@ -1,9 +1,9 @@
 [gd_scene load_steps=30 format=4 uid="uid://dprak8l5xc7mp"]
 
-[ext_resource type="TileSet" uid="uid://ydwe2v6t82bg" path="res://Assets/DemoTileSet.tres" id="1_tileset"]
 [ext_resource type="Script" uid="uid://dto8nqx28bkfn" path="res://Models/RecyclingSnake.cs" id="2_recyclingsnake"]
 [ext_resource type="Script" uid="uid://fcdprrr4whr4" path="res://Scripts/DualGridTilemap.cs" id="3_dualgrid"]
 [ext_resource type="TileSet" uid="uid://gt6mcddwxp4" path="res://Assets/BeachTileSet.tres" id="3_s5o6w"]
+[ext_resource type="TileSet" uid="uid://b73g4cdekvsq" path="res://Assets/ForestTileSet.tres" id="4_s5o6w"]
 [ext_resource type="Texture2D" uid="uid://83u81ntvymi0" path="res://Assets/Plant.png" id="4_upfnv"]
 [ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="5_music"]
 [ext_resource type="Script" uid="uid://csiqjwr0dfdt8" path="res://Models/SnakeBody.cs" id="6_snakebody"]
@@ -175,7 +175,7 @@ tile_set = ExtResource("3_s5o6w")
 [node name="DisplayLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true
 position = Vector2(-8, -8)
-tile_set = ExtResource("1_tileset")
+tile_set = ExtResource("4_s5o6w")
 
 [node name="PlantLayer" type="TileMapLayer" parent="TileMapLayers"]
 use_parent_material = true
