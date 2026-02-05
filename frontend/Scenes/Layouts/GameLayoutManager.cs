@@ -627,7 +627,12 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (gameOverStatsLabel != null)
 		{
-			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_PIPES_REPAIRED")}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
+			// Determinar qué texto mostrar según el tipo de nivel
+			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel") 
+				? "UI_PIPES_REPAIRED" 
+				: "UI_OBJECTS_COLLECTED";
+			
+			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr(secondStatKey)}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Game Over
@@ -654,7 +659,12 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
-			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_PIPES_REPAIRED")}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
+			// Determinar qué texto mostrar según el tipo de nivel
+			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel") 
+				? "UI_PIPES_REPAIRED" 
+				: "UI_OBJECTS_COLLECTED";
+			
+			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr(secondStatKey)}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
 		
 		// Mostrar pantalla de Victoria
@@ -774,9 +784,10 @@ public partial class GameLayoutManager : Control
 			if (!hasSeeds)
 			{
 				GD.Print("GameLayoutManager: Sin semillas - Game Over");
-				if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+				// Emitir Game Over con razón "no_seeds"
+				if (currentLevel != null && currentLevel.HasMethod("OnReforestationSystemGameOver"))
 				{
-					currentLevel.Call("OnGameOver");
+					currentLevel.Call("OnReforestationSystemGameOver", "no_seeds");
 				}
 				return;
 			}
@@ -797,9 +808,10 @@ public partial class GameLayoutManager : Control
 			if (!hasWater)
 			{
 				GD.Print("GameLayoutManager: Sin agua - Game Over");
-				if (currentLevel != null && currentLevel.HasMethod("OnGameOver"))
+				// Emitir Game Over con razón "no_water"
+				if (currentLevel != null && currentLevel.HasMethod("OnReforestationSystemGameOver"))
 				{
-					currentLevel.Call("OnGameOver");
+					currentLevel.Call("OnReforestationSystemGameOver", "no_water");
 				}
 				return;
 			}
@@ -813,9 +825,9 @@ public partial class GameLayoutManager : Control
 		}
 	}
 	
-	private void OnReforestationGameOver(int score, int time)
+	private void OnReforestationGameOver(int score, int treesPlanted, int time, string reason)
 	{
-		GD.Print($"GameLayoutManager: Game Over (Reforestation) - Score: {score}, Time: {time}");
+		GD.Print($"GameLayoutManager: Game Over (Reforestation) - Score: {score}, Trees: {treesPlanted}, Time: {time}, Reason: '{reason}'");
 		
 		// Reproducir efecto de sonido de derrota
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
@@ -827,10 +839,37 @@ public partial class GameLayoutManager : Control
 		// Pausar el juego
 		GetTree().Paused = true;
 		
-		// Actualizar estadísticas
+		// Determinar el motivo de derrota
+		string reasonText = "";
+		if (!string.IsNullOrEmpty(reason))
+		{
+			if (reason == "no_seeds")
+			{
+				reasonText = $"\n{TranslationManager.Tr("UI_DEFEAT_NO_SEEDS")}";
+			}
+			else if (reason == "no_water")
+			{
+				reasonText = $"\n{TranslationManager.Tr("UI_DEFEAT_NO_WATER")}";
+			}
+			else if (reason == "plants_died")
+			{
+				reasonText = $"\n{TranslationManager.Tr("UI_DEFEAT_PLANTS_DIED")}";
+			}
+			else
+			{
+				GD.PrintErr($"GameLayoutManager: Razón de derrota desconocida: '{reason}'");
+			}
+		}
+		else
+		{
+			GD.PrintErr("GameLayoutManager: Razón de derrota vacía - usando mensaje genérico");
+			reasonText = "\nGame Over";
+		}
+		
+		// Actualizar estadísticas con razón de derrota
 		if (gameOverStatsLabel != null)
 		{
-			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
+			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TREES_PLANTED")}: {treesPlanted}\n{TranslationManager.Tr("UI_TIME")}: {time}s{reasonText}";
 		}
 		
 		// Mostrar pantalla de Game Over
@@ -840,9 +879,9 @@ public partial class GameLayoutManager : Control
 		}
 	}
 	
-	private void OnReforestationVictory(int score, int time)
+	private void OnReforestationVictory(int score, int treesPlanted, int time)
 	{
-		GD.Print($"GameLayoutManager: Victory! (Reforestation) - Score: {score}, Time: {time}");
+		GD.Print($"GameLayoutManager: Victory! (Reforestation) - Score: {score}, Trees: {treesPlanted}, Time: {time}");
 		
 		// Reproducir efecto de sonido de victoria
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
@@ -857,7 +896,14 @@ public partial class GameLayoutManager : Control
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
-			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
+			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TREES_PLANTED")}: {treesPlanted}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
+		}
+
+		// Ocultar botón de siguiente nivel (reforestación es el último nivel)
+		var nextLevelButton = victoryScreen?.GetNode<Button>("VBoxContainer/Continuar");
+		if (nextLevelButton != null)
+		{
+			nextLevelButton.Visible = false;
 		}
 
 		if(treeInfoScreen != null)

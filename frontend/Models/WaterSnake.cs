@@ -95,7 +95,7 @@ public partial class WaterSnake : Node2D
 
 	public void OnVictory(int waterScore)
 	{
-		GD.Print($"WaterSnake: OnVictory llamado con waterScore: {waterScore}");
+		GD.Print($"WaterSnake: OnVictory llamado");
 		if (isGameOver) return; // Evitar ejecutar múltiples veces
 		
 		isGameOver = true;
@@ -104,17 +104,16 @@ public partial class WaterSnake : Node2D
 			degradationTimer.Stop();
 		}
 		
-		isGameOver = true;
 		if (gameMusic != null && gameMusic.Playing)
 		{
 			gameMusic.Stop();
 		}
 		
-		// Emitir señal de Victoria con estadísticas (puntaje, tuberías reparadas, tiempo)
-		// El waterScore ya incluye la bonificación del WaterSystem
+		// Emitir señal de Victoria con estadísticas
+		// Usar el puntaje del SnakeBody que incluye TODOS los puntos (tuberías + piedras)
 		if (_snakeBody != null)
 		{
-			EmitSignal(SignalName.Victory, waterScore, pipesRepaired, (int)_snakeBody.juegoTime);
+			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, pipesRepaired, (int)_snakeBody.juegoTime);
 		}
 	}
 

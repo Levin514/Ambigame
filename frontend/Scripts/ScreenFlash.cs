@@ -15,9 +15,12 @@ public partial class ScreenFlash : CanvasLayer
 		_instance = this;
 		Layer = 100; // Sobre todo lo demás
 		
+		// CRÍTICO: Procesar siempre, incluso cuando el juego está en pausa
+		ProcessMode = ProcessModeEnum.Always;
+		
 		_flashRect = new ColorRect
 		{
-			Color = new Color(1, 0, 0, 0.5f),
+			Color = new Color(1, 0.3f, 0.2f, 0.4f),
 			MouseFilter = Control.MouseFilterEnum.Ignore,
 			Visible = false
 		};
@@ -40,12 +43,12 @@ public partial class ScreenFlash : CanvasLayer
 		}
 		
 		var rect = _instance._flashRect;
-		rect.Color = new Color(1, 0, 0, 0.5f);
+		rect.Color = new Color(1, 0.3f, 0.2f, 0.4f);
 		rect.Modulate = new Color(1, 1, 1, 1);
 		rect.Visible = true;
 		
 		_instance._currentTween = rect.CreateTween();
-		_instance._currentTween.SetProcessMode(Tween.TweenProcessMode.Physics);
+		_instance._currentTween.SetProcessMode(Tween.TweenProcessMode.Idle);
 		_instance._currentTween.TweenProperty(rect, "modulate:a", 0.0f, duration);
 		_instance._currentTween.TweenCallback(Callable.From(() => rect.Visible = false));
 	}
@@ -69,7 +72,7 @@ public partial class ScreenFlash : CanvasLayer
 		rect.Visible = true;
 		
 		_instance._currentTween = rect.CreateTween();
-		_instance._currentTween.SetProcessMode(Tween.TweenProcessMode.Physics);
+		_instance._currentTween.SetProcessMode(Tween.TweenProcessMode.Idle);
 		_instance._currentTween.TweenProperty(rect, "modulate:a", 0.0f, duration);
 		_instance._currentTween.TweenCallback(Callable.From(() => rect.Visible = false));
 	}

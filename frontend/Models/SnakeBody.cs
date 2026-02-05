@@ -60,6 +60,14 @@ public partial class SnakeBody : Sprite2D
 			EmitSignal(SignalName.ScoreUpdated, puntuacion);
 		}
 	}
+	
+	/// <summary>
+	/// Suma puntos al puntaje actual
+	/// </summary>
+	public void AddScore(int points)
+	{
+		Puntuacion += points;
+	}
 
 	private double elapsedTime = 0;
 	public double juegoTime = 0;
@@ -152,7 +160,7 @@ public partial class SnakeBody : Sprite2D
 		{
 			var plantState = (int)DualGrid.Call("GetPlantState", headPosition);
 			
-			// 0 = Empty (puede plantar), 2 = NeedsWater (puede regar)
+			// 0 = Empty (puede plantar), 2 = NeedsWater, 3 = Dying (ambos pueden regar)
 			if (plantState == 0) // PlantState.Empty
 			{
 				bool planted = (bool)DualGrid.Call("TryPlantSeed", headPosition);
@@ -163,7 +171,7 @@ public partial class SnakeBody : Sprite2D
 					return true;
 				}
 			}
-			else if (plantState == 2) // PlantState.NeedsWater
+			else if (plantState == 2 || plantState == 3) // PlantState.NeedsWater o Dying
 			{
 				bool watered = (bool)DualGrid.Call("TryWaterPlant", headPosition);
 				if (watered)

@@ -8,8 +8,8 @@ namespace Snake;
 public partial class ReforestationSnake : Node2D
 {
 	// Señales para comunicarse con el GameLayout
-	[Signal] public delegate void GameOverEventHandler(int score, int time);
-	[Signal] public delegate void VictoryEventHandler(int score, int time);
+	[Signal] public delegate void GameOverEventHandler(int score, int treesPlanted, int time, string reason);
+	[Signal] public delegate void VictoryEventHandler(int score, int treesPlanted, int time);
 	[Signal] public delegate void PlantAttemptEventHandler(string action); // "seed" o "water"
 	[Signal] public delegate void PlantGrownEventHandler();
 	
@@ -23,6 +23,13 @@ public partial class ReforestationSnake : Node2D
 	// We could use a Godot Timer too.
 	private Timer timer;
 	private bool isGameOver = false;
+	
+	// Sistema de tracking de plantas
+	private int treesPlanted = 0; // Árboles completamente crecidos
+	private int plantsDead = 0;
+	private string gameOverReason = ""; // Razón de derrota
+	private const int MAX_DEAD_PLANTS = 5; // Pierde si mueren 5 plantas
+	private const int POINTS_PER_SEED = 20; // Puntos por cada semilla plantada
 
 	public override void _Ready()
 	{
@@ -34,12 +41,15 @@ public partial class ReforestationSnake : Node2D
 		// Conectar señal de crecimiento de plantas
 		DualGrid.PlantGrown += OnPlantGrown;
 		
+		// Conectar señal de muerte de plantas
+		DualGrid.PlantDied += OnPlantDied;
+		
 		// Conectar señales del ReforestationSystem
 		var reforestationSystem = GetNodeOrNull("../GameLayout/ReforestationSystem");
 		if (reforestationSystem != null)
 		{
 			reforestationSystem.Connect("Victory", new Callable(this, nameof(OnVictory)));
-			reforestationSystem.Connect("GameOver", new Callable(this, nameof(OnGameOver)));
+			reforestationSystem.Connect("GameOver", new Callable(this, nameof(OnReforestationSystemGameOver)));
 			GD.Print("ReforestationSnake: Señales de ReforestationSystem conectadas");
 		}
 		else
@@ -98,7 +108,7 @@ public partial class ReforestationSnake : Node2D
 		// Emitir señal de Game Over con estadísticas
 		if (_snakeBody != null)
 		{
-			EmitSignal(SignalName.GameOver, _snakeBody.Puntuacion, (int)_snakeBody.juegoTime);
+			EmitSignal(SignalName.GameOver, _snakeBody.Puntuacion, treesPlanted, (int)_snakeBody.juegoTime, gameOverReason);
 		}
 	}
 
@@ -127,7 +137,7 @@ public partial class ReforestationSnake : Node2D
 		// Emitir señal de Victoria con estadísticas
 		if (_snakeBody != null)
 		{
-			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, (int)_snakeBody.juegoTime);
+			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, treesPlanted, (int)_snakeBody.juegoTime);
 		}
 	}
 
@@ -143,13 +153,48 @@ public partial class ReforestationSnake : Node2D
 	private void OnPlantAction(string action)
 	{
 		GD.Print($"ReforestationSnake: Acción de plantación detectada - {action}");
+		
+		// Si plantó una semilla, sumar puntos (pero no contar aún como árbol)
+		if (action == "seed")
+		{
+			if (_snakeBody != null)
+			{
+				_snakeBody.AddScore(POINTS_PER_SEED);
+				GD.Print($"ReforestationSnake: Semilla plantada +{POINTS_PER_SEED} puntos");
+			}
+		}
+		
 		EmitSignal(SignalName.PlantAttempt, action);
 	}
 	
 	private void OnPlantGrown()
 	{
-		GD.Print("ReforestationSnake: Planta creció completamente");
+		treesPlanted++;
+		GD.Print($"ReforestationSnake: Árbol completamente crecido! Total árboles: {treesPlanted}");
 		EmitSignal(SignalName.PlantGrown);
+	}
+	
+	private void OnPlantDied()
+	{
+		if (isGameOver) return;
+		
+		plantsDead++;
+		GD.Print($"ReforestationSnake: Planta murió! Total muertas: {plantsDead}/{MAX_DEAD_PLANTS}");
+		
+		// Si murieron 5 plantas, pierde el juego
+		if (plantsDead >= MAX_DEAD_PLANTS)
+		{
+			gameOverReason = "plants_died";
+			GD.Print("ReforestationSnake: Game Over - Demasiadas plantas muertas");
+			OnGameOver();
+		}
+	}
+	
+	private void OnReforestationSystemGameOver(string reason)
+	{
+		gameOverReason = reason;
+		GD.Print($"ReforestationSnake: Game Over desde ReforestationSystem - Razón: {reason}");
+		OnGameOver();
 	}
 
 	public void OnContinuarPressed()

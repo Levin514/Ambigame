@@ -97,12 +97,26 @@ public partial class WaterSystem : Control
 			pointsEarned = 5;
 		}
 		
+		// Sumar puntos al SnakeBody directamente
+		var snake = GetTree().Root.FindChild("Snake", true, false);
+		if (snake != null)
+		{
+			var snakeBody = snake.GetNodeOrNull("SnakeBody");
+			if (snakeBody != null && snakeBody.HasMethod("AddScore"))
+			{
+				snakeBody.Call("AddScore", pointsEarned);
+				GD.Print($"WaterSystem: Tubería reparada con {currentWater:F1}% de agua → +{pointsEarned} puntos sumados al SnakeBody");
+			}
+			else
+			{
+				GD.PrintErr("WaterSystem: No se pudo encontrar SnakeBody para sumar puntos");
+			}
+		}
+		
+		// Mantener currentScore para referencia interna
 		currentScore += pointsEarned;
-		GD.Print($"WaterSystem: Tubería reparada con {currentWater:F1}% de agua → +{pointsEarned} puntos (Total: {currentScore})");
 		GD.Print($"WaterSystem: Tuberías reparadas: {pipesRepaired}/{totalPipes}");
 		
-		// Emitir señal de score actualizado para la UI
-		EmitSignal(SignalName.ScoreUpdated, currentScore);
 		EmitSignal(SignalName.PipesRepairedUpdated, pipesRepaired);
 		UpdateWaterLossRate();
 		CheckGameStatus(); // Verificar victoria inmediatamente

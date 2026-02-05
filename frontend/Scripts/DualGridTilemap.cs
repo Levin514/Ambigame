@@ -11,6 +11,7 @@ public partial class DualGridTilemap : Node2D {
 	[Signal] public delegate void TrashCollectorEventHandler(Trash trash);
 	[Signal] public delegate void PipeBrokenEventHandler();
 	[Signal] public delegate void PlantGrownEventHandler(); // Nueva señal cuando una planta crece completamente
+	[Signal] public delegate void PlantDiedEventHandler(); // Señal cuando una planta muere por no regarla a tiempo
 	[Export] TileMapLayer worldMapLayer;
 	[Export] TileMapLayer displayMapLayer;
 	[Export] TileMapLayer plantMapLayer;
@@ -368,17 +369,23 @@ public partial class DualGridTilemap : Node2D {
 
 	public bool TryWaterPlant(Vector2I coords)
 	{
-		if (!HasPlantSpotAt(coords) || GetPlantState(coords) != PlantState.NeedsWater)
+		var state = GetPlantState(coords);
+		if (!HasPlantSpotAt(coords) || (state != PlantState.NeedsWater && state != PlantState.Dying))
 			return false;
 
-		// Mantener sprite plant2, iniciar timer
+		// Mantener sprite plant2, iniciar timer de crecimiento
 		plantStates[coords] = PlantState.Watered;
+		
+		// Limpiar temporizador de muerte si existía
+		CleanupTimer(coords);
+		
+		// Crear nuevo timer de crecimiento
 		CreatePlantTimer(coords, 10f, () => OnWaterGrowthComplete(coords));
 		GD.Print($"Watered plant at {coords}");
 		return true;
 	}
 
-	private void CreatePlantTimer(Vector2I coords, float duration, Action onComplete)
+	private void CreatePlantTimer(Vector2I coords, float duration, Action onComplete, bool isDyingTimer = false)
 	{
 		// Crear timer
 		Timer timer = new Timer();
@@ -394,8 +401,21 @@ public partial class DualGridTilemap : Node2D {
 		label.Position = plantMapLayer.MapToLocal(coords) + new Vector2(-15, -40);
 		label.Scale = new Vector2(0.8f, 0.8f);
 		label.ZIndex = 10;
-		label.AddThemeColorOverride("font_color", Colors.White);
-		label.AddThemeColorOverride("font_outline_color", Colors.Black);
+		
+		// Estilo diferente para temporizador de muerte (rojo)
+		if (isDyingTimer)
+		{
+			label.AddThemeColorOverride("font_color", Colors.Red);
+			label.AddThemeColorOverride("font_outline_color", Colors.DarkRed);
+			// Agregar icono de gota de agua
+			label.Text = "💧 ";
+		}
+		else
+		{
+			label.AddThemeColorOverride("font_color", Colors.White);
+			label.AddThemeColorOverride("font_outline_color", Colors.Black);
+		}
+		
 		label.AddThemeConstantOverride("outline_size", 2);
 		CallDeferred("add_child", label);
 		plantTimerLabels[coords] = label;
@@ -412,7 +432,9 @@ public partial class DualGridTilemap : Node2D {
 			if (plantTimerLabels.TryGetValue(coords, out Label label) && !timer.IsStopped())
 			{
 				float timeLeft = (float)timer.TimeLeft;
-				label.Text = $"{Mathf.CeilToInt(timeLeft)}s";
+				// Mostrar emoji de gota solo para plantas en estado Dying
+				string prefix = (GetPlantState(coords) == PlantState.Dying) ? "💧 " : "";
+				label.Text = $"{prefix}{Mathf.CeilToInt(timeLeft)}s";
 			}
 		}
 	}
@@ -421,15 +443,18 @@ public partial class DualGridTilemap : Node2D {
 	{
 		GD.Print($"Seed growth complete at {coords}");
 		
-		// Cambiar a plant2 (necesita agua)
+		// Cambiar a plant2 (necesita agua - inicia temporizador de muerte)
 		if (plantSpots.TryGetValue(coords, out var sprite))
 		{
 			sprite.Texture = GD.Load<Texture2D>("res://Assets/Plant2.png");
-			plantStates[coords] = PlantState.NeedsWater;
+			plantStates[coords] = PlantState.Dying;
 		}
 		
-		// Limpiar timer y label
+		// Limpiar timer y label anteriores
 		CleanupTimer(coords);
+		
+		// Crear temporizador de muerte (5 segundos para regar o muere)
+		CreatePlantTimer(coords, 5f, () => OnPlantDeath(coords), isDyingTimer: true);
 	}
 
 	private void OnWaterGrowthComplete(Vector2I coords)
@@ -448,6 +473,31 @@ public partial class DualGridTilemap : Node2D {
 		
 		// Limpiar timer y label
 		CleanupTimer(coords);
+	}
+	
+	private void OnPlantDeath(Vector2I coords)
+	{
+		// Verificar que la planta aún existe y está en estado Dying
+		if (!plantStates.ContainsKey(coords) || plantStates[coords] != PlantState.Dying)
+		{
+			GD.Print($"OnPlantDeath llamado para {coords} pero la planta ya no está Dying - ignorando");
+			return;
+		}
+		
+		GD.Print($"Plant died at {coords} - Not watered in time!");
+		
+		// Volver la planta al estado inicial (sown_field)
+		if (plantSpots.TryGetValue(coords, out var sprite))
+		{
+			sprite.Texture = GD.Load<Texture2D>("res://Assets/SownField.png");
+			plantStates[coords] = PlantState.Empty;
+		}
+		
+		// Limpiar timer y label
+		CleanupTimer(coords);
+		
+		// Emitir señal de que una planta murió
+		EmitSignal(SignalName.PlantDied);
 	}
 
 	private void CleanupTimer(Vector2I coords)
@@ -647,6 +697,7 @@ public enum PlantState
 	Empty,          // sown_field - puede plantar semilla
 	Seeded,         // plant1 - esperando timer para crecer
 	NeedsWater,     // plant2 - necesita agua
+	Dying,          // plant2 - temporizador de muerte activo, debe regar antes de que termine
 	Watered,        // plant2 - esperando timer para crecer
 	FullyGrown      // plant3 - planta completamente crecida
 }

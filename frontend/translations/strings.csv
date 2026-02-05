@@ -55,6 +55,11 @@ VICTORY,¡Victoria!,Victory!
 UI_POINTS,Puntos,Points
 UI_RECYCLED,Reciclados,Recycled
 UI_PIPES_REPAIRED,Tuberías reparadas,Pipes Repaired
+UI_OBJECTS_COLLECTED,Objetos recolectados,Objects Collected
+UI_TREES_PLANTED,Árboles plantados,Trees Planted
+UI_DEFEAT_NO_SEEDS,Sin semillas para continuar,No seeds to continue
+UI_DEFEAT_NO_WATER,Sin agua para continuar,No water to continue
+UI_DEFEAT_PLANTS_DIED,Demasiadas plantas murieron (5/5),Too many plants died (5/5)
 UI_TIME,Tiempo,Time
 UI_SEEDS,Semillas,Seeds
 UI_WATER,Agua,Water
