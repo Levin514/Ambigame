@@ -78,6 +78,7 @@ public partial class WaterCatchLevel : Node2D
 		_camera = GetNode<Camera2D>("/root/GameLayout/VBoxContainer/GameContainer/SubViewportContainer/SubViewport/Camera2D");
 		_camera.Zoom = new Vector2I(1,1);
 		
+		ElapsedTime = 60;
 
 		// Obtener referencias a los contenedores
 		waterDropletContainer = GetNode<Node2D>("WaterDroplet");
@@ -126,8 +127,15 @@ public partial class WaterCatchLevel : Node2D
 		timeAccumulator += (float)delta;
 		if (timeAccumulator >= 1f)
 		{
-			ElapsedTime++;
+			ElapsedTime--;
 			timeAccumulator = 0f;
+
+			// Verificar derrota por tiempo
+			if (ElapsedTime <= 0)
+			{
+				TriggerGameOver();
+				return;
+			}
 		}
 		
 		float deltaF = (float)delta;
@@ -273,12 +281,6 @@ public partial class WaterCatchLevel : Node2D
 				fallingObjects[i].QueueFree();
 				fallingObjects.RemoveAt(i);
 			}
-		}
-		
-		// Verificar Game Over
-		if (ElapsedTime >= 60)
-		{
-			TriggerGameOver();
 		}
 	}
 

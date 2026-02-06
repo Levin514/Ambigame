@@ -116,6 +116,10 @@ public partial class GameLayoutManager : Control
 			pendingLevelPath = rutaNivel;
 			pendingLevelType = tipoNivel;
 			
+			OcultarTodosLosIndicadores();
+			scoreLabel.Visible = false;
+			timeLabel.Visible = false;
+
 			// Cargar y mostrar los slides
 			MostrarSlides(slideKeys, titleKey);
 		}
@@ -802,7 +806,7 @@ public partial class GameLayoutManager : Control
 		else if (action == "water")
 		{
 			// Regar planta: solo consume agua
-			int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 2;
+			int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 1;
 			bool hasWater = waterDropsSystemNode != null && (bool)waterDropsSystemNode.Call("HasWater", waterNeeded);
 			
 			if (!hasWater)
@@ -989,12 +993,25 @@ public partial class GameLayoutManager : Control
 		if (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
 		{
 			GD.Print("GameLayoutManager: Cargando minijuego de agua en el layout");
-			CargarNivel("res://Scenes/WaterCatchLevel.tscn", "minigame");
+			string[] slides = new string[] 
+			{ 
+				"SLIDE_WATERCATCH_1", 
+				"SLIDE_WATERCATCH_2", 
+				"SLIDE_WATERCATCH_3"
+			};
+			CargarNivelConSlides("res://Scenes/WaterCatchLevel.tscn", "minigame", slides);
 		}
 		else if (currentLevelType.ToLower() == "recycling")
 		{
 			GD.Print("GameLayoutManager: Cargando minijuego de clasificación en el layout");
-			CargarNivel("res://Scenes/ClassifyLevel.tscn", "minigame");
+			string[] slides = new string[] 
+			{ 
+				"SLIDE_CLASSIFY_1", 
+				"SLIDE_CLASSIFY_2", 
+				"SLIDE_CLASSIFY_3",
+				"SLIDE_CLASSIFY_4"
+			};
+			CargarNivelConSlides("res://Scenes/ClassifyLevel.tscn", "minigame", slides);
 		}
 		else
 		{

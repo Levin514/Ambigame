@@ -101,7 +101,7 @@ public partial class ClassifyLevel : Node2D
 
 		Score = 0;
 		Recycled = 0;
-		ElapsedTime = 0;
+		ElapsedTime = 60;
 
 		// Mostrar sprite mirando hacia abajo
 		if (playerSprite != null)
@@ -122,11 +122,11 @@ public partial class ClassifyLevel : Node2D
 		timeAccumulator += (float)delta;
 		if (timeAccumulator >= 1f)
 		{
-			ElapsedTime++;
+			ElapsedTime--;
 			timeAccumulator = 0f;
 
 			// Verificar derrota por tiempo
-			if (ElapsedTime >= 60)
+			if (ElapsedTime <= 0)
 			{
 				TriggerGameOver();
 				return;
@@ -279,7 +279,7 @@ public partial class ClassifyLevel : Node2D
 		}
 
 		// Verificar condición de victoria después de regresar
-		if (classifier != null && !classifier.GetHasTrashElements())
+		if (classifier != null && classifier.GetHasTrash())
 		{
 			TriggerVictory();
 		}

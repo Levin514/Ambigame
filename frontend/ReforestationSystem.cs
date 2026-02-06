@@ -14,22 +14,40 @@ public partial class ReforestationSystem : Control
 	
 	private int maxPlanted = 10;
 	private int currentSeeds = 10; // 10 semillas iniciales
-	private int currentWater = 20; // 20 gotas iniciales
-	private int waterPerPlant = 2; // 2 gotas por planta
+	private int currentWater = 10; // 10 gotas iniciales
+	private int waterPerPlant = 1; // 1 gotas por planta
 	
 	private Node dualGridTilemap = null;
 	
 	private bool hasEmittedGameOver = false;
 	private bool hasEmittedVictory = false;
 	private bool isGameOver = false;
+	private float timeAccumulator = 0f;
 
 	public override void _Ready()
 	{
 		GD.Print("ReforestationSystem: Inicializando sistema de reforestación");
 		currentSeeds = 10;
-		currentWater = 20;
+		currentWater = 10;
 		UpdateDisplay();
 	}
+
+    public override void _Process(double delta)
+    {
+        timeAccumulator += (float)delta;
+		if (timeAccumulator >= 1f)
+		{
+			timeAccumulator = 0f;
+
+			// Verificar derrota por no tener recursos
+			if (currentSeeds == 0 || currentWater == 0)
+			{
+				CheckVictory();
+				CheckGameOver();
+			}
+		}
+    }
+
 	
 	public void SetDualGridTilemap(Node dualGrid)
 	{

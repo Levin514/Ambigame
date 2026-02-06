@@ -69,11 +69,19 @@ UI_USER_PLACEHOLDER,Usuario: Invitado,User: Guest
 CREDITS_TEXT,Creado por: Kevin Mejia y Levin Moran,Created by: Kevin Mejia and Levin Moran
 LANGUAGE_SELECTOR,Idioma,Language
 SLIDE_RECYCLING_1,¡Bienvenido al nivel de reciclaje!,Welcome to the recycling level!
-SLIDE_RECYCLING_2,Recoge basura del mismo tipo para ganar puntos,Collect trash of the same type to earn points
-SLIDE_RECYCLING_3,¡Evita chocar con las paredes o contigo mismo!,Avoid crashing into walls or yourself!
+SLIDE_RECYCLING_2,Usa las teclas direccionales para moverte y recolectar basura dispersa por el escenario,Use the arrow keys to move around and collect trash scattered around the stage
+SLIDE_RECYCLING_3,¡Evita chocar con los obstáculos o contigo mismo!,Avoid crashing into obstacles or yourself!
+SLIDE_CLASSIFY_1,¡Gran trabajo! Ahora debes reciclar lo recolectado y recibirás semillas para plantar como recompensa,Great job! Now you must recycle what you've collected and you'll receive seeds to plant as a reward
+SLIDE_CLASSIFY_2,Usa las teclas direccionales para mover al personaje y clasificar los residuos,Use the arrow keys to move the character and classify the trash
+SLIDE_CLASSIFY_3,Verás un visto verde si aciertas y verás una X roja si fallas,You'll see a green checkmark if you get it right and a red X if you get it wrong
+SLIDE_CLASSIFY_4,¡Clasifica todo antes de que se acabe el tiempo!,Classify everything before time runs out!
 SLIDE_WATER_1,¡Ahorra agua reparando tuberías!,Save water by fixing pipes!
-SLIDE_WATER_2,Encuentra las tuberías rotas y repáralas rápidamente,Find broken pipes and fix them quickly
-SLIDE_WATER_3,¡Mientras más agua ahorres más puntos obtienes!,The more water you save the more points you get!
+SLIDE_WATER_2,Usa las teclas direccionales para moverte y evita chocar con los bordes,Use the arrow keys to move and avoid bumping into the edges
+SLIDE_WATER_3,Puedes arreglar una tubería al pasar por encima de la casilla pero ten cuidado de no dañar una en buen estado,You can repair a pipe by walking over the tile but be careful not to damage one that's in good condition.
+SLIDE_WATERCATCH_1,¡Gran trabajo! Ahora debemos recolectar gotas de agua que servirán para regar plantas,Great job! Now we need to collect water droplets that will be useful to water the plants
+SLIDE_WATERCATCH_2,Usa las teclas direccionales izquierda y derecha para moverte,Use the arrow keys left and right to move
+SLIDE_WATERCATCH_3,Trata de atrapar las que puedas antes de que se acabe el tiempo,Try to catch as many as you can before time runs out
 SLIDE_REFORESTATION_1,¡Planta árboles y salva el bosque!,Plant trees and save the forest!
-SLIDE_REFORESTATION_2,Usa tus semillas y agua sabiamente,Use your seeds and water wisely
-SLIDE_REFORESTATION_3,¡Riega las plantas para que crezcan completamente!,Water the plants so they grow completely!
+SLIDE_REFORESTATION_2,Usa las flechas direccionales para moverte y plantar semillas,Use the arrow keys to move and plant seeds
+SLIDE_REFORESTATION_3,Una vez plantadas tienes poco tiempo para regarlas,Once planted you have little time to water them
+SLIDE_REFORESTATION_4,¡Evita perder 5 plantas y vigila tu cantidad de semillas y agua!,Avoid losing 5 plants and keep an eye on your seed and water amounts!

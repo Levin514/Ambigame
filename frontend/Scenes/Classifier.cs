@@ -23,6 +23,7 @@ public partial class Classifier : Node2D
 	private bool hasTrashList;
 	private bool hasTrashElements;
 
+	private Trash trash;
 	private String actualCategory;
 
 	private bool isCorrect;
@@ -56,9 +57,15 @@ public partial class Classifier : Node2D
 		
 	}
 
-	public bool GetHasTrashElements()
+	public bool GetHasTrash()
 	{
-		return hasTrashElements;
+		if(!hasTrashElements && trash != null)
+		{
+			trash = null;
+			return false;
+		}
+		return trash == null;
+			
 	}
 
 	public bool GetCorrectClassification()
@@ -76,7 +83,7 @@ public partial class Classifier : Node2D
 		}
 		else if(hasTrashElements)
 		{
-			Trash trash = body.First.Value;
+			trash = body.First.Value;
 			body.RemoveFirst();
 			category = trash.category;
 			hasTrashElements = body.Count != 0;
@@ -93,7 +100,15 @@ public partial class Classifier : Node2D
 
 	public void GenerateItemSprite(String category)
 	{
-		String item = recycleObjects[category][rnd.Next(0, recycleObjects[category].Count)];
+		String item;
+		if(trash == null)
+		{
+			item = recycleObjects[category][rnd.Next(0, recycleObjects[category].Count)];
+		}
+		else
+		{
+			item = trash.trashName;
+		}
 		recycleSprite.Texture = GD.Load<Texture2D>("res://Assets/" + item + ".png");
 		recycleSprite.Scale = new Vector2I(3,3);
 	}

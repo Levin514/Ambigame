@@ -36,7 +36,8 @@ public partial class MainScene : MarginContainer
 		{ 
 			"SLIDE_REFORESTATION_1", 
 			"SLIDE_REFORESTATION_2", 
-			"SLIDE_REFORESTATION_3" 
+			"SLIDE_REFORESTATION_3",
+			"SLIDE_REFORESTATION_4" 
 		};
 		levelManager.LoadLevelWithSlides(
 			"res://Scenes/Levels/Reforestation/ReforestationLevel_Map1.tscn", 

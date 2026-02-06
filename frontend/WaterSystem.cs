@@ -77,6 +77,7 @@ public partial class WaterSystem : Control
 	{
 		GD.Print("WaterSystem: Tubería reparada, recalculando pérdida de agua");
 		pipesRepaired++;
+		GD.Print(pipesRepaired);
 		
 		// Calcular puntos según el porcentaje de agua ACTUAL
 		int pointsEarned = 0;
@@ -181,7 +182,7 @@ public partial class WaterSystem : Control
 			// Consultar el número REAL de tuberías rotas
 			int brokenPipes = (int)dualGridTilemap.Call("GetBrokenPipesCount");
 			
-			if (brokenPipes <= 0)
+			if (brokenPipes <= 0 || pipesRepaired >= 20)
 			{
 				isGameOver = true;
 				hasEmittedVictory = true;

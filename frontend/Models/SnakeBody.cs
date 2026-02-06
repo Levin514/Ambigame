@@ -216,6 +216,7 @@ public partial class SnakeBody : Sprite2D
 				}
 				
 				// Emitir señal de tubería reparada
+				GD.Print("SnakeBody: Tubería reparada, emitiendo señal");
 				EmitSignal(SignalName.PipeRepaired, "pipe");
 				GD.Print("SnakeBody: Tubería reparada correctamente.");
 				

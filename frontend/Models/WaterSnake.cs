@@ -122,7 +122,7 @@ public partial class WaterSnake : Node2D
 		GD.Print("WaterSnake: Tubería reparada, emitiendo señal");
 		pipesRepaired++;
 		GD.Print($"WaterSnake: Total tuberías reparadas: {pipesRepaired}");
-		EmitSignal(SignalName.PipeRepaired, action);
+		//EmitSignal(SignalName.PipeRepaired, action);
 	}
 
 	private void OnPipeBroken()
