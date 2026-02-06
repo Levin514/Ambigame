@@ -29,7 +29,8 @@ public partial class ReforestationSnake : Node2D
 	private int plantsDead = 0;
 	private string gameOverReason = ""; // Razón de derrota
 	private const int MAX_DEAD_PLANTS = 5; // Pierde si mueren 5 plantas
-	private const int POINTS_PER_SEED = 20; // Puntos por cada semilla plantada
+	private const int POINTS_PER_TREE = 20; // Puntos por cada árbol que crece completamente
+	private const int POINTS_LOST_PER_DEATH = 10; // Puntos perdidos por cada planta muerta
 
 	public override void _Ready()
 	{
@@ -154,23 +155,21 @@ public partial class ReforestationSnake : Node2D
 	{
 		GD.Print($"ReforestationSnake: Acción de plantación detectada - {action}");
 		
-		// Si plantó una semilla, sumar puntos (pero no contar aún como árbol)
-		if (action == "seed")
-		{
-			if (_snakeBody != null)
-			{
-				_snakeBody.AddScore(POINTS_PER_SEED);
-				GD.Print($"ReforestationSnake: Semilla plantada +{POINTS_PER_SEED} puntos");
-			}
-		}
-		
+		// Solo emitir señal, no dar puntos al plantar
 		EmitSignal(SignalName.PlantAttempt, action);
 	}
 	
 	private void OnPlantGrown()
 	{
 		treesPlanted++;
-		GD.Print($"ReforestationSnake: Árbol completamente crecido! Total árboles: {treesPlanted}");
+		
+		// Sumar puntos cuando el árbol crece completamente
+		if (_snakeBody != null)
+		{
+			_snakeBody.AddScore(POINTS_PER_TREE);
+			GD.Print($"ReforestationSnake: Árbol completamente crecido! +{POINTS_PER_TREE} puntos (Total árboles: {treesPlanted})");
+		}
+		
 		EmitSignal(SignalName.PlantGrown);
 	}
 	
@@ -179,7 +178,13 @@ public partial class ReforestationSnake : Node2D
 		if (isGameOver) return;
 		
 		plantsDead++;
-		GD.Print($"ReforestationSnake: Planta murió! Total muertas: {plantsDead}/{MAX_DEAD_PLANTS}");
+		
+		// Restar puntos cuando una planta muere
+		if (_snakeBody != null)
+		{
+			_snakeBody.AddScore(-POINTS_LOST_PER_DEATH);
+			GD.Print($"ReforestationSnake: Planta murió! -{POINTS_LOST_PER_DEATH} puntos (Total muertas: {plantsDead}/{MAX_DEAD_PLANTS})");
+		}
 		
 		// Si murieron 5 plantas, pierde el juego
 		if (plantsDead >= MAX_DEAD_PLANTS)

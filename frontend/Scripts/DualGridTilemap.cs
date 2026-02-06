@@ -531,6 +531,76 @@ public partial class DualGridTilemap : Node2D {
 		return count;
 	}
 
+	/// <summary>
+	/// Obtiene la cantidad de plantas en Fase 1 (recién plantadas, esperando crecer)
+	/// </summary>
+	public int GetSeededCount()
+	{
+		int count = 0;
+		foreach (var kvp in plantStates)
+		{
+			if (kvp.Value == PlantState.Seeded)
+				count++;
+		}
+		return count;
+	}
+
+	/// <summary>
+	/// Obtiene la cantidad de plantas que necesitan agua
+	/// </summary>
+	public int GetNeedsWaterCount()
+	{
+		int count = 0;
+		foreach (var kvp in plantStates)
+		{
+			if (kvp.Value == PlantState.NeedsWater)
+				count++;
+		}
+		return count;
+	}
+
+	/// <summary>
+	/// Obtiene la cantidad de plantas en Fase 2 (regadas, esperando crecer completamente)
+	/// </summary>
+	public int GetWateredCount()
+	{
+		int count = 0;
+		foreach (var kvp in plantStates)
+		{
+			if (kvp.Value == PlantState.Watered)
+				count++;
+		}
+		return count;
+	}
+
+	/// <summary>
+	/// Obtiene la cantidad de plantas muriendo (necesitan agua urgentemente)
+	/// </summary>
+	public int GetDyingCount()
+	{
+		int count = 0;
+		foreach (var kvp in plantStates)
+		{
+			if (kvp.Value == PlantState.Dying)
+				count++;
+		}
+		return count;
+	}
+
+	/// <summary>
+	/// Obtiene la cantidad de plantas en proceso (no vacías ni completamente crecidas)
+	/// </summary>
+	public int GetActivePlantsCount()
+	{
+		int count = 0;
+		foreach (var kvp in plantStates)
+		{
+			if (kvp.Value != PlantState.Empty && kvp.Value != PlantState.FullyGrown)
+				count++;
+		}
+		return count;
+	}
+
 	public void GeneratePlantSpots(int count)
 	{
 		var bounds = GetMapBounds();

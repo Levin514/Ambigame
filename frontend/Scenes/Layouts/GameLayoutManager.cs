@@ -15,10 +15,10 @@ public partial class GameLayoutManager : Control
 	[Export] private Label recycledLabel;
 	[Export] private Button pauseButton;
 	[Export] private MarginContainer pauseMenu;
-	
+
 	// Contenedor donde se cargarán los niveles
 	[Export] private SubViewport gameContainer;
-	
+
 	// Pantallas de Game Over y Victoria
 	[Export] private CanvasLayer gameOverScreen;
 	[Export] private Label gameOverStatsLabel;
@@ -26,7 +26,7 @@ public partial class GameLayoutManager : Control
 	[Export] private Label victoryStatsLabel;
 	[Export] private CanvasLayer treeInfoScreen;
 	[Export] private TreesInfoUi treeInfoUI;
-	
+
 	private Node currentLevel;
 	private string currentLevelType = ""; // Guardar el tipo de nivel actual
 	private string pendingLevelPath = ""; // Ruta del nivel que se cargará después de los slides
@@ -36,25 +36,25 @@ public partial class GameLayoutManager : Control
 	public override void _Ready()
 	{
 		GD.Print("GameLayoutManager: Inicializado");
-		
+
 		// Por defecto, ocultar todos los indicadores específicos de nivel
 		OcultarTodosLosIndicadores();
-		
+
 		// Mostrar solo indicadores comunes
 		scoreLabel.Visible = true;
 		timeLabel.Visible = true;
-		
+
 		// Inicializar textos de indicadores con traducciones
 		ActualizarPuntaje(0);
 		ActualizarTiempo(0);
 		// No inicializar reciclados aquí, se hará al cargar el nivel
-		
+
 		// Conectar el botón de pausa
 		if (pauseButton != null)
 		{
 			pauseButton.Pressed += OnPauseButtonPressed;
 		}
-		
+
 		// Obtener información del nivel desde LevelManager
 		var levelManager = GetNodeOrNull<LevelManager>("/root/LevelManager");
 		if (levelManager != null && !string.IsNullOrEmpty(levelManager.LevelPath))
@@ -76,7 +76,7 @@ public partial class GameLayoutManager : Control
 	private void OnPauseButtonPressed()
 	{
 		GD.Print("GameLayoutManager: Botón de pausa presionado");
-		
+
 		// Mostrar el menú de pausa (el menú se encarga de pausar el juego)
 		if (pauseMenu != null && pauseMenu.HasMethod("Pause"))
 		{
@@ -95,7 +95,7 @@ public partial class GameLayoutManager : Control
 	{
 		CargarNivelConSlides(rutaNivel, tipoNivel, null);
 	}
-	
+
 	/// <summary>
 	/// Carga un nivel con slides de tutorial opcionales
 	/// </summary>
@@ -106,12 +106,12 @@ public partial class GameLayoutManager : Control
 	public void CargarNivelConSlides(string rutaNivel, string tipoNivel, string[] slideKeys, string titleKey = "TUTORIAL_TITLE")
 	{
 		GD.Print($"GameLayoutManager: Cargando nivel {rutaNivel} de tipo {tipoNivel}");
-		
+
 		// Si hay slides, mostrarlos primero
 		if (slideKeys != null && slideKeys.Length > 0)
 		{
 			GD.Print($"GameLayoutManager: Mostrando {slideKeys.Length} slides antes del nivel");
-			
+
 			// Guardar la información del nivel para cargarlo después
 			pendingLevelPath = rutaNivel;
 			pendingLevelType = tipoNivel;
@@ -129,7 +129,7 @@ public partial class GameLayoutManager : Control
 			CargarNivelDirecto(rutaNivel, tipoNivel);
 		}
 	}
-	
+
 	/// <summary>
 	/// Muestra los slides de tutorial
 	/// </summary>
@@ -141,20 +141,20 @@ public partial class GameLayoutManager : Control
 			currentLevel.QueueFree();
 			currentLevel = null;
 		}
-		
+
 		// Cargar la escena de slides
 		var slidesScene = GD.Load<PackedScene>("res://Scenes/TutorialSlides.tscn");
 		if (slidesScene != null)
 		{
 			var slides = slidesScene.Instantiate<TutorialSlides>();
 			gameContainer.AddChild(slides);
-			
+
 			// Configurar los slides
 			slides.SetupSlides(slideKeys, titleKey);
-			
+
 			// Conectar la señal de completado
 			slides.SlidesCompleted += OnSlidesCompleted;
-			
+
 			currentLevel = slides;
 			GD.Print("GameLayoutManager: Slides cargados correctamente");
 		}
@@ -165,14 +165,14 @@ public partial class GameLayoutManager : Control
 			CargarNivelDirecto(pendingLevelPath, pendingLevelType);
 		}
 	}
-	
+
 	/// <summary>
 	/// Maneja el evento cuando se completan los slides
 	/// </summary>
 	private void OnSlidesCompleted()
 	{
 		GD.Print("GameLayoutManager: Slides completados, cargando nivel");
-		if(pendingLevelType == "reforestation" && currentLevelType == "")
+		if (pendingLevelType == "reforestation" && currentLevelType == "")
 		{
 			string newPath = "res://Scenes/SeedsInfoUI.tscn";
 			CargarNivelDirecto(newPath, "reforestationInfo");
@@ -182,20 +182,20 @@ public partial class GameLayoutManager : Control
 			CargarNivelDirecto(pendingLevelPath, pendingLevelType);
 		}
 	}
-	
+
 	/// <summary>
 	/// Carga el nivel directamente sin slides
 	/// </summary>
 	private void CargarNivelDirecto(string rutaNivel, string tipoNivel)
 	{
 		GD.Print($"GameLayoutManager: Cargando nivel directo {rutaNivel} de tipo {tipoNivel}");
-		
+
 		// Guardar el tipo de nivel actual
 		currentLevelType = tipoNivel;
-		
+
 		// Guardar el tipo de nivel actual
 		currentLevelType = tipoNivel;
-		
+
 		// Limpiar nivel anterior si existe
 		if (currentLevel != null)
 		{
@@ -203,10 +203,10 @@ public partial class GameLayoutManager : Control
 			currentLevel.QueueFree();
 			currentLevel = null;
 		}
-		
+
 		// Configurar indicadores según el tipo de nivel
 		MostrarIndicadoresSegunTipo(tipoNivel);
-		
+
 		// Cargar el nuevo nivel
 		var nivelScene = GD.Load<PackedScene>(rutaNivel);
 		if (nivelScene != null)
@@ -214,10 +214,10 @@ public partial class GameLayoutManager : Control
 			currentLevel = nivelScene.Instantiate();
 			gameContainer.AddChild(currentLevel);
 			GD.Print($"GameLayoutManager: Nivel {rutaNivel} cargado exitosamente en SubViewport");
-			
+
 			// Conectar señales del nivel a los indicadores
 			ConectarSeñalesDelNivel(tipoNivel);
-			
+
 			// Inicializar WaterSystem si es nivel de agua
 			if (tipoNivel == "water" && waterSystemNode != null)
 			{
@@ -237,11 +237,11 @@ public partial class GameLayoutManager : Control
 	{
 		// Primero ocultar todos
 		OcultarTodosLosIndicadores();
-		
+
 		// Indicadores comunes siempre visibles
 		scoreLabel.Visible = true;
 		timeLabel.Visible = true;
-		
+
 		// Indicadores específicos por tipo
 		switch (tipoNivel.ToLower())
 		{
@@ -250,11 +250,11 @@ public partial class GameLayoutManager : Control
 				waterSystemNode.Visible = true;
 				lifeSystemNode.Visible = true;
 				recycledLabel.Visible = true; // Mostrar contador de tuberías reparadas
-				// Inicializar con el texto correcto
+											  // Inicializar con el texto correcto
 				recycledLabel.Text = $"{TranslationManager.Tr("UI_PIPES_REPAIRED")}: 0";
 				GD.Print("GameLayoutManager: Mostrando indicadores de agua (water, life, pipes repaired)");
 				break;
-				
+
 			case "classify":
 			case "classifylevel":
 				lifeSystemNode.Visible = true;
@@ -263,7 +263,7 @@ public partial class GameLayoutManager : Control
 				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0/{victoryThreshold}";
 				GD.Print("GameLayoutManager: Mostrando indicadores de clasificación");
 				break;
-				
+
 			case "recycling":
 			case "recyclinglevel":
 				lifeSystemNode.Visible = true;
@@ -272,7 +272,7 @@ public partial class GameLayoutManager : Control
 				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0/{victoryThreshold}";
 				GD.Print("GameLayoutManager: Mostrando indicadores de reciclaje");
 				break;
-				
+
 			case "reforestation":
 			case "reforestationlevel":
 				plantedSystemNode.Visible = true;
@@ -280,12 +280,12 @@ public partial class GameLayoutManager : Control
 				waterDropsSystemNode.Visible = true;
 				GD.Print("GameLayoutManager: Mostrando sistemas de reforestación (plantados, semillas, agua)");
 				break;
-				
+
 			case "minigame":
 				// Solo mostrar indicadores comunes (score, time)
 				GD.Print("GameLayoutManager: Minijuego - solo indicadores comunes");
 				break;
-				
+
 			default:
 				GD.Print($"GameLayoutManager: Tipo de nivel desconocido: {tipoNivel}");
 				break;
@@ -312,7 +312,7 @@ public partial class GameLayoutManager : Control
 	private void ConectarSeñalesDelNivel(string tipoNivel)
 	{
 		GD.Print($"GameLayoutManager: Conectando señales para nivel tipo {tipoNivel}");
-		
+
 		if (tipoNivel.ToLower() == "water" || tipoNivel.ToLower() == "waterlevel")
 		{
 			// Conectar señales del WaterSnake (nodo raíz del nivel)
@@ -321,47 +321,47 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("GameOver", new Callable(this, nameof(OnLevelGameOver)));
 				GD.Print("GameLayoutManager: Señal GameOver conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("Victory"))
 			{
 				currentLevel.Connect("Victory", new Callable(this, nameof(OnLevelVictory)));
 				GD.Print("GameLayoutManager: Señal Victory conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("PipeRepaired"))
 			{
 				currentLevel.Connect("PipeRepaired", new Callable(this, nameof(OnPipeRepaired)));
 				GD.Print("GameLayoutManager: Señal PipeRepaired conectada");
 			}
-		
-		if (currentLevel.HasSignal("PipeBroken"))
-		{
-			currentLevel.Connect("PipeBroken", new Callable(this, nameof(OnPipeBroken)));
-			GD.Print("GameLayoutManager: Señal PipeBroken conectada");
-		}
-		
-		// Buscar el SnakeBody dentro del nivel
-		var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
-		if (snakeBody != null)
-		{
+
+			if (currentLevel.HasSignal("PipeBroken"))
+			{
+				currentLevel.Connect("PipeBroken", new Callable(this, nameof(OnPipeBroken)));
+				GD.Print("GameLayoutManager: Señal PipeBroken conectada");
+			}
+
+			// Buscar el SnakeBody dentro del nivel
+			var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
+			if (snakeBody != null)
+			{
 				if (snakeBody.HasSignal("ScoreUpdated"))
 				{
 					snakeBody.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
 					GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
 				}
-				
+
 				if (snakeBody.HasSignal("TimeUpdated"))
 				{
 					snakeBody.Connect("TimeUpdated", new Callable(this, nameof(OnTimeUpdated)));
 					GD.Print("GameLayoutManager: Señal TimeUpdated conectada");
 				}
-				
+
 				if (snakeBody.HasSignal("RecycledUpdated"))
 				{
 					snakeBody.Connect("RecycledUpdated", new Callable(this, nameof(OnRecycledUpdated)));
 					GD.Print("GameLayoutManager: Señal RecycledUpdated conectada");
 				}
-				
+
 				if (snakeBody.HasSignal("PipeRepaired"))
 				{
 					snakeBody.Connect("PipeRepaired", new Callable(this, nameof(OnPipeRepaired)));
@@ -372,7 +372,7 @@ public partial class GameLayoutManager : Control
 			{
 				GD.PrintErr("GameLayoutManager: No se encontró SnakeBody en el nivel");
 			}
-			
+
 			// Conectar SnakeBody.UpdateHealth al LifeSystem y LifeSystem.GameOver al SnakeBody
 			var body = currentLevel.GetNodeOrNull("Snake/SnakeBody");
 			if (body != null && lifeSystemNode != null)
@@ -382,34 +382,34 @@ public partial class GameLayoutManager : Control
 					body.Connect("UpdateHealth", new Callable(lifeSystemNode, "OnUpdateHealth"));
 					GD.Print("GameLayoutManager: SnakeBody.UpdateHealth conectado a LifeSystem (Water)");
 				}
-				
+
 				if (lifeSystemNode.HasSignal("GameOver"))
 				{
 					lifeSystemNode.Connect("GameOver", new Callable(body, "OnLifeSystemGameOver"));
 					GD.Print("GameLayoutManager: LifeSystem.GameOver conectado a SnakeBody (Water)");
 				}
 			}
-			
+
 			// Conectar señales del WaterSystem a señales del nivel
 			if (waterSystemNode != null && waterSystemNode.HasSignal("GameOver"))
 			{
 				waterSystemNode.Connect("GameOver", new Callable(currentLevel, "OnGameOver"));
 				GD.Print("GameLayoutManager: WaterSystem.GameOver conectado a nivel");
 			}
-			
+
 			if (waterSystemNode != null && waterSystemNode.HasSignal("Victory"))
 			{
 				waterSystemNode.Connect("Victory", new Callable(currentLevel, "OnVictory"));
 				GD.Print("GameLayoutManager: WaterSystem.Victory conectado a nivel");
 			}
-			
+
 			// Conectar señal PipesRepairedUpdated del WaterSystem para actualizar indicador
 			if (waterSystemNode != null && waterSystemNode.HasSignal("PipesRepairedUpdated"))
 			{
 				waterSystemNode.Connect("PipesRepairedUpdated", new Callable(this, nameof(OnPipesRepairedUpdated)));
 				GD.Print("GameLayoutManager: WaterSystem.PipesRepairedUpdated conectado");
 			}
-			
+
 			// Conectar señal ScoreUpdated del WaterSystem para actualizar el puntaje en UI
 			if (waterSystemNode != null && waterSystemNode.HasSignal("ScoreUpdated"))
 			{
@@ -425,13 +425,13 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("GameOver", new Callable(this, nameof(OnLevelGameOver)));
 				GD.Print("GameLayoutManager: Señal GameOver conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("Victory"))
 			{
 				currentLevel.Connect("Victory", new Callable(this, nameof(OnLevelVictory)));
 				GD.Print("GameLayoutManager: Señal Victory conectada");
 			}
-			
+
 			// Buscar el SnakeBody dentro del nivel
 			var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
 			if (snakeBody != null)
@@ -441,13 +441,13 @@ public partial class GameLayoutManager : Control
 					snakeBody.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
 					GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
 				}
-				
+
 				if (snakeBody.HasSignal("TimeUpdated"))
 				{
 					snakeBody.Connect("TimeUpdated", new Callable(this, nameof(OnTimeUpdated)));
 					GD.Print("GameLayoutManager: Señal TimeUpdated conectada");
 				}
-				
+
 				if (snakeBody.HasSignal("RecycledUpdated"))
 				{
 					snakeBody.Connect("RecycledUpdated", new Callable(this, nameof(OnRecycledUpdated)));
@@ -458,7 +458,7 @@ public partial class GameLayoutManager : Control
 			{
 				GD.PrintErr("GameLayoutManager: No se encontró SnakeBody en el nivel de reciclaje");
 			}
-			
+
 			// Conectar SnakeBody.UpdateHealth al LifeSystem y LifeSystem.GameOver al SnakeBody
 			var body = currentLevel.GetNodeOrNull("Snake/SnakeBody");
 			if (body != null && lifeSystemNode != null)
@@ -468,7 +468,7 @@ public partial class GameLayoutManager : Control
 					body.Connect("UpdateHealth", new Callable(lifeSystemNode, "OnUpdateHealth"));
 					GD.Print("GameLayoutManager: SnakeBody.UpdateHealth conectado a LifeSystem");
 				}
-				
+
 				if (lifeSystemNode.HasSignal("GameOver"))
 				{
 					lifeSystemNode.Connect("GameOver", new Callable(body, "OnLifeSystemGameOver"));
@@ -480,26 +480,26 @@ public partial class GameLayoutManager : Control
 		{
 			// Inicializar sistemas para reforestación
 			InitializeReforestationSystems();
-			
+
 			// Conectar señales del ReforestationSnake (nodo raíz del nivel)
 			if (currentLevel.HasSignal("GameOver"))
 			{
 				currentLevel.Connect("GameOver", new Callable(this, nameof(OnReforestationGameOver)));
 				GD.Print("GameLayoutManager: Señal GameOver (Reforestation) conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("Victory"))
 			{
 				currentLevel.Connect("Victory", new Callable(this, nameof(OnReforestationVictory)));
 				GD.Print("GameLayoutManager: Señal Victory (Reforestation) conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("PlantAttempt"))
 			{
 				currentLevel.Connect("PlantAttempt", new Callable(this, nameof(OnPlantAttempt)));
 				GD.Print("GameLayoutManager: Señal PlantAttempt conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("PlantGrown"))
 			{
 				currentLevel.Connect("PlantGrown", new Callable(this, nameof(OnPlantGrown)));
@@ -511,7 +511,7 @@ public partial class GameLayoutManager : Control
 				treeInfoUI.Connect("InfoCompleted", new Callable(this, nameof(OnReforestationInfoCompleted)));
 				GD.Print("GameLayoutManager: Señal InfoCompleted (Reforestation) conectada");
 			}
-			
+
 			// Buscar el SnakeBody dentro del nivel
 			var snakeBody = currentLevel.GetNodeOrNull("Snake/SnakeBody");
 			if (snakeBody != null)
@@ -521,7 +521,7 @@ public partial class GameLayoutManager : Control
 					snakeBody.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
 					GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
 				}
-				
+
 				if (snakeBody.HasSignal("TimeUpdated"))
 				{
 					snakeBody.Connect("TimeUpdated", new Callable(this, nameof(OnTimeUpdated)));
@@ -541,7 +541,7 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("GameOver", new Callable(this, nameof(OnLevelGameOver)));
 				GD.Print("GameLayoutManager: Señal GameOver (minijuego) conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("Victory"))
 			{
 				currentLevel.Connect("Victory", new Callable(this, nameof(OnLevelVictory)));
@@ -554,13 +554,13 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
 				GD.Print("GameLayoutManager: Señal ScoreUpdated conectada");
 			}
-			
+
 			if (currentLevel.HasSignal("TimeUpdated"))
 			{
 				currentLevel.Connect("TimeUpdated", new Callable(this, nameof(OnTimeUpdated)));
 				GD.Print("GameLayoutManager: Señal TimeUpdated conectada");
 			}
-			
+
 			// Inicializar las señales con valores cero
 			if (currentLevel.HasMethod("InitializeSignals"))
 			{
@@ -602,82 +602,82 @@ public partial class GameLayoutManager : Control
 	public void ActualizarReciclados(int cantidad)
 	{
 		// En nivel de agua muestra "Pipes Repaired", en otros "Recycled"
-		string key = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel") 
+		string key = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
 			? "UI_PIPES_REPAIRED" : "UI_RECYCLED";
 		recycledLabel.Text = $"{TranslationManager.Tr(key)}: {cantidad}/{victoryThreshold}";
 	}
-	
+
 	private void OnPipesRepairedUpdated(int pipesRepaired)
 	{
 		ActualizarReciclados(pipesRepaired);
 	}
-	
+
 	// ========== Manejadores de Señales del Nivel ==========
-	
+
 	private void OnLevelGameOver(int score, int pipesRepaired, int time)
 	{
 		GD.Print($"GameLayoutManager: Game Over - Score: {score}, Pipes Repaired: {pipesRepaired}, Time: {time}");
-		
+
 		// Reproducir efecto de sonido de derrota
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
 		if (audioManager != null)
 		{
 			audioManager.PlayDefeat();
 		}
-		
+
 		// Pausar el juego
 		GetTree().Paused = true;
-		
+
 		// Actualizar estadísticas
 		if (gameOverStatsLabel != null)
 		{
 			// Determinar qué texto mostrar según el tipo de nivel
-			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel") 
-				? "UI_PIPES_REPAIRED" 
+			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
+				? "UI_PIPES_REPAIRED"
 				: "UI_OBJECTS_COLLECTED";
-			
+
 			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr(secondStatKey)}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
-		
+
 		// Mostrar pantalla de Game Over
 		if (gameOverScreen != null)
 		{
 			gameOverScreen.Visible = true;
 		}
 	}
-	
+
 	private void OnLevelVictory(int score, int pipesRepaired, int time)
 	{
 		GD.Print($"GameLayoutManager: Victory! - Score: {score}, Pipes Repaired: {pipesRepaired}, Time: {time}");
-		
+
 		// Reproducir efecto de sonido de victoria
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
 		if (audioManager != null)
 		{
 			audioManager.PlayVictory();
 		}
-		
+
 		// Pausar el juego
 		GetTree().Paused = true;
-		
+
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
 			// Determinar qué texto mostrar según el tipo de nivel
-			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel") 
-				? "UI_PIPES_REPAIRED" 
+			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
+				? "UI_PIPES_REPAIRED"
 				: "UI_OBJECTS_COLLECTED";
-			
+
 			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr(secondStatKey)}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
-		
+
 		// Mostrar pantalla de Victoria
 		if (victoryScreen != null)
 		{
 			victoryScreen.Visible = true;
 		}
 	}
-	
+
 	private void OnPipeRepaired(string action = "")
 	{
 		GD.Print("GameLayoutManager: Tubería reparada, actualizando WaterSystem");
@@ -686,7 +686,7 @@ public partial class GameLayoutManager : Control
 			waterSystemNode.Call("OnPipeRepaired");
 		}
 	}
-	
+
 	private void OnPipeBroken()
 	{
 		GD.Print("GameLayoutManager: Tubería rota, actualizando WaterSystem");
@@ -695,21 +695,21 @@ public partial class GameLayoutManager : Control
 			waterSystemNode.Call("OnPipeBroken");
 		}
 	}
-	
+
 	private void InitializeWaterSystem()
 	{
 		GD.Print("GameLayoutManager: Inicializando WaterSystem con total de tuberías");
-		
+
 		// Buscar el DualGridTilemap en el nivel actual
 		var dualGrid = currentLevel.FindChild("TileMapLayers", true, false);
-		
+
 		if (dualGrid != null && waterSystemNode != null)
 		{
 			// Obtener el total de tuberías
 			int totalPipes = (int)dualGrid.Call("GetTotalPipes");
 			int brokenPipes = (int)dualGrid.Call("GetBrokenPipesCount");
 			GD.Print($"GameLayoutManager: Total de tuberías: {totalPipes}, Rotas: {brokenPipes}");
-			
+
 			// Configurar el WaterSystem
 			waterSystemNode.Call("SetTotalPipes", totalPipes);
 			waterSystemNode.Call("SetDualGridTilemap", dualGrid); // Pasar referencia al DualGrid
@@ -720,19 +720,19 @@ public partial class GameLayoutManager : Control
 			GD.PrintErr("GameLayoutManager: No se encontró DualGridTilemap o WaterSystem");
 		}
 	}
-	
+
 	private void InitializeReforestationSystems()
 	{
 		GD.Print("GameLayoutManager: Inicializando sistemas de reforestación");
-		
+
 		// Buscar el DualGridTilemap en el nivel actual
 		var dualGrid = currentLevel.FindChild("TileMapLayers", true, false);
-		
+
 		if (dualGrid != null)
 		{
 			int totalPlantSpots = (int)dualGrid.Call("GetTotalPlantSpots");
 			GD.Print($"GameLayoutManager: Total de lugares para plantar: {totalPlantSpots}");
-			
+
 			// Configurar PlantedSystem
 			if (plantedSystemNode != null)
 			{
@@ -745,26 +745,26 @@ public partial class GameLayoutManager : Control
 			GD.PrintErr("GameLayoutManager: No se encontró DualGridTilemap");
 		}
 	}
-	
+
 	private void OnPlantGrown()
 	{
 		GD.Print("GameLayoutManager: Planta creció completamente");
-		
+
 		// Actualizar PlantedSystem
 		if (plantedSystemNode != null)
 		{
 			plantedSystemNode.Call("OnPlantSuccessful");
 		}
-		
+
 		// Verificar victoria
 		var dualGrid = currentLevel?.FindChild("TileMapLayers", true, false);
 		if (dualGrid != null)
 		{
 			int fullyGrown = (int)dualGrid.Call("GetFullyGrownCount");
 			int total = (int)dualGrid.Call("GetTotalPlantSpots");
-			
+
 			GD.Print($"GameLayoutManager: {fullyGrown}/{total} plantas completamente crecidas");
-			
+
 			if (fullyGrown >= total && total > 0)
 			{
 				GD.Print("GameLayoutManager: ¡Victoria! Todas las plantas han crecido");
@@ -775,16 +775,16 @@ public partial class GameLayoutManager : Control
 			}
 		}
 	}
-	
+
 	private void OnPlantAttempt(string action)
 	{
 		GD.Print($"GameLayoutManager: Intento de acción - {action}");
-		
+
 		if (action == "seed")
 		{
 			// Plantar semilla: solo consume semillas
 			bool hasSeeds = seedsSystemNode != null && (bool)seedsSystemNode.Call("HasSeeds", 1);
-			
+
 			if (!hasSeeds)
 			{
 				GD.Print("GameLayoutManager: Sin semillas - Game Over");
@@ -795,12 +795,24 @@ public partial class GameLayoutManager : Control
 				}
 				return;
 			}
-			
+
 			// Consumir semilla
 			if (seedsSystemNode != null)
 			{
 				seedsSystemNode.Call("ConsumeSeeds", 1);
 				GD.Print("GameLayoutManager: Semilla consumida");
+				if ((int)seedsSystemNode.Call("GetRemainingSeeds") == 0)
+				{
+					GD.Print("GameLayoutManager: Semillas agotadas - Esperando 5 segundos antes de finalizar");
+					var timer = GetTree().CreateTimer(5.0f);
+					timer.Timeout += () => 
+					{
+						if (currentLevel != null && currentLevel.HasMethod("OnVictory"))
+						{
+							currentLevel.Call("OnVictory");
+						}
+					};
+				}
 			}
 		}
 		else if (action == "water")
@@ -808,7 +820,7 @@ public partial class GameLayoutManager : Control
 			// Regar planta: solo consume agua
 			int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 1;
 			bool hasWater = waterDropsSystemNode != null && (bool)waterDropsSystemNode.Call("HasWater", waterNeeded);
-			
+
 			if (!hasWater)
 			{
 				GD.Print("GameLayoutManager: Sin agua - Game Over");
@@ -819,7 +831,7 @@ public partial class GameLayoutManager : Control
 				}
 				return;
 			}
-			
+
 			// Consumir agua
 			if (waterDropsSystemNode != null)
 			{
@@ -828,21 +840,21 @@ public partial class GameLayoutManager : Control
 			}
 		}
 	}
-	
+
 	private void OnReforestationGameOver(int score, int treesPlanted, int time, string reason)
 	{
 		GD.Print($"GameLayoutManager: Game Over (Reforestation) - Score: {score}, Trees: {treesPlanted}, Time: {time}, Reason: '{reason}'");
-		
+
 		// Reproducir efecto de sonido de derrota
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
 		if (audioManager != null)
 		{
 			audioManager.PlayDefeat();
 		}
-		
+
 		// Pausar el juego
 		GetTree().Paused = true;
-		
+
 		// Determinar el motivo de derrota
 		string reasonText = "";
 		if (!string.IsNullOrEmpty(reason))
@@ -869,34 +881,34 @@ public partial class GameLayoutManager : Control
 			GD.PrintErr("GameLayoutManager: Razón de derrota vacía - usando mensaje genérico");
 			reasonText = "\nGame Over";
 		}
-		
+
 		// Actualizar estadísticas con razón de derrota
 		if (gameOverStatsLabel != null)
 		{
 			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr("UI_TREES_PLANTED")}: {treesPlanted}\n{TranslationManager.Tr("UI_TIME")}: {time}s{reasonText}";
 		}
-		
+
 		// Mostrar pantalla de Game Over
 		if (gameOverScreen != null)
 		{
 			gameOverScreen.Visible = true;
 		}
 	}
-	
+
 	private void OnReforestationVictory(int score, int treesPlanted, int time)
 	{
 		GD.Print($"GameLayoutManager: Victory! (Reforestation) - Score: {score}, Trees: {treesPlanted}, Time: {time}");
-		
+
 		// Reproducir efecto de sonido de victoria
 		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
 		if (audioManager != null)
 		{
 			audioManager.PlayVictory();
 		}
-		
+
 		// Pausar el juego
 		GetTree().Paused = true;
-		
+
 		// Actualizar estadísticas
 		if (victoryStatsLabel != null)
 		{
@@ -910,7 +922,7 @@ public partial class GameLayoutManager : Control
 			nextLevelButton.Visible = false;
 		}
 
-		if(treeInfoScreen != null)
+		if (treeInfoScreen != null)
 		{
 			treeInfoScreen.Visible = true;
 			treeInfoUI.ShowCards();
@@ -926,69 +938,69 @@ public partial class GameLayoutManager : Control
 			victoryScreen.Visible = true;
 		}
 	}
-	
+
 	private void OnScoreUpdated(int score)
 	{
 		ActualizarPuntaje(score);
 	}
-	
+
 	private void OnTimeUpdated(int time)
 	{
 		ActualizarTiempo(time);
 	}
-	
+
 	private void OnRecycledUpdated(int recycled)
 	{
 		ActualizarReciclados(recycled);
 	}
-	
+
 	// ========== Manejadores de Botones de Pantallas ==========
-	
+
 	/// <summary>
 	/// Reinicia el nivel actual (botón "Volver a jugar")
 	/// </summary>
 	private void OnAgainPressed()
 	{
 		GD.Print("GameLayoutManager: Reiniciando nivel");
-		
+
 		// Ocultar pantallas
 		if (gameOverScreen != null) gameOverScreen.Visible = false;
 		if (victoryScreen != null) victoryScreen.Visible = false;
-		
+
 		// Despausar
 		GetTree().Paused = false;
-		
+
 		// Recargar la escena actual
 		GetTree().ReloadCurrentScene();
 	}
-	
+
 	/// <summary>
 	/// Vuelve al menú principal (botón "Salir" / "Menú Principal")
 	/// </summary>
 	private void OnSalirPressed()
 	{
 		GD.Print("GameLayoutManager: Volviendo al menú principal");
-		
+
 		// Despausar antes de cambiar de escena
 		GetTree().Paused = false;
-		
+
 		// Cambiar a la escena del menú principal
 		GetTree().ChangeSceneToFile("res://Scenes/MainScene.tscn");
 	}
-	
+
 	/// <summary>
 	/// Continúa al siguiente nivel (botón "Siguiente Nivel" en pantalla de Victoria)
 	/// </summary>
 	private void OnContinuarPressed()
 	{
 		GD.Print("GameLayoutManager: Continuar al siguiente nivel");
-		
+
 		// Ocultar pantalla de victoria
 		if (victoryScreen != null) victoryScreen.Visible = false;
-		
+
 		// Despausar
 		GetTree().Paused = false;
-		
+
 		// Si es nivel de agua, cargar el minijuego en el contenedor actual
 		if (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
 		{

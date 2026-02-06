@@ -57,6 +57,11 @@ public partial class SeedsSystem : PanelContainer
 		}
 	}
 
+	private int GetRemainingSeeds()
+	{
+		return currentSeeds;
+	}
+
 	public void Reset()
 	{
 		currentSeeds = initialSeeds;
