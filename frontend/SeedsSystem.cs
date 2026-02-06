@@ -14,7 +14,7 @@ public partial class SeedsSystem : PanelContainer
 	public override void _Ready()
 	{
 		GD.Print("SeedsSystem: Inicializando sistema de semillas");
-		currentSeeds = initialSeeds;
+		currentSeeds = initialSeeds + GameData.Instance.globalSeedsAmount;
 		UpdateDisplay();
 	}
 
@@ -33,6 +33,10 @@ public partial class SeedsSystem : PanelContainer
 		}
 		
 		currentSeeds -= amount;
+		if(currentSeeds >= initialSeeds)
+		{
+			GameData.Instance.globalSeedsAmount -= amount;
+		}
 		GD.Print($"SeedsSystem: Consumidas {amount} semillas - Restantes: {currentSeeds}");
 		UpdateDisplay();
 		return true;

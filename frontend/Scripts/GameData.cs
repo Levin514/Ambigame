@@ -32,6 +32,9 @@ public partial class GameData : Node
 
 	public LinkedList<Trash> globalTrashList;
 	public LinkedList<Card> globalcardSeedsList;
+	public int globalSeedsAmount = 0;
+	public int globalWaterAmount = 0;
+	public int globalScoreDivisor = 100;
 
 	public static GameData Instance { get; private set; }
 

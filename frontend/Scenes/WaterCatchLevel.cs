@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using Snake;
 
 public partial class WaterCatchLevel : Node2D
 {
@@ -319,6 +320,14 @@ public partial class WaterCatchLevel : Node2D
 	private void TriggerGameOver()
 	{
 		GD.Print($"¡JUEGO TERMINADO! Puntuación final: {Score}");
+		GameData.Instance.globalWaterAmount += CalculateWaterAmount();
 		EmitSignal(SignalName.GameOver, Score, waterCollected, ElapsedTime);
+	}
+
+	private int CalculateWaterAmount()
+	{
+		double puntuacionFinal = Score;
+		double divisor = GameData.Instance.globalScoreDivisor;
+		return (int)Math.Ceiling(puntuacionFinal / divisor);
 	}
 }

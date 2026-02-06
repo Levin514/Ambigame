@@ -22,7 +22,7 @@ public partial class RecyclingSnake : Node2D
 
 	private Timer timer;
 	private bool isGameOver = false;
-	private int victoryThreshold = 20; // Cantidad de basura para ganar
+	private int victoryThreshold = 20; // Cantidad de basura para ganar 
 
 	public override void _Ready()
 	{
@@ -87,10 +87,11 @@ public partial class RecyclingSnake : Node2D
 			gameMusic.Stop();
 		}
 		
-		// Guardar la lista de basura en GameData
+		// Guardar la lista de basura y semillas obtenidas en GameData
 		if (_snakeBody != null)
 		{
 			GameData.Instance.globalTrashList = _snakeBody.GetTrashList();
+			GameData.Instance.globalSeedsAmount += CalculateSeedsAmount();
 		}
 		
 		// Emitir señal de Victoria con estadísticas
@@ -98,6 +99,13 @@ public partial class RecyclingSnake : Node2D
 		{
 			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, _snakeBody.Reciclados, (int)_snakeBody.juegoTime);
 		}
+	}
+
+	private int CalculateSeedsAmount()
+	{
+		double puntuacionFinal = _snakeBody.Puntuacion;
+		double divisor = GameData.Instance.globalScoreDivisor;
+		return (int)Math.Ceiling(puntuacionFinal / divisor);
 	}
 
 	public void NewApple(object src, ElapsedEventArgs e)

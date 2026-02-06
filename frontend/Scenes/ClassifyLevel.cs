@@ -289,13 +289,22 @@ public partial class ClassifyLevel : Node2D
 	{
 		gameOver = true;
 		GD.Print($"ClassifyLevel: ¡VICTORIA! Score: {finalScore}, Reciclados: {totalRecycled}, Tiempo: {time}");
+		GameData.Instance.globalSeedsAmount += CalculateSeedsAmount();
 		EmitSignal(SignalName.Victory, finalScore, totalRecycled, time);
+	}
+
+	private int CalculateSeedsAmount()
+	{
+		double puntuacionFinal = Score;
+		double divisor = GameData.Instance.globalScoreDivisor;
+		return (int)Math.Ceiling(puntuacionFinal / divisor);
 	}
 
 	private void TriggerGameOver()
 	{
 		gameOver = true;
 		GD.Print($"ClassifyLevel: ¡JUEGO TERMINADO! Score: {Score}, Reciclados: {Recycled}, Tiempo: {ElapsedTime}");
+		GameData.Instance.globalSeedsAmount += CalculateSeedsAmount();
 		EmitSignal(SignalName.GameOver, Score, Recycled, ElapsedTime);
 	}
 

@@ -15,7 +15,7 @@ public partial class WaterDropsSystem : PanelContainer
 	public override void _Ready()
 	{
 		GD.Print("WaterDropsSystem: Inicializando sistema de gotas de agua");
-		currentWater = initialWater;
+		currentWater = initialWater + GameData.Instance.globalWaterAmount;
 		UpdateDisplay();
 	}
 
@@ -34,6 +34,10 @@ public partial class WaterDropsSystem : PanelContainer
 		}
 		
 		currentWater -= amount;
+		if(currentWater >= initialWater)
+		{
+			GameData.Instance.globalWaterAmount -= amount;
+		}
 		GD.Print($"WaterDropsSystem: Consumidas {amount} gotas de agua - Restantes: {currentWater}");
 		UpdateDisplay();
 		return true;

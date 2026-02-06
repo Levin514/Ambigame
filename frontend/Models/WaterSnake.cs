@@ -108,6 +108,11 @@ public partial class WaterSnake : Node2D
 		{
 			gameMusic.Stop();
 		}
+
+		if (_snakeBody != null)
+		{
+			GameData.Instance.globalWaterAmount += CalculateWaterAmount();
+		}
 		
 		// Emitir señal de Victoria con estadísticas
 		// Usar el puntaje del SnakeBody que incluye TODOS los puntos (tuberías + piedras)
@@ -115,6 +120,13 @@ public partial class WaterSnake : Node2D
 		{
 			EmitSignal(SignalName.Victory, _snakeBody.Puntuacion, pipesRepaired, (int)_snakeBody.juegoTime);
 		}
+	}
+
+	private int CalculateWaterAmount()
+	{
+		double puntuacionFinal = _snakeBody.Puntuacion;
+		double divisor = GameData.Instance.globalScoreDivisor;
+		return (int)Math.Ceiling(puntuacionFinal / divisor);
 	}
 
 	private void OnPipeRepaired(string action)
