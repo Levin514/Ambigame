@@ -460,7 +460,8 @@ public partial class DualGridTilemap : Node2D {
 	private void OnWaterGrowthComplete(Vector2I coords)
 	{
 		GD.Print($"Water growth complete at {coords} - Plant fully grown!");
-		
+		// Limpiar timer y label
+		CleanupTimer(coords);
 		// Cambiar a plant3 (completamente crecida)
 		if (plantSpots.TryGetValue(coords, out var sprite))
 		{
@@ -471,8 +472,7 @@ public partial class DualGridTilemap : Node2D {
 			EmitSignal(SignalName.PlantGrown);
 		}
 		
-		// Limpiar timer y label
-		CleanupTimer(coords);
+
 	}
 	
 	private void OnPlantDeath(Vector2I coords)
@@ -486,18 +486,18 @@ public partial class DualGridTilemap : Node2D {
 		
 		GD.Print($"Plant died at {coords} - Not watered in time!");
 		
+		// Limpiar timer y label
+		CleanupTimer(coords);
+		
+		// Emitir señal de que una planta murió
+		EmitSignal(SignalName.PlantDied);
+		
 		// Volver la planta al estado inicial (sown_field)
 		if (plantSpots.TryGetValue(coords, out var sprite))
 		{
 			sprite.Texture = GD.Load<Texture2D>("res://Assets/SownField.png");
 			plantStates[coords] = PlantState.Empty;
 		}
-		
-		// Limpiar timer y label
-		CleanupTimer(coords);
-		
-		// Emitir señal de que una planta murió
-		EmitSignal(SignalName.PlantDied);
 	}
 
 	private void CleanupTimer(Vector2I coords)
@@ -513,6 +513,19 @@ public partial class DualGridTilemap : Node2D {
 			label.QueueFree();
 			plantTimerLabels.Remove(coords);
 		}
+	}
+
+	public bool HasTimers()
+	{
+		return plantTimers.Count != 0;
+	}
+	public bool CanPlantSeeds()
+	{
+		return plantStates.ContainsValue(PlantState.Empty);
+	}
+	public bool CanWaterPlants()
+	{
+		return plantStates.ContainsValue(PlantState.Dying);
 	}
 
 	public int GetTotalPlantSpots()

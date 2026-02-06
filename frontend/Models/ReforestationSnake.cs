@@ -12,6 +12,7 @@ public partial class ReforestationSnake : Node2D
 	[Signal] public delegate void VictoryEventHandler(int score, int treesPlanted, int time);
 	[Signal] public delegate void PlantAttemptEventHandler(string action); // "seed" o "water"
 	[Signal] public delegate void PlantGrownEventHandler();
+	[Signal] public delegate void CheckAvailableActionsEventHandler();
 	
 	// To generate random numbers.
 	private static readonly Random rnd = new();
@@ -193,6 +194,8 @@ public partial class ReforestationSnake : Node2D
 			GD.Print("ReforestationSnake: Game Over - Demasiadas plantas muertas");
 			OnGameOver();
 		}
+
+		EmitSignal(SignalName.CheckAvailableActions);
 	}
 	
 	private void OnReforestationSystemGameOver(string reason)

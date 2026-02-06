@@ -505,6 +505,11 @@ public partial class GameLayoutManager : Control
 				currentLevel.Connect("PlantGrown", new Callable(this, nameof(OnPlantGrown)));
 				GD.Print("GameLayoutManager: Señal PlantGrown conectada");
 			}
+			if (currentLevel.HasSignal("CheckAvailableActions"))
+			{
+				currentLevel.Connect("CheckAvailableActions", new Callable(this, nameof(OnCheckAvailableActions)));
+				GD.Print("GameLayoutManager: Señal CheckAvailableActions conectada");
+			}
 
 			if (treeInfoUI.HasSignal("InfoCompleted"))
 			{
@@ -773,6 +778,34 @@ public partial class GameLayoutManager : Control
 					currentLevel.Call("OnVictory");
 				}
 			}
+			OnCheckAvailableActions();
+		}
+	}
+
+	private void OnCheckAvailableActions()
+	{
+		var dualGrid = currentLevel?.FindChild("TileMapLayers", true, false);
+		if (dualGrid != null)
+		{
+			bool timersEmpty = !(bool)dualGrid.Call("HasTimers");
+			GD.Print(timersEmpty);
+			
+			if (timersEmpty)
+			{
+				GD.Print("Sin timers");
+				bool canPlant = (bool)dualGrid.Call("CanPlantSeeds");
+				bool canWater = (bool)dualGrid.Call("CanWaterPlants");
+				bool hasSeeds = seedsSystemNode != null && (bool)seedsSystemNode.Call("HasSeeds", 1);
+				int waterNeeded = waterDropsSystemNode != null ? (int)waterDropsSystemNode.Call("GetWaterPerPlant") : 1;
+				bool hasWater = waterDropsSystemNode != null && (bool)waterDropsSystemNode.Call("HasWater", waterNeeded);
+				bool noPlantAttemps = !hasSeeds && canPlant;
+				bool noWaterAttemps = !hasWater && canWater;
+
+				if (noPlantAttemps || noWaterAttemps)
+				{
+					currentLevel.Call("OnVictory");
+				}
+			}	
 		}
 	}
 
@@ -801,18 +834,18 @@ public partial class GameLayoutManager : Control
 			{
 				seedsSystemNode.Call("ConsumeSeeds", 1);
 				GD.Print("GameLayoutManager: Semilla consumida");
-				if ((int)seedsSystemNode.Call("GetRemainingSeeds") == 0)
-				{
-					GD.Print("GameLayoutManager: Semillas agotadas - Esperando 5 segundos antes de finalizar");
-					var timer = GetTree().CreateTimer(5.0f);
-					timer.Timeout += () => 
-					{
-						if (currentLevel != null && currentLevel.HasMethod("OnVictory"))
-						{
-							currentLevel.Call("OnVictory");
-						}
-					};
-				}
+				// if ((int)seedsSystemNode.Call("GetRemainingSeeds") == 0)
+				// {
+				// 	GD.Print("GameLayoutManager: Semillas agotadas - Esperando 5 segundos antes de finalizar");
+				// 	var timer = GetTree().CreateTimer(5.0f);
+				// 	timer.Timeout += () => 
+				// 	{
+				// 		if (currentLevel != null && currentLevel.HasMethod("OnVictory"))
+				// 		{
+				// 			currentLevel.Call("OnVictory");
+				// 		}
+				// 	};
+				// }
 			}
 		}
 		else if (action == "water")
