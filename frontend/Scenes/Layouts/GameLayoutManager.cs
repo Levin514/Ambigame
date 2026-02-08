@@ -282,21 +282,22 @@ public partial class GameLayoutManager : Control
 				break;
 
 			case "minigame":
-				// Solo mostrar indicadores comunes (score, time)
-				GD.Print("GameLayoutManager: Minijuego - solo indicadores comunes");
-				break;
+		case "watercatch":
+			// Solo mostrar indicadores comunes (score, time)
+			GD.Print("GameLayoutManager: Minijuego - solo indicadores comunes");
+			break;
 
-			default:
-				GD.Print($"GameLayoutManager: Tipo de nivel desconocido: {tipoNivel}");
-				break;
-		}
+		default:
+			GD.Print($"GameLayoutManager: Tipo de nivel desconocido: {tipoNivel}");
+			break;
 	}
+}
 
-	/// <summary>
-	/// Oculta todos los indicadores específicos de nivel
-	/// </summary>
-	private void OcultarTodosLosIndicadores()
-	{
+/// <summary>
+/// Oculta todos los indicadores específicos de nivel
+/// </summary>
+private void OcultarTodosLosIndicadores()
+{
 		waterSystemNode.Visible = false;
 		lifeSystemNode.Visible = false;
 		plantedSystemNode.Visible = false;
@@ -538,9 +539,9 @@ public partial class GameLayoutManager : Control
 				GD.PrintErr("GameLayoutManager: No se encontró SnakeBody en el nivel de reforestación");
 			}
 		}
-		else if (tipoNivel.ToLower() == "minigame")
+		else if (tipoNivel.ToLower() == "minigame" || tipoNivel.ToLower() == "watercatch" || tipoNivel.ToLower() == "classify")
 		{
-			// Conectar señales del minijuego (WaterCatchLevel)
+			// Conectar señales del minijuego (WaterCatchLevel o ClassifyLevel)
 			if (currentLevel.HasSignal("GameOver"))
 			{
 				currentLevel.Connect("GameOver", new Callable(this, nameof(OnLevelGameOver)));
@@ -553,7 +554,7 @@ public partial class GameLayoutManager : Control
 				GD.Print("GameLayoutManager: Señal Victory (minijuego) conectada");
 			}
 
-			// Conectar señales de score y time directamente del nivel (WaterCatchLevel)
+			// Conectar señales de score y time directamente del nivel
 			if (currentLevel.HasSignal("ScoreUpdated"))
 			{
 				currentLevel.Connect("ScoreUpdated", new Callable(this, nameof(OnScoreUpdated)));
@@ -564,6 +565,13 @@ public partial class GameLayoutManager : Control
 			{
 				currentLevel.Connect("TimeUpdated", new Callable(this, nameof(OnTimeUpdated)));
 				GD.Print("GameLayoutManager: Señal TimeUpdated conectada");
+			}
+
+			// Conectar señal RecycledUpdated si existe (ClassifyLevel)
+			if (currentLevel.HasSignal("RecycledUpdated"))
+			{
+				currentLevel.Connect("RecycledUpdated", new Callable(this, nameof(OnRecycledUpdated)));
+				GD.Print("GameLayoutManager: Señal RecycledUpdated conectada");
 			}
 
 			// Inicializar las señales con valores cero
@@ -637,9 +645,13 @@ public partial class GameLayoutManager : Control
 		if (gameOverStatsLabel != null)
 		{
 			// Determinar qué texto mostrar según el tipo de nivel
-			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
-				? "UI_PIPES_REPAIRED"
-				: "UI_OBJECTS_COLLECTED";
+			string secondStatKey = "UI_OBJECTS_COLLECTED";
+			if (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
+				secondStatKey = "UI_PIPES_REPAIRED";
+			else if (currentLevelType.ToLower() == "classify")
+				secondStatKey = "UI_OBJECTS_CLASSIFIED";
+			else if (currentLevelType.ToLower() == "watercatch")
+				secondStatKey = "UI_WATER_DROPS_COLLECTED";
 
 			gameOverStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr(secondStatKey)}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
@@ -669,9 +681,13 @@ public partial class GameLayoutManager : Control
 		if (victoryStatsLabel != null)
 		{
 			// Determinar qué texto mostrar según el tipo de nivel
-			string secondStatKey = (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
-				? "UI_PIPES_REPAIRED"
-				: "UI_OBJECTS_COLLECTED";
+			string secondStatKey = "UI_OBJECTS_COLLECTED";
+			if (currentLevelType.ToLower() == "water" || currentLevelType.ToLower() == "waterlevel")
+				secondStatKey = "UI_PIPES_REPAIRED";
+			else if (currentLevelType.ToLower() == "classify")
+				secondStatKey = "UI_OBJECTS_CLASSIFIED";
+			else if (currentLevelType.ToLower() == "watercatch")
+				secondStatKey = "UI_WATER_DROPS_COLLECTED";
 
 			victoryStatsLabel.Text = $"{TranslationManager.Tr("UI_POINTS")}: {score}\n{TranslationManager.Tr(secondStatKey)}: {pipesRepaired}\n{TranslationManager.Tr("UI_TIME")}: {time}s";
 		}
@@ -1044,7 +1060,7 @@ public partial class GameLayoutManager : Control
 				"SLIDE_WATERCATCH_2", 
 				"SLIDE_WATERCATCH_3"
 			};
-			CargarNivelConSlides("res://Scenes/WaterCatchLevel.tscn", "minigame", slides);
+			CargarNivelConSlides("res://Scenes/WaterCatchLevel.tscn", "watercatch", slides);
 		}
 		else if (currentLevelType.ToLower() == "recycling")
 		{
@@ -1056,7 +1072,7 @@ public partial class GameLayoutManager : Control
 				"SLIDE_CLASSIFY_3",
 				"SLIDE_CLASSIFY_4"
 			};
-			CargarNivelConSlides("res://Scenes/ClassifyLevel.tscn", "minigame", slides);
+			CargarNivelConSlides("res://Scenes/ClassifyLevel.tscn", "classify", slides);
 		}
 		else
 		{

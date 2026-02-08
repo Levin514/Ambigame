@@ -27,12 +27,12 @@ public partial class GameMode : MarginContainer
 	}
 
 	public void _on_history_button_pressed()
-    {
-        navigationManager?.NavigateTo("res://Scenes/MainScene.tscn");
-    }
-    
-    public void GoToSettings()
-    {
-    	navigationManager?.NavigateTo("res://Scenes/SettingsScene.tscn");
-    }
+	{
+		navigationManager?.NavigateTo("res://Scenes/MainScene.tscn");
+	}
+	
+	public void GoToSettings()
+	{
+		navigationManager?.NavigateTo("res://Scenes/SettingsScene.tscn");
+	}
 }

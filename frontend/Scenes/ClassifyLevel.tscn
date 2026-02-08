@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://13urn0ed1r5j"]
+[gd_scene load_steps=30 format=3 uid="uid://13urn0ed1r5j"]
 
 [ext_resource type="Script" uid="uid://ctul58ntr0dqx" path="res://Scenes/ClassifyLevel.cs" id="1_776c1"]
 [ext_resource type="Texture2D" uid="uid://be61iif8gc3uk" path="res://Assets/paperBin.png" id="1_oqsg3"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://5yyd8xshkk0f" path="res://PlayerAnimations/PlayerAnimations.png" id="7_hb7pu"]
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="8_lg5t5"]
 [ext_resource type="Texture2D" uid="uid://db355i8yufhqm" path="res://Assets/classifier_Background.jpg" id="9_po04n"]
+[ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="10_hb7pu"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_walk_down_1"]
 atlas = ExtResource("7_hb7pu")
@@ -245,3 +246,8 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("9_po04n")
 expand_mode = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_hb7pu")
+volume_db = -10.0
+autoplay = true

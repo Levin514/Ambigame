@@ -34,7 +34,15 @@ public partial class GameData : Node
 	public LinkedList<Card> globalcardSeedsList;
 	public int globalSeedsAmount = 0;
 	public int globalWaterAmount = 0;
-	public int globalScoreDivisor = 100;
+	public int globalScoreDivisor = 250; // Obsoleto - usar divisores específicos
+	public int globalSeedsDivisor = 100; // Divisor para cálculo de semillas
+	public int globalWaterDivisor = 250; // Divisor para cálculo de agua
+
+	// Niveles completados
+	public bool recyclingLevelCompleted = false;
+	public bool classifyLevelCompleted = false;
+	public bool waterLevelCompleted = false;
+	public bool waterCatchLevelCompleted = false;
 
 	public static GameData Instance { get; private set; }
 

@@ -68,6 +68,8 @@ public partial class RecyclingSnake : Node2D
 			gameMusic.Stop();
 		}
 		
+		GameData.Instance.recyclingLevelCompleted = true; // Marcar nivel como completado
+		
 		// Emitir señal de Game Over con estadísticas
 		if (_snakeBody != null)
 		{
@@ -94,6 +96,8 @@ public partial class RecyclingSnake : Node2D
 			GameData.Instance.globalSeedsAmount += CalculateSeedsAmount();
 		}
 		
+		GameData.Instance.recyclingLevelCompleted = true; // Marcar nivel como completado
+		
 		// Emitir señal de Victoria con estadísticas
 		if (_snakeBody != null)
 		{
@@ -104,7 +108,7 @@ public partial class RecyclingSnake : Node2D
 	private int CalculateSeedsAmount()
 	{
 		double puntuacionFinal = _snakeBody.Puntuacion;
-		double divisor = GameData.Instance.globalScoreDivisor;
+		double divisor = GameData.Instance.globalSeedsDivisor;
 		return (int)Math.Ceiling(puntuacionFinal / divisor);
 	}
 

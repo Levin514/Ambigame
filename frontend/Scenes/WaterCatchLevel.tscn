@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://7dueujmbdbb"]
+[gd_scene load_steps=26 format=3 uid="uid://7dueujmbdbb"]
 
 [ext_resource type="Script" uid="uid://cfjnrjlfa1ucu" path="res://Scenes/WaterCatchLevel.cs" id="1_5yb3d"]
 [ext_resource type="Texture2D" uid="uid://d1d27y3ghas0x" path="res://Assets/water_droplet.png" id="2_6fsoc"]
@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://5yyd8xshkk0f" path="res://PlayerAnimations/PlayerAnimations.png" id="5_23cqi"]
 [ext_resource type="Texture2D" uid="uid://caqh7nwaxrpf0" path="res://PlayerAnimations/PlayerAnimationsInverted.png" id="6_102ep"]
 [ext_resource type="Texture2D" uid="uid://c6by6m3q5grtf" path="res://Assets/waterCatch_Background.jpg" id="7_23cqi"]
+[ext_resource type="AudioStream" uid="uid://djauiektrppwl" path="res://Assets/Grasslands Theme.mp3" id="8_102ep"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_walk_down_1"]
 atlas = ExtResource("5_23cqi")
@@ -185,3 +186,8 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("7_23cqi")
 expand_mode = 1
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_102ep")
+volume_db = -10.0
+autoplay = true

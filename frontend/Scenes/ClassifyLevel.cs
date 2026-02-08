@@ -20,6 +20,7 @@ public partial class ClassifyLevel : Node2D
 	private Sprite2D container4;
 	private Node2D playerAnimation;
 	[Export] private Classifier classifier;
+	[Export] private AudioStreamPlayer gameMusic;
 
 	// Propiedades con signals
 	private int _score = 0;
@@ -83,6 +84,17 @@ public partial class ClassifyLevel : Node2D
 		//Temporal solution
 		_camera = GetNode<Camera2D>("/root/GameLayout/VBoxContainer/GameContainer/SubViewportContainer/SubViewport/Camera2D");
 		_camera.Zoom = new Vector2I(1,1);
+
+		// Detener la música del menú
+		var musicManager = GetNode<Node>("/root/MusicManager");
+		if (musicManager != null)
+		{
+			var audioPlayer = musicManager.GetNode<AudioStreamPlayer>("AudioStreamPlayer");
+			if (audioPlayer != null)
+			{
+				audioPlayer.Stop();
+			}
+		}
 
 		// Obtener referencias
 		container1 = GetNode<Sprite2D>("Container1");
@@ -217,10 +229,22 @@ public partial class ClassifyLevel : Node2D
 		{
 			Score += 100;
 			Recycled += 1;
+			// Reproducir efecto de acierto
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			if (audioManager != null)
+			{
+				audioManager.PlayTrashCollect();
+			}
 		}
 		else
 		{
 			Score -= 50;
+			// Reproducir efecto de error
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			if (audioManager != null)
+			{
+				audioManager.PlayBreakPipe();
+			}
 		}
 		
 		// Mostrar sprite de resultado (greencheck o redcross)
@@ -296,22 +320,38 @@ public partial class ClassifyLevel : Node2D
 	private int CalculateSeedsAmount()
 	{
 		double puntuacionFinal = Score;
-		double divisor = GameData.Instance.globalScoreDivisor;
+		double divisor = GameData.Instance.globalSeedsDivisor;
 		return (int)Math.Ceiling(puntuacionFinal / divisor);
 	}
 
 	private void TriggerGameOver()
 	{
 		gameOver = true;
+		
+		// Detener música del nivel
+		if (gameMusic != null && gameMusic.Playing)
+		{
+			gameMusic.Stop();
+		}
+		
 		GD.Print($"ClassifyLevel: ¡JUEGO TERMINADO! Score: {Score}, Reciclados: {Recycled}, Tiempo: {ElapsedTime}");
 		GameData.Instance.globalSeedsAmount += CalculateSeedsAmount();
+		GameData.Instance.classifyLevelCompleted = true; // Marcar nivel como completado
 		EmitSignal(SignalName.GameOver, Score, Recycled, ElapsedTime);
 	}
 
 	private void TriggerVictory()
 	{
 		gameOver = true;
+		
+		// Detener música del nivel
+		if (gameMusic != null && gameMusic.Playing)
+		{
+			gameMusic.Stop();
+		}
+		
 		GD.Print($"ClassifyLevel: ¡VICTORIA! Score: {Score}, Reciclados: {Recycled}, Tiempo: {ElapsedTime}");
+		GameData.Instance.classifyLevelCompleted = true; // Marcar nivel como completado
 		EmitSignal(SignalName.Victory, Score, Recycled, ElapsedTime);
 	}
 

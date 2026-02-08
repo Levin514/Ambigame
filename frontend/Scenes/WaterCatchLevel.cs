@@ -26,6 +26,7 @@ public partial class WaterCatchLevel : Node2D
 	[Export] public Vector2 BasketScale = new Vector2(1.5f, 1f);
 	[Export] public float BasketWidth = 80f;
 	[Export] public float BasketHeight = 30f;
+	[Export] private AudioStreamPlayer gameMusic;
 	
 	// Nodos
 	private Node2D waterDropletContainer;
@@ -79,6 +80,17 @@ public partial class WaterCatchLevel : Node2D
 		_camera = GetNode<Camera2D>("/root/GameLayout/VBoxContainer/GameContainer/SubViewportContainer/SubViewport/Camera2D");
 		_camera.Zoom = new Vector2I(1,1);
 		
+		// Detener la música del menú
+		var musicManager = GetNode<Node>("/root/MusicManager");
+		if (musicManager != null)
+		{
+			var audioPlayer = musicManager.GetNode<AudioStreamPlayer>("AudioStreamPlayer");
+			if (audioPlayer != null)
+			{
+				audioPlayer.Stop();
+			}
+		}
+		
 		ElapsedTime = 60;
 
 		// Obtener referencias a los contenedores
@@ -131,10 +143,10 @@ public partial class WaterCatchLevel : Node2D
 			ElapsedTime--;
 			timeAccumulator = 0f;
 
-			// Verificar derrota por tiempo
+			// Verificar victoria por tiempo completado
 			if (ElapsedTime <= 0)
 			{
-				TriggerGameOver();
+				TriggerVictory();
 				return;
 			}
 		}
@@ -266,6 +278,14 @@ public partial class WaterCatchLevel : Node2D
 			if (IsObjectCaughtByBasket(obj))
 			{
 				GD.Print("¡Objeto atrapado!");
+				
+				// Reproducir efecto de atrapar gota
+				var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+				if (audioManager != null)
+				{
+					audioManager.PlayWaterPlant();
+				}
+				
 				UpdateScore();
 				waterCollected += 1;
 				waterCollectedStreak += 1;
@@ -319,15 +339,36 @@ public partial class WaterCatchLevel : Node2D
 
 	private void TriggerGameOver()
 	{
+		// Detener música del nivel
+		if (gameMusic != null && gameMusic.Playing)
+		{
+			gameMusic.Stop();
+		}
+		
 		GD.Print($"¡JUEGO TERMINADO! Puntuación final: {Score}");
 		GameData.Instance.globalWaterAmount += CalculateWaterAmount();
+		GameData.Instance.waterCatchLevelCompleted = true; // Marcar nivel como completado
 		EmitSignal(SignalName.GameOver, Score, waterCollected, ElapsedTime);
+	}
+
+	private void TriggerVictory()
+	{
+		// Detener música del nivel
+		if (gameMusic != null && gameMusic.Playing)
+		{
+			gameMusic.Stop();
+		}
+		
+		GD.Print($"¡VICTORIA! Puntuación final: {Score}, Gotas recolectadas: {waterCollected}");
+		GameData.Instance.globalWaterAmount += CalculateWaterAmount();
+		GameData.Instance.waterCatchLevelCompleted = true; // Marcar nivel como completado
+		EmitSignal(SignalName.Victory, Score, waterCollected, ElapsedTime);
 	}
 
 	private int CalculateWaterAmount()
 	{
 		double puntuacionFinal = Score;
-		double divisor = GameData.Instance.globalScoreDivisor;
+		double divisor = GameData.Instance.globalWaterDivisor;
 		return (int)Math.Ceiling(puntuacionFinal / divisor);
 	}
 }

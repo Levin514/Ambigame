@@ -138,5 +138,7 @@ layout_mode = 2
 text = "UI_USER_PLACEHOLDER"
 label_settings = ExtResource("3_6w5ds")
 
-[connection signal="pressed" from="MarginContainer/ExitControl/LogOutButton" to="MarginContainer" method="LogOut"][connection signal="pressed" from="MarginContainer/ExitControl/SettingsButton" to="MarginContainer" method="GoToSettings"][connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/HistoryModeContainer/TextureButton" to="MarginContainer" method="_on_history_button_pressed"]
+[connection signal="pressed" from="MarginContainer/ExitControl/LogOutButton" to="MarginContainer" method="LogOut"]
+[connection signal="pressed" from="MarginContainer/ExitControl/SettingsButton" to="MarginContainer" method="GoToSettings"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/HistoryModeContainer/TextureButton" to="MarginContainer" method="_on_history_button_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MainButtons/HistoryModeContainer/HistoryButton" to="MarginContainer" method="_on_history_button_pressed"]
