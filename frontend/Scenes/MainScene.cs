@@ -91,6 +91,8 @@ public partial class MainScene : MarginContainer
 		// Verificar que el nivel esté desbloqueado
 		if (!GameData.Instance.classifyLevelCompleted)
 		{
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			audioManager?.PlayBreakPipe();
 			GD.Print("Nivel de Agua bloqueado: Completa el minijuego de Clasificación primero");
 			return;
 		}
@@ -103,6 +105,8 @@ public partial class MainScene : MarginContainer
 		// Verificar que el nivel esté desbloqueado
 		if (!GameData.Instance.waterCatchLevelCompleted)
 		{
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			audioManager?.PlayBreakPipe();
 			GD.Print("Nivel de Reforestación bloqueado: Completa el minijuego de Agua primero");
 			return;
 		}
