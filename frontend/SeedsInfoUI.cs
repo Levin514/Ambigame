@@ -57,11 +57,11 @@ public partial class SeedsInfoUI : Control
 		buttonContainer.SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter;
 
 		// Previous button
-		previousButton.Text = "← Anterior";
+		previousButton.Text = TranslationManager.Tr("BTN_PREVIOUS");
 		previousButton.Pressed += OnPreviousButtonPressed;
 
 		// Next button
-		nextButton.Text = "Siguiente →";
+		nextButton.Text = TranslationManager.Tr("BTN_NEXT");
 		nextButton.Pressed += OnNextButtonPressed;
 	}
 
@@ -75,12 +75,12 @@ public partial class SeedsInfoUI : Control
 		Texture2D cascolImage = GD.Load<Texture2D>("res://Assets/cascol_seeds.jpg");
 
 		// Add sample cards - modify with actual data as needed
-		cardList.AddLast(new Card("Semilla de Girasol", "Girasol", sunflowerImage, "Una semilla de girasol es una semilla oleaginosa que produce un aceite de alta calidad."));
-		cardList.AddLast(new Card("Semilla de Ceibo", "Ceibo", ceiboImage, "El ceibo es un árbol característico de la costa ecuatoriana, puede alcanzar gran altura y es símbolo de identidad cultural."));
-		cardList.AddLast(new Card("Semilla de Guayacán", "Guayacán", guayacanImage, "El guayacán es un árbol típico de los bosques secos de la costa, reconocido por su intensa floración amarilla."));
-		cardList.AddLast(new Card("Semilla de Algarrobo", "Algarrobo", algarroboImage, "El algarrobo es un árbol resistente a la sequía, común en la costa, cuyas vainas sirven de alimento para animales."));
-		cardList.AddLast(new Card("Semilla de Palo Santo", "Palo Santo", paloSantoImage, "El palo santo es un árbol nativo de la costa ecuatoriana, apreciado por su aroma y usos medicinales y espirituales."));
-		cardList.AddLast(new Card("Semilla de Cascol", "Cascol", cascolImage, "El cascol es un árbol propio de la costa, utilizado tradicionalmente como cerca viva y para la recuperación de suelos."));
+		cardList.AddLast(new Card(TranslationManager.Tr("SUNFLOWER_SEED"), TranslationManager.Tr("SUNFLOWER_NAME"), sunflowerImage, TranslationManager.Tr("SUNFLOWER_DESC")));
+		cardList.AddLast(new Card(TranslationManager.Tr("CEIBO_SEED"), TranslationManager.Tr("CEIBO_NAME"), ceiboImage, TranslationManager.Tr("CEIBO_DESC")));
+		cardList.AddLast(new Card(TranslationManager.Tr("GUAYACAN_SEED"), TranslationManager.Tr("GUAYACAN_NAME"), guayacanImage, TranslationManager.Tr("GUAYACAN_DESC")));
+		cardList.AddLast(new Card(TranslationManager.Tr("ALGARROBO_SEED"), TranslationManager.Tr("ALGARROBO_NAME"), algarroboImage, TranslationManager.Tr("ALGARROBO_DESC")));
+		cardList.AddLast(new Card(TranslationManager.Tr("PALOSANTO_SEED"), TranslationManager.Tr("PALOSANTO_NAME"), paloSantoImage, TranslationManager.Tr("PALOSANTO_DESC")));
+		cardList.AddLast(new Card(TranslationManager.Tr("CASCOL_SEED"), TranslationManager.Tr("CASCOL_NAME"), cascolImage, TranslationManager.Tr("CASCOL_DESC")));
 
 		// Initialize pointer to first card
 		currentCardNode = cardList.First;
@@ -103,7 +103,7 @@ public partial class SeedsInfoUI : Control
 		
 		// Update counter
 		int cardIndex = GetCardIndex();
-		cardCounterLabel.Text = $"Tarjeta {cardIndex + 1} de {cardList.Count}";
+		cardCounterLabel.Text = $"{TranslationManager.Tr("UI_CARD_COUNTER")} {cardIndex + 1} / {cardList.Count}";
 	}
 
 	private int GetCardIndex()

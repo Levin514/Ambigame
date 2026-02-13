@@ -49,11 +49,11 @@ public partial class TreesInfoUi : Control
 		buttonContainer.SizeFlagsHorizontal = Control.SizeFlags.ShrinkCenter;
 
 		// Previous button
-		previousButton.Text = "← Anterior";
+		previousButton.Text = TranslationManager.Tr("BTN_PREVIOUS");
 		previousButton.Pressed += OnPreviousButtonPressed;
 
 		// Next button
-		nextButton.Text = "Siguiente →";
+		nextButton.Text = TranslationManager.Tr("BTN_NEXT");
 		nextButton.Pressed += OnNextButtonPressed;
 	}
 
@@ -90,7 +90,7 @@ public partial class TreesInfoUi : Control
 		
 		// Update counter
 		int cardIndex = GetCardIndex();
-		cardCounterLabel.Text = $"Tarjeta {cardIndex + 1} de {cardList.Count}";
+		cardCounterLabel.Text = $"{TranslationManager.Tr("UI_CARD_COUNTER")} {cardIndex + 1} / {cardList.Count}";
 	}
 
 	private int GetCardIndex()

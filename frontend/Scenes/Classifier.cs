@@ -33,6 +33,7 @@ public partial class Classifier : Node2D
 	{
 		// Obtener ClassifyLevel del nodo padre
 		classifyLevel = GetParent<ClassifyLevel>();
+		classifyLevel.UpdateSprite += UpdateItemSprite;
 
 		recycleObjects = GameData.Instance.recycleObjects[GameData.Instance.recycleBackground];
 
@@ -145,7 +146,7 @@ public partial class Classifier : Node2D
 			{
 				GD.Print("Acierto");
 			}
-			UpdateItemSprite();
+			//UpdateItemSprite();
 		}
 
 		if (@event.IsActionPressed("ui_right") )
@@ -155,7 +156,7 @@ public partial class Classifier : Node2D
 			{
 				GD.Print("Acierto");
 			}
-			UpdateItemSprite();
+			//UpdateItemSprite();
 		}
 
 		if (@event.IsActionPressed("ui_up"))
@@ -166,7 +167,7 @@ public partial class Classifier : Node2D
 				GD.Print("Acierto");
 			}
 			
-			UpdateItemSprite();
+			//UpdateItemSprite();
 		}
 	}
 

@@ -17,6 +17,8 @@ BTN_MAIN_MENU,Menú principal,Main Menu
 BTN_NEXT_LEVEL,Siguiente Nivel,Next Level
 BTN_PAUSE,Pausa,Pause
 BTN_MINIGAME,Minigame,Minigame
+BTN_NEXT,Siguiente →,Next →
+BTN_PREVIOUS,← Anterior,← Previous
 GAME_MODE_STORY,Modo historia,Story Mode
 GAME_MODE_INFINITE,Modo Infinito,Infinite Mode
 SETTINGS_TITLE,Ajustes,Settings
@@ -68,6 +70,7 @@ UI_WATER,Agua,Water
 UI_PLANTED,Plantado,Planted
 UI_PLACEHOLDER_STATS,Placeholder for stats,Placeholder for stats
 UI_USER_PLACEHOLDER,Usuario: Invitado,User: Guest
+UI_CARD_COUNTER,Tarjeta,Card
 CREDITS_TEXT,Creado por: Kevin Mejia y Levin Moran,Created by: Kevin Mejia and Levin Moran
 LANGUAGE_SELECTOR,Idioma,Language
 SLIDE_RECYCLING_1,¡Bienvenido al nivel de reciclaje!,Welcome to the recycling level!
@@ -87,3 +90,21 @@ SLIDE_REFORESTATION_1,¡Planta árboles y salva el bosque!,Plant trees and save 
 SLIDE_REFORESTATION_2,Usa las flechas direccionales para moverte y plantar semillas,Use the arrow keys to move and plant seeds
 SLIDE_REFORESTATION_3,Una vez plantadas tienes poco tiempo para regarlas,Once planted you have little time to water them
 SLIDE_REFORESTATION_4,¡Evita perder 5 plantas y vigila tu cantidad de semillas y agua!,Avoid losing 5 plants and keep an eye on your seed and water amounts!
+SUNFLOWER_SEED,Semilla de Girasol,Sunflower Seed
+CEIBO_SEED,Semilla de Ceibo,Ceibo Seed
+GUAYACAN_SEED,Semilla de Guayacán,Guayacan Seed
+ALGARROBO_SEED,Semilla de Algarrobo,Carob seed
+PALOSANTO_SEED,Semilla de Palo Santo,Palo Santo Seed
+CASCOL_SEED,Semilla de Cascol,Cascol Seed
+SUNFLOWER_NAME,Girasol,Sunflower
+CEIBO_NAME,Ceibo,Ceibo
+GUAYACAN_NAME,Guayacán,Guayacan
+ALGARROBO_NAME,Algarrobo,Carob
+PALOSANTO_NAME,Palo Santo,Palo Santo
+CASCOL_NAME,Cascol,Cascol
+SUNFLOWER_DESC,"Una semilla de girasol es una semilla oleaginosa que produce un aceite de alta calidad.","A sunflower seed is an oilseed that produces a high-quality oil."
+CEIBO_DESC,"El ceibo es un árbol característico de la costa ecuatoriana, puede alcanzar gran altura y es símbolo de identidad cultural.","The ceibo tree is characteristic of the Ecuadorian coast; it can reach great heights and is a symbol of cultural identity."
+GUAYACAN_DESC,"El guayacán es un árbol típico de los bosques secos de la costa, reconocido por su intensa floración amarilla.","The guayacán is a typical tree of the dry forests of the coast, recognized for its intense yellow flowering."
+ALGARROBO_DESC,"El algarrobo es un árbol resistente a la sequía, común en la costa, cuyas vainas sirven de alimento para animales.","The carob tree is a drought-resistant tree, common on the coast, whose pods serve as food for animals."
+PALOSANTO_DESC,"El palo santo es un árbol nativo de la costa ecuatoriana, apreciado por su aroma y usos medicinales y espirituales.","Palo santo is a tree native to the Ecuadorian coast, prized for its aroma and medicinal and spiritual uses."
+CASCOL_DESC,"El cascol es un árbol propio de la costa, utilizado tradicionalmente como cerca viva y para la recuperación de suelos.","The cascol is a tree native to the coast, traditionally used as a living fence and for soil recovery."

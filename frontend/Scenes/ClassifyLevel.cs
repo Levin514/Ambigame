@@ -12,6 +12,7 @@ public partial class ClassifyLevel : Node2D
 	[Signal] public delegate void ScoreUpdatedEventHandler(int score);
 	[Signal] public delegate void TimeUpdatedEventHandler(int time);
 	[Signal] public delegate void RecycledUpdatedEventHandler(int recycled);
+	[Signal] public delegate void UpdateSpriteEventHandler();
 
 	// Referencias a nodos
 	private Sprite2D container1;
@@ -301,6 +302,8 @@ public partial class ClassifyLevel : Node2D
 			playerSprite.Animation = "walk_down";
 			playerSprite.Frame = 0;
 		}
+		
+		EmitSignal(SignalName.UpdateSprite);
 
 		// Verificar condición de victoria después de regresar
 		if (classifier != null && classifier.GetHasTrash())

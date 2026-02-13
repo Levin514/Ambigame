@@ -257,7 +257,6 @@ public partial class GameLayoutManager : Control
 
 			case "classify":
 			case "classifylevel":
-				lifeSystemNode.Visible = true;
 				recycledLabel.Visible = true;
 				// Inicializar con el texto correcto
 				recycledLabel.Text = $"{TranslationManager.Tr("UI_RECYCLED")}: 0/{victoryThreshold}";
