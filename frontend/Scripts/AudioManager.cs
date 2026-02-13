@@ -61,7 +61,29 @@ public partial class AudioManager : Node
 		victorySound = GD.Load<AudioStream>("res://Assets/Victory.mp3");
 		defeatSound = GD.Load<AudioStream>("res://Assets/Losing.mp3");
 		
+		// Verificar que los sonidos se hayan cargado
+		int soundsLoaded = 0;
+		if (trashCollectSound != null) soundsLoaded++;
+		if (repairPipeSound != null) soundsLoaded++;
+		if (breakPipeSound != null) soundsLoaded++;
+		if (plantSeedSound != null) soundsLoaded++;
+		if (waterPlantSound != null) soundsLoaded++;
+		if (victorySound != null) soundsLoaded++;
+		if (defeatSound != null) soundsLoaded++;
+		GD.Print($"AudioManager: {soundsLoaded}/7 efectos de sonido cargados correctamente");
+		
+		// Cargar configuración y aplicar volúmenes de forma diferida
 		LoadSettings();
+		CallDeferred(nameof(ApplyAllVolumes));
+	}
+	
+	// Aplicar todos los volúmenes de forma segura después de la inicialización completa
+	private void ApplyAllVolumes()
+	{
+		ApplyMuteState();
+		ApplyMusicVolume();
+		ApplySFXVolume();
+		GD.Print("AudioManager: Volúmenes aplicados después de inicialización completa");
 	}
 
 	// ========== CONTROL DE VOLUMEN ==========
@@ -111,28 +133,50 @@ public partial class AudioManager : Node
 
 	private void ApplyMusicVolume()
 	{
-		if (musicBusIndex != -1)
+		// Verificar que el índice del bus sea válido
+		int currentMusicBusIndex = AudioServer.GetBusIndex("Music");
+		if (currentMusicBusIndex != -1)
 		{
+			musicBusIndex = currentMusicBusIndex;
 			float db = LinearToDb(musicVolume);
 			AudioServer.SetBusVolumeDb(musicBusIndex, db);
 			GD.Print($"AudioManager: Volumen música: {musicVolume:F2} ({db:F1} dB)");
+		}
+		else
+		{
+			GD.PrintErr("AudioManager: No se pudo aplicar volumen de música - Bus no encontrado");
 		}
 	}
 	
 	private void ApplySFXVolume()
 	{
-		if (sfxBusIndex != -1)
+		// Verificar que el índice del bus sea válido
+		int currentSfxBusIndex = AudioServer.GetBusIndex("SFX");
+		if (currentSfxBusIndex != -1)
 		{
+			sfxBusIndex = currentSfxBusIndex;
 			float db = LinearToDb(sfxVolume);
 			AudioServer.SetBusVolumeDb(sfxBusIndex, db);
 			GD.Print($"AudioManager: Volumen efectos: {sfxVolume:F2} ({db:F1} dB)");
+		}
+		else
+		{
+			GD.PrintErr("AudioManager: No se pudo aplicar volumen de efectos - Bus no encontrado");
 		}
 	}
 
 	private void ApplyMuteState()
 	{
-		AudioServer.SetBusMute(AudioServer.GetBusIndex("Master"), isMuted);
-		GD.Print($"AudioManager: Sonido {(isMuted ? "silenciado" : "activado")}");
+		int masterBusIndex = AudioServer.GetBusIndex("Master");
+		if (masterBusIndex != -1)
+		{
+			AudioServer.SetBusMute(masterBusIndex, isMuted);
+			GD.Print($"AudioManager: Sonido {(isMuted ? "silenciado" : "activado")}");
+		}
+		else
+		{
+			GD.PrintErr("AudioManager: No se pudo aplicar estado de mute - Bus Master no encontrado");
+		}
 	}
 	
 	private float LinearToDb(float linear)
@@ -149,8 +193,22 @@ public partial class AudioManager : Node
 		if (musicPlayer != null && music != null)
 		{
 			musicPlayer.Stream = music;
+			
+			// Configurar loop si es AudioStreamMP3
+			if (music is AudioStreamMP3 mp3Stream)
+			{
+				mp3Stream.Loop = loop;
+			}
+			
 			musicPlayer.Play();
-			GD.Print($"AudioManager: Reproduciendo música");
+			GD.Print($"AudioManager: Reproduciendo música (Loop: {loop})");
+		}
+		else
+		{
+			if (musicPlayer == null)
+				GD.PrintErr("AudioManager: musicPlayer es null");
+			if (music == null)
+				GD.PrintErr("AudioManager: AudioStream de música es null");
 		}
 	}
 	
@@ -203,7 +261,15 @@ public partial class AudioManager : Node
 	{
 		if (sound == null)
 		{
-			GD.PrintErr("AudioManager: Efecto de sonido no encontrado");
+			GD.PrintErr("AudioManager: Efecto de sonido no encontrado (null)");
+			return;
+		}
+		
+		// Verificar que el bus SFX exista
+		int sfxBus = AudioServer.GetBusIndex("SFX");
+		if (sfxBus == -1)
+		{
+			GD.PrintErr("AudioManager: Bus SFX no existe");
 			return;
 		}
 		
@@ -242,16 +308,12 @@ public partial class AudioManager : Node
 			isMuted = (bool)config.GetValue("audio", "muted", false);
 			musicVolume = (float)config.GetValue("audio", "music_volume", 0.7f);
 			sfxVolume = (float)config.GetValue("audio", "sfx_volume", 0.8f);
-			
-			ApplyMuteState();
-			ApplyMusicVolume();
-			ApplySFXVolume();
+			GD.Print($"AudioManager: Configuración cargada - Música: {musicVolume:F2}, SFX: {sfxVolume:F2}, Muted: {isMuted}");
 		}
 		else
 		{
-			// Aplicar valores por defecto
-			ApplyMusicVolume();
-			ApplySFXVolume();
+			GD.Print("AudioManager: Configuración no encontrada, usando valores por defecto");
 		}
+		// NO aplicar volúmenes aquí - se aplican en ApplyAllVolumes() llamado con CallDeferred
 	}
 }
