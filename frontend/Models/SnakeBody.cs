@@ -166,6 +166,11 @@ public partial class SnakeBody : Sprite2D
 				bool planted = (bool)DualGrid.Call("TryPlantSeed", headPosition);
 				if (planted)
 				{
+					var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+					if (audioManager != null)
+					{
+						audioManager.PlayPlantSeed();
+					}
 					GD.Print("SnakeBody: Semilla plantada");
 					EmitSignal(SignalName.PipeRepaired, "seed"); // Pasar "seed" como parámetro
 					return true;
@@ -176,6 +181,11 @@ public partial class SnakeBody : Sprite2D
 				bool watered = (bool)DualGrid.Call("TryWaterPlant", headPosition);
 				if (watered)
 				{
+					var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+					if (audioManager != null)
+					{
+						audioManager.PlayWaterPlant();
+					}
 					GD.Print("SnakeBody: Planta regada");
 					EmitSignal(SignalName.PipeRepaired, "water"); // Pasar "water" como parámetro
 					return true;

@@ -167,6 +167,11 @@ public partial class ReforestationSnake : Node2D
 		// Sumar puntos cuando el árbol crece completamente
 		if (_snakeBody != null)
 		{
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			if (audioManager != null)
+			{
+				audioManager.PlayPlantGrown();
+			}
 			_snakeBody.AddScore(POINTS_PER_TREE);
 			GD.Print($"ReforestationSnake: Árbol completamente crecido! +{POINTS_PER_TREE} puntos (Total árboles: {treesPlanted})");
 		}
@@ -179,7 +184,13 @@ public partial class ReforestationSnake : Node2D
 		if (isGameOver) return;
 		
 		plantsDead++;
-		
+
+		var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+		if (audioManager != null)
+		{
+			audioManager.PlayBreakPipe();
+		}
+
 		// Restar puntos cuando una planta muere
 		if (_snakeBody != null)
 		{

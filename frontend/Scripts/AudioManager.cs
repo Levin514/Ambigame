@@ -22,6 +22,7 @@ public partial class AudioManager : Node
 	private AudioStream breakPipeSound;
 	private AudioStream plantSeedSound;
 	private AudioStream waterPlantSound;
+	private AudioStream plantGrownSound;
 	private AudioStream victorySound;
 	private AudioStream defeatSound;
 	private AudioStream obstacleCrashSound;
@@ -64,6 +65,7 @@ public partial class AudioManager : Node
 		breakPipeSound = GD.Load<AudioStream>("res://Assets/BreakPipe.mp3"); // Reutilizar o crear nuevo
 		plantSeedSound = GD.Load<AudioStream>("res://Assets/Plant.mp3");
 		waterPlantSound = GD.Load<AudioStream>("res://Assets/Water.mp3");
+		plantGrownSound = GD.Load<AudioStream>("res://Assets/PlantGrown.mp3");
 		victorySound = GD.Load<AudioStream>("res://Assets/Victory.mp3");
 		defeatSound = GD.Load<AudioStream>("res://Assets/Losing.mp3");
 		obstacleCrashSound = GD.Load<AudioStream>("res://Assets/ObstacleCrash.mp3");
@@ -194,6 +196,11 @@ public partial class AudioManager : Node
 	public void PlayWaterPlant()
 	{
 		PlaySFX(waterPlantSound);
+	}
+
+	public void PlayPlantGrown()
+	{
+		PlaySFX(plantGrownSound);
 	}
 	
 	public void PlayVictory()
