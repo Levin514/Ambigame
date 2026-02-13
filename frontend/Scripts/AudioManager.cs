@@ -29,23 +29,18 @@ public partial class AudioManager : Node
 
 	public override void _Ready()
 	{
-		// Obtener índices de buses de audio
+		// Obtener índices de buses de audio (ya existen en default_bus_layout.tres)
 		musicBusIndex = AudioServer.GetBusIndex("Music");
 		sfxBusIndex = AudioServer.GetBusIndex("SFX");
 		
-		// Si los buses no existen, crearlos
-		if (musicBusIndex == -1)
+		// Verificar que los buses existan
+		if (musicBusIndex == -1 || sfxBusIndex == -1)
 		{
-			AudioServer.AddBus(1);
-			AudioServer.SetBusName(1, "Music");
-			musicBusIndex = 1;
+			GD.PrintErr("AudioManager: Error - Los buses Music/SFX no existen. Verifica default_bus_layout.tres");
 		}
-		
-		if (sfxBusIndex == -1)
+		else
 		{
-			AudioServer.AddBus(2);
-			AudioServer.SetBusName(2, "SFX");
-			sfxBusIndex = 2;
+			GD.Print($"AudioManager: Buses correctamente inicializados - Music: {musicBusIndex}, SFX: {sfxBusIndex}");
 		}
 		
 		// Crear reproductores de audio
