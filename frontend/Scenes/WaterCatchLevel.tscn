@@ -190,4 +190,5 @@ expand_mode = 1
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("8_102ep")
 volume_db = -10.0
+bus = &"Music"
 autoplay = true
