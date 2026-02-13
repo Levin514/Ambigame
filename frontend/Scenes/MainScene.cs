@@ -9,12 +9,12 @@ public partial class MainScene : MarginContainer
 	private NavigationManager navigationManager;
 	
 	// Referencias a botones de niveles
-	private Button level1Button;
-	private Button level2Button;
-	private Button level3Button;
-	private TextureButton level1TextureButton;
-	private TextureButton level2TextureButton;
-	private TextureButton level3TextureButton;
+	[Export] private Button level1Button;
+	[Export] private Button level2Button;
+	[Export] private Button level3Button;
+	[Export] private TextureButton level1TextureButton;
+	[Export] private TextureButton level2TextureButton;
+	[Export] private TextureButton level3TextureButton;
 	
 	public override void _Ready()
 	{	
@@ -25,14 +25,6 @@ public partial class MainScene : MarginContainer
 			_userDataLabel.Text = Tr("UI_USER_PLACEHOLDER");
 		else
 			_userDataLabel.Text = Player.GetInstance().ToString();
-
-		// Obtener referencias a botones
-		level1Button = GetNodeOrNull<Button>("MarginContainer2/VBoxContainer/MainButtons/Level1Container/Level1Button");
-		level2Button = GetNodeOrNull<Button>("MarginContainer2/VBoxContainer/MainButtons/Level2Container/Level2Button");
-		level3Button = GetNodeOrNull<Button>("MarginContainer2/VBoxContainer/MainButtons/Level3Container/Level3Button");
-		level1TextureButton = GetNodeOrNull<TextureButton>("MarginContainer2/VBoxContainer/MainButtons/Level1Container/Level1TextureButton");
-		level2TextureButton = GetNodeOrNull<TextureButton>("MarginContainer2/VBoxContainer/MainButtons/Level2Container/Level2TextureButton");
-		level3TextureButton = GetNodeOrNull<TextureButton>("MarginContainer2/VBoxContainer/MainButtons/Level3Container/Level3TextureButton");
 
 		// Configurar estado de botones según progreso
 		UpdateLevelButtons();
@@ -55,30 +47,13 @@ public partial class MainScene : MarginContainer
 	private void SetButtonEnabled(Button button, TextureButton textureButton, bool enabled)
 	{
 		if (button != null)
-		{			button.Disabled = !enabled;
-			// Aplicar efecto visual de sombra/disabled
-			if (!enabled)
-			{
-				button.Modulate = new Color(0.5f, 0.5f, 0.5f, 0.7f); // Gris oscurecido
-			}
-			else
-			{
-				button.Modulate = new Color(1f, 1f, 1f, 1f); // Color normal
-			}
+		{
+			button.Disabled = !enabled;
 		}
 
 		if (textureButton != null)
 		{
 			textureButton.Disabled = !enabled;
-			// Aplicar efecto visual de sombra/disabled
-			if (!enabled)
-			{
-				textureButton.Modulate = new Color(0.5f, 0.5f, 0.5f, 0.7f); // Gris oscurecido
-			}
-			else
-			{
-				textureButton.Modulate = new Color(1f, 1f, 1f, 1f); // Color normal
-			}
 		}
 	}
 	public void Level_1_button_pressed()

@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ceh52rhn778hx"]
+[gd_scene load_steps=10 format=3 uid="uid://ceh52rhn778hx"]
 
 [ext_resource type="Script" uid="uid://bxy2phsxfq24f" path="res://Scenes/MainScene.cs" id="1_nhkr4"]
 [ext_resource type="PackedScene" uid="uid://c11lqpfr40b2x" path="res://Scenes/Background.tscn" id="1_y4jh7"]
@@ -7,6 +7,7 @@
 [ext_resource type="Theme" uid="uid://bm5evw0t3glgv" path="res://Theme.tres" id="4_qxria"]
 [ext_resource type="Texture2D" uid="uid://g0xrrp3mfkqt" path="res://Assets/cabin_in_the_woods.png" id="6_f140w"]
 [ext_resource type="Texture2D" uid="uid://wghwjc8lv643" path="res://Assets/sky1.png" id="7_0iob3"]
+[ext_resource type="Texture2D" uid="uid://ducgle1lvauyf" path="res://Assets/blocked_background.jpg" id="8_0iob3"]
 [ext_resource type="Texture2D" uid="uid://bvek173qy11cg" path="res://Assets/flowers_meadow3.png" id="8_4b75m"]
 
 [node name="Control" type="Control"]
@@ -20,7 +21,7 @@ grow_vertical = 2
 [node name="Background" parent="." instance=ExtResource("1_y4jh7")]
 layout_mode = 1
 
-[node name="MarginContainer2" type="MarginContainer" parent="." node_paths=PackedStringArray("_userDataLabel")]
+[node name="MarginContainer2" type="MarginContainer" parent="." node_paths=PackedStringArray("_userDataLabel", "level1Button", "level2Button", "level3Button", "level1TextureButton", "level2TextureButton", "level3TextureButton")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,6 +36,12 @@ theme_override_constants/margin_right = 120
 theme_override_constants/margin_bottom = 80
 script = ExtResource("1_nhkr4")
 _userDataLabel = NodePath("VBoxContainer/UserData")
+level1Button = NodePath("VBoxContainer/MainButtons/Level1Container/Level1Button")
+level2Button = NodePath("VBoxContainer/MainButtons/Level2Container/Level2Button")
+level3Button = NodePath("VBoxContainer/MainButtons/Level3Container/Level3Button")
+level1TextureButton = NodePath("VBoxContainer/MainButtons/Level1Container/Level1TextureButton")
+level2TextureButton = NodePath("VBoxContainer/MainButtons/Level2Container/Level2TextureButton")
+level3TextureButton = NodePath("VBoxContainer/MainButtons/Level3Container/Level3TextureButton")
 
 [node name="ExitControl" type="Control" parent="MarginContainer2"]
 layout_mode = 2
@@ -119,6 +126,7 @@ theme_override_constants/separation = 25
 layout_mode = 2
 size_flags_vertical = 3
 texture_normal = ExtResource("7_0iob3")
+texture_disabled = ExtResource("8_0iob3")
 ignore_texture_size = true
 stretch_mode = 0
 
@@ -137,6 +145,7 @@ theme_override_constants/separation = 25
 layout_mode = 2
 size_flags_vertical = 3
 texture_normal = ExtResource("8_4b75m")
+texture_disabled = ExtResource("8_0iob3")
 ignore_texture_size = true
 stretch_mode = 0
 

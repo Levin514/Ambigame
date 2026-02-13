@@ -24,6 +24,7 @@ public partial class AudioManager : Node
 	private AudioStream waterPlantSound;
 	private AudioStream victorySound;
 	private AudioStream defeatSound;
+	private AudioStream obstacleCrashSound;
 	
 	private const string ConfigPath = "user://audio_settings.cfg";
 
@@ -60,11 +61,12 @@ public partial class AudioManager : Node
 		// Precargar efectos de sonido
 		trashCollectSound = GD.Load<AudioStream>("res://Assets/Recolet.mp3");
 		repairPipeSound = GD.Load<AudioStream>("res://Assets/RepairPipe.mp3");
-		breakPipeSound = GD.Load<AudioStream>("res://Assets/RepairPipe.mp3"); // Reutilizar o crear nuevo
+		breakPipeSound = GD.Load<AudioStream>("res://Assets/BreakPipe.mp3"); // Reutilizar o crear nuevo
 		plantSeedSound = GD.Load<AudioStream>("res://Assets/Plant.mp3");
 		waterPlantSound = GD.Load<AudioStream>("res://Assets/Water.mp3");
 		victorySound = GD.Load<AudioStream>("res://Assets/Victory.mp3");
 		defeatSound = GD.Load<AudioStream>("res://Assets/Losing.mp3");
+		obstacleCrashSound = GD.Load<AudioStream>("res://Assets/ObstacleCrash.mp3");
 		
 		LoadSettings();
 	}
@@ -202,6 +204,11 @@ public partial class AudioManager : Node
 	public void PlayDefeat()
 	{
 		PlaySFX(defeatSound);
+	}
+
+	public void PlayObstacleCrash()
+	{
+		PlaySFX(obstacleCrashSound);
 	}
 	
 	private void PlaySFX(AudioStream sound)

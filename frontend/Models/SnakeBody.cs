@@ -249,6 +249,11 @@ public partial class SnakeBody : Sprite2D
 		{
 			EmitSignal(SignalName.UpdateHealth);
 			ScreenFlash.Show();
+			var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+			if (audioManager != null)
+			{
+				audioManager.PlayObstacleCrash();
+			}
 			DualGrid.RemoveRockAt(headPosition);
 		}
 	}
@@ -391,7 +396,11 @@ public partial class SnakeBody : Sprite2D
 						GD.Print("SnakeBody: Colisión con pared - perdiendo vida y rebotando");
 						EmitSignal(SignalName.UpdateHealth);
 						ScreenFlash.Show();
-						
+						var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+						if (audioManager != null)
+						{
+							audioManager.PlayObstacleCrash();
+						}
 						// Rebotar: invertir dirección ACTUAL y del buffer
 						if (newVect.X < 0 || newVect.X > mapBounds.X)
 						{
@@ -473,6 +482,11 @@ public partial class SnakeBody : Sprite2D
 
 			if (Crash())
 			{
+				var audioManager = GetNodeOrNull<AudioManager>("/root/AudioManager");
+				if (audioManager != null)
+				{
+					audioManager.PlayObstacleCrash();
+				}
 				ShowGameOverScreen();
 			}
 		}
