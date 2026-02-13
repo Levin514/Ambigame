@@ -319,7 +319,7 @@ public partial class WaterCatchLevel : Node2D
 		
 		// Verificar si está dentro del rango de la canasta
 		return objX >= basketMinX && objX <= basketMaxX && 
-		       objY >= basketMinY && objY <= basketMaxY;
+			   objY >= basketMinY && objY <= basketMaxY;
 	}
 	
 	private void UpdateScore()

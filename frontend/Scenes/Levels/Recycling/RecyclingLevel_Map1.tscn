@@ -199,4 +199,5 @@ animation = &"walk_right"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("5_music")
 volume_db = -10.0
+bus = &"Music"
 autoplay = true

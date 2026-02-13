@@ -351,6 +351,7 @@ text = "Salir"
 [node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("1_music")
 volume_db = -10.0
+bus = &"Music"
 autoplay = true
 
 [connection signal="pressed" from="GameOverScreen/VBoxContainer/Again" to="." method="OnAgainPressed"]

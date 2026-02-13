@@ -19,8 +19,8 @@ config/icon="res://icon.svg"
 [autoload]
 
 ScreenFlash="*res://Scripts/ScreenFlash.cs"
-MusicManager="*res://Scenes/MusicManager.tscn"
 AudioManager="*res://Scripts/AudioManager.tscn"
+MusicManager="*res://Scenes/MusicManager.tscn"
 LevelManager="*res://Scripts/LevelManager.cs"
 GameData="*res://Scripts/GameData.cs"
 TranslationManager="*res://Scripts/TranslationManager.cs"
